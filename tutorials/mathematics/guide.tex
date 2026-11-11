@@ -1,0 +1,1854 @@
+
+\documentclass[11pt]{article}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage[parfill]{parskip}
+\makeatletter
+\providecommand{\@LN@col}[1]{}
+\providecommand{\@LN}[2]{}
+\makeatother
+\hypersetup{
+  pdftitle={A Step-by-Step Guide to the Mathematics of Additive Channels in Curved Fitness Landscapes},
+  pdfauthor={Daniel Ortiz-Barrientos and Mark Cooper},
+  pdfsubject={Mathematics of fitness variation and selection},
+  pdfkeywords={quantitative genetics, fitness, breeding values, selection, teaching guide}
+}
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\bGamma}{\boldsymbol{\Gamma}}
+\newcommand{\bgamma}{\boldsymbol{\gamma}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Corr}{\operatorname{Corr}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Ag}{\ensuremath{\mathcal A_g}}
+\newcommand{\Vlin}{\ensuremath{V_{\mathrm{lin}}}}
+\newcommand{\Vquad}{\ensuremath{V_{\mathrm{quad}}}}
+\newcommand{\Gsel}{\ensuremath{\mat G_{\mathrm{sel}}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\providecommand{\Description}[1]{\par\smallskip\noindent\textit{Alt text:} #1}
+
+\newenvironment{checkpoint}[1]
+  {\begin{quote}\small\noindent\textbf{Check #1.}\ }
+  {\end{quote}}
+\newenvironment{commonreading}
+  {\begin{quote}\small\noindent\textbf{Common misreading.}\ }
+  {\end{quote}}
+\newenvironment{optionalpart}[1]
+  {\begin{quote}\small\noindent\textbf{Optional detail: #1.}\ }
+  {\end{quote}}
+\newcounter{answer}
+\newcommand{\answerheading}[1]{%
+  \refstepcounter{answer}%
+  \subsection*{Answer \theanswer}%
+  \label{ans:#1}%
+}
+\newcommand{\guidegraphic}[1]{\includegraphics[width=0.94\textwidth]{#1}}
+
+\title{A Step-by-Step Guide to the Mathematics of\\
+``Additive Channels in Curved Fitness Landscapes''}
+\author{Daniel Ortiz-Barrientos and Mark Cooper}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Why can the same fitness surface look nearly linear in one population and show a substantial contribution from curvature in another? The answer depends on the breeding values present. This guide develops that result for one trait, starting with average reproductive output and working through the variance calculation. The same example then shows why a linear term that accounts for 97\% of variation in log expected fitness can still overestimate the change among selected parents by 50\%. The worked answers use one trait first. The final section shows what changes when the breeding values of several traits covary. The guide accompanies Appendices S1--S5 of the paper; no prior calculus or linear algebra is required for the main reading path.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\section{Reading this guide}
+\label{sec:purpose}
+
+Plants can differ in height because of their alleles, their growing conditions and interactions among these influences. Which genetic differences in height are associated with greater reproductive success? We will describe those differences using breeding values, then calculate average reproductive output at each value. To understand variation in a population, we also need the frequency of the breeding values. A curve supplies the expected output; a distribution supplies the frequencies. This guide explains how the two enter the calculation.
+
+We will use one numerical example to calculate the contributions of slope and curvature, then ask what those calculations tell us about selection. Begin with Sections~\ref{sec:target}--\ref{sec:s2}; they establish the central result and its interpretation. Section~\ref{sec:s3} adds inheritance, and Sections~\ref{sec:s4} and~\ref{sec:s5} connect the analysis to simulations and measurements. The integral in the optional derivation can be skipped on a first reading. Section~\ref{sec:manytraits} introduces matrices only after the one-trait calculation is complete.
+
+Keep three quantities separate as you work through the example:
+
+\begin{enumerate}
+\item Individual reproductive output, which can differ even among individuals with the same breeding value.
+\item Expected reproductive output at a given breeding value, found by averaging those individual outcomes.
+\item The mean breeding value among parents, weighted by their reproductive contributions. Predicting the offspring mean also requires assumptions about transmission.
+\end{enumerate}
+
+The calculations use familiar ideas from quantitative genetics in combination. Breeding values come from the regression of traits on allelic content \citep{Fisher1918,Fisher1941}; averaging over environmental deviations gives expected fitness at each additive genetic value \citep{Lande1979}. Linear and quadratic regressions describe selection \citep{LandeArnold1983}, and their explained variances can be compared \citep{MooradWade2013}. Log-link models connect this regression approach to proportional changes in expected fitness \citep{MorrisseyGoudie2022}. We introduce the results on selection-generated linkage disequilibrium when we reach inheritance \citep{Bulmer1971,BartonTurelli1991}. The question throughout is what these calculations say about the population being studied.
+
+\subsection*{Where to find each derivation}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}p{0.13\textwidth}X X@{}}
+\toprule
+Paper part & Formal content & Teaching route here \\
+\midrule
+Appendix S1 & Gaussian moments, variance formulas, population projection,
+coordinate invariance, and boundary cases & Sections~\ref{sec:local} and
+\ref{sec:s1}; optional Sections~\ref{sec:multi-language} and
+\ref{sec:multi-s1} \\
+Appendix S2 & Gaussian selection, selected-parent moments, displacement bound,
+and environmental averaging & Section~\ref{sec:s2}; optional
+Section~\ref{sec:multi-s2} \\
+Appendix S3 & Fixed-baseline covariance recursion, fixed point, bounds, scalar
+convergence, and the $\rho=1$ boundary & Section~\ref{sec:s3}; optional
+Section~\ref{sec:multi-s3} \\
+Appendix S4 & Scope of the forward-time simulation & Section~\ref{sec:s4} \\
+Appendix S5 & Conversion from a compatible phenotype-space selection
+regression & Section~\ref{sec:s5}; optional Section~\ref{sec:multi-s5} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Which fitness are we describing?}
+\label{sec:target}
+
+\subsection{Why use breeding values?}
+
+A plant's measured height is its phenotype. Its breeding value for height is the prediction obtained by adding the average effects of its alleles in a specified population \citep{Fisher1918,Fisher1941}. These effects come from a linear description of genetic differences in the trait using allele counts. Estimating them from measured phenotypes requires accounting for environmental effects. They can be defined even when alleles interact biologically. Adding average effects to form a predictor is therefore a different statement from assuming that alleles act independently in producing height.
+
+Breeding values retain the units of the trait. A difference of two centimetres between breeding values means a two-centimetre difference between the additive genetic predictions of height. The plants' actual heights can differ by another amount because the prediction does not include every genetic and environmental influence. We use breeding values because we want to relate reproductive success to this additive genetic component. The value alone does not specify an offspring's phenotype: that also depends on the other parent, segregation, recombination and environment.
+
+\subsection{Average reproductive output at a breeding value}
+
+For a plant, a fitness measure might be the number of offspring that survive from its seeds. Two plants with the same breeding value can leave different numbers of offspring. They can differ in genotype, growing conditions, damage or unmeasured traits. Write their individual output during the chosen selection episode as $W$. Write $A$ for breeding value and $a$ for a particular value. We ask for the mean output among individuals with that value:
+
+\begin{equation}
+W_A(a)=\E[W\mid A=a]
+\label{eq:guide-target}
+\end{equation}
+
+The symbol $\E$ means an average, and the bar means ``among individuals with $A=a$.'' Thus $W_A(a)$ averages the reproductive output associated with breeding value $a$. In field data, two plants rarely have exactly the same estimated breeding value. We therefore fit a curve to estimate this conditional mean; grouping defines the target of the fit.
+
+Repeating the average across breeding values gives a fitness curve. With several traits, the same operation gives a fitness surface over combinations of breeding values. It summarises variation that a map assigning fitness to each genotype or phenotype would keep separate. It also depends on the population and environment in which the averages are taken. For example, a change in growing conditions among plants with a given breeding value can change their mean output without changing the numerical value used to group them.
+
+\subsection{Average first, then take the logarithm}
+
+Selection depends on relative reproductive contributions. An increase from one expected offspring to two and an increase from ten to twenty each double the contribution, although their absolute increases differ. Logarithms give equal differences to equal ratios. We therefore take the logarithm of the conditional mean:
+
+\begin{equation}
+\ell_A(a)=\log W_A(a)=\log\{\E[W\mid A=a]\}.
+\label{eq:guide-log-target}
+\end{equation}
+
+The natural logarithm used here is the inverse of the exponential function: $\exp\{\log(x)\}=x$ for positive $x$. Thus a difference on the log scale can always be converted back to a ratio of expected outputs. For two breeding values,
+
+\begin{equation}
+\ell_A(a_2)-\ell_A(a_1)
+=\log\left\{\frac{W_A(a_2)}{W_A(a_1)}\right\}.
+\end{equation}
+
+A log difference of $0.10$ therefore means an expected-fitness ratio of $\exp(0.10)=1.105$: about 10.5\% more expected offspring. A straight line on the log scale describes a constant proportional change in expected output per unit change in breeding value. It need not be a straight line on the original output scale. Taking the exponential of a fitted log value also gives a positive expected output. These properties explain the use of log-link fitness models \citep{MorrisseyGoudie2022}. The rest of the guide uses ``log expected fitness'' for the conditional quantity in Equation~\eqref{eq:guide-log-target}.
+
+The order of operations is important.  In general,
+
+\begin{equation}
+\log\{\E[W\mid A]\}\ne \E[\log W\mid A].
+\label{eq:guide-jensen}
+\end{equation}
+
+Suppose two individuals with the same breeding value leave zero and two offspring. Their mean output is one, and $\log(1)=0$. Averaging their logged outputs cannot give that answer because $\log(0)$ is not finite. This is why the order matters: first calculate the expected reproductive contribution, then describe it on the log scale.
+
+\begin{commonreading}
+``Log expected fitness'' here always means the logarithm of conditional
+expected fitness.  It does not mean the expected logarithm of realised
+fitness.
+\end{commonreading}
+
+\subsection{What the population distribution adds}
+
+Imagine plotting one point for each plant at its breeding value for height. The concentration of points shows which values are common. With two traits, each point has two coordinates, and the plot shows how breeding values for the traits vary together. This is the population distribution sometimes drawn as a ``cloud.'' Its mean gives its position. Its variances give the spread along each trait axis, and its covariance describes their association.
+
+The distribution and the fitness surface answer separate questions. A fitness contour joins combinations with the same expected reproductive output. A density contour joins combinations with equal population density; choosing its level can enclose a specified proportion of the population. A region can have high expected fitness yet contain few individuals. Its contribution to a population calculation depends on both facts.
+
+For example, suppose breeding values of 0 and 2~cm have mean reproductive outputs of one and two offspring. In one population, 25\% of plants have the higher value; in another, 75\% do. Mean output is then $0.75(1)+0.25(2)=1.25$ in the first population and $0.25(1)+0.75(2)=1.75$ in the second. The expected output at each value was unchanged; its frequency changed. The same principle determines how much each value contributes when we calculate the variance of a fitness description.
+
+This weighting is already part of classical selection analysis \citep{LandeArnold1983}. Our calculation uses it to separate variation in log expected fitness into linear and curved contributions. Holding a surface fixed while changing the distribution lets us examine the effect of frequency or covariance alone. In biological comparisons, the conditional fitness curve can change as well and must be estimated for each population.
+
+\subsection{How frequency and fitness determine reproductive contributions}
+
+To calculate each class's share of expected reproductive contributions, multiply its frequency by its mean output, then divide by the population's mean output. For continuously distributed breeding values, let $p_A(a)$ be the initial density, $W_A(a)$ the conditional mean fitness and $\bar W$ the population mean fitness. The same weighting rule gives
+
+\begin{equation}
+p_{\mathrm{sel}}(a)=\frac{W_A(a)p_A(a)}{\bar W}.
+\label{eq:guide-selection-weight}
+\end{equation}
+
+In the preceding two-class example, the plants with breeding value 2~cm supply $0.25(2)/1.25=0.40$ of expected reproductive contributions in the first population and $0.75(2)/1.75\simeq0.857$ in the second. The weights are expected offspring numbers, not their logarithms. The resulting distribution describes parents weighted by their contributions. Inheritance is a further step because an individual's breeding value need not be transmitted unchanged to an offspring.
+
+Figure~\ref{fig:guide-target} shows how the expected-fitness curve is constructed. The vertical groups show variation in reproductive output at a given breeding value; they do not show the frequency of breeding values in a population. The second panel shows the logarithm of each conditional mean.
+
+\begin{figure}[htbp]
+\centering
+\guidegraphic{figures/math_guide_fig1.pdf}
+\caption{Construction of the paper's target.  Individual realised-fitness
+values are first averaged at each breeding value to obtain $W_A(a)$, as in
+Equation~\eqref{eq:guide-target}.  The logarithm is then taken.  Weighting the
+preselection distribution by $W_A(a)$ gives the selected-contributor
+distribution in Equation~\eqref{eq:guide-selection-weight}; that final
+weighting step is not plotted. The vertical samples illustrate variation
+at fixed breeding values, rather than the population frequency of those
+values. None of these operations specifies inheritance.}
+\Description{The first panel groups individual reproductive outputs vertically
+by breeding value and shows the conditional expected-fitness curve through
+their averages.  The second panel shows the logarithm of that curve.}
+\label{fig:guide-target}
+\end{figure}
+
+\begin{checkpoint}{1}
+Individuals with one breeding value have realised fitness values 0 and 2.
+Individuals with another have values 1 and 3.  Calculate the logarithm of
+conditional expected fitness for each group.  Why can the same calculation
+not be made by averaging the logarithms in the first group?  See
+Answer~\ref{ans:1}.
+\end{checkpoint}
+
+\section{One trait: from phenotype to expected fitness}
+\label{sec:local}
+
+We will now choose an explicit model so that every calculation can be worked out. Think of the trait as plant height, measured relative to a reference mean in arbitrary units. In this example, phenotype is the sum of breeding value and an independent environmental deviation. This is an additional assumption of the example, rather than a consequence of defining a breeding value:
+
+\begin{equation}
+Z=A+E.
+\end{equation}
+
+Let breeding value $A$ and environmental deviation $E$ each follow a normal distribution with mean zero and variance one. The notation $N(0,1)$ states those two numbers. Independence means that knowing one component does not change the distribution of the other. Expected reproductive output is highest at phenotype 4 and declines on either side, according to
+
+\begin{equation}
+W(Z)=W_{\max}\exp\left\{-\frac{(Z-4)^2}{2}\right\}.
+\label{eq:guide-phenotype-fitness}
+\end{equation}
+
+Here $W_{\max}$ is the maximum expected output, and the width parameter is one. Plants with the same breeding value have different phenotypes because their environmental deviations differ. Averaging fitness over those deviations gives
+
+\begin{equation}
+W_A(a)=\frac{W_{\max}}{\sqrt{2}}
+\exp\left\{-\frac{(a-4)^2}{4}\right\}.
+\label{eq:guide-environmental-average}
+\end{equation}
+
+The factor $1/\sqrt{2}$ changes the height of the fitness curve, while the denominator four makes it broader than the phenotype--fitness curve. Taking the logarithm and expanding $(a-4)^2=a^2-8a+16$ gives
+
+\begin{align}
+\ell_A(a)
+&=\log\left(\frac{W_{\max}}{\sqrt{2}}\right)-\frac{(a-4)^2}{4}\nonumber\\
+&=\ell_0+2a-\frac14a^2,
+\label{eq:guide-quadratic-example}
+\end{align}
+
+The constant $\ell_0=\log(W_{\max}/\sqrt{2})-4$ is log expected fitness at the current mean, $a=0$. Because it is added to every value, it does not affect differences among individuals or either variance component.
+
+\subsection{Slope and curvature without calculus}
+
+Near the population mean, a small change in breeding value produces a change in log expected fitness. Their ratio is the slope, $b$. We can estimate it without taking a derivative: choose two nearby values, $-h$ and $h$, and divide the change in log expected fitness by their separation:
+
+\begin{equation}
+b\approx\frac{\ell_A(h)-\ell_A(-h)}{2h}.
+\label{eq:guide-finite-slope}
+\end{equation}
+
+If the slope changes along the curve, a single line will miss part of that relationship. Curvature, $H$, measures this change in slope. Using the values at $-h$, zero and $h$, we can calculate it as
+
+\begin{equation}
+H\approx
+\frac{\ell_A(h)-2\ell_A(0)+\ell_A(-h)}{h^2}.
+\label{eq:guide-finite-curvature}
+\end{equation}
+
+For our quadratic example, these formulas give $b=2$ and $H=-0.5$ for any nonzero $h$. The positive slope means that an increase in breeding value near the mean increases log expected fitness. The negative curvature means that this increase becomes smaller as breeding value rises towards the optimum. Calculus calls $b$ and $H$ the first and second derivatives; the numerical example lets us use them before needing that notation.
+
+Near the current mean, the local description is
+
+\begin{equation}
+\widetilde\ell_A(X)=\ell_0+bX+\frac12HX^2,
+\label{eq:guide-local-description}
+\end{equation}
+
+where $X=A-\E[A]$ is the breeding value measured from its current mean.  The
+tilde over $\ell$ denotes an approximation.  In the recurring example
+$\ell_A$ is exactly quadratic, so Equation~\eqref{eq:guide-local-description}
+is exact rather than approximate.
+
+\begin{checkpoint}{2}
+Use $h=0.2$ and omit the constant $\ell_0$.  Equation
+\eqref{eq:guide-quadratic-example} gives $\ell_A(0.2)-\ell_0=0.39$ and
+$\ell_A(-0.2)-\ell_0=-0.41$.  Use Equations
+\eqref{eq:guide-finite-slope} and \eqref{eq:guide-finite-curvature} to recover
+$b$ and $H$.  See Answer~\ref{ans:2}.
+\end{checkpoint}
+
+\subsection{Optional derivation of the environmental average}
+
+Equation~\eqref{eq:guide-environmental-average} is all we need for the next section. The following calculation shows where it comes from. Readers who want to continue with the variance partition can go directly to Section~\ref{sec:s1}.
+
+Here is the averaging step explicitly.  Conditional on $A=a$, write one
+possible environmental deviation as $e$.  Its normal density supplies the
+first exponential below, and phenotype-dependent fitness supplies the second:
+
+\begin{equation}
+W_A(a)=\frac{W_{\max}}{\sqrt{2\pi}}
+\int_{-\infty}^{\infty}
+\exp\left(-\frac{e^2}{2}\right)
+\exp\left\{-\frac{(a+e-4)^2}{2}\right\}\,de.
+\label{eq:guide-environmental-integral}
+\end{equation}
+
+The integral sign means to take the continuous weighted average over all
+possible values of $e$.  Put $\delta=a-4$.  The two squared terms combine as
+
+\begin{equation}
+e^2+(e+\delta)^2=2\left(e+\frac \delta2\right)^2+\frac{\delta^2}{2}.
+\end{equation}
+
+The part involving $e+\delta/2$ is another bell-shaped curve.  Its total area,
+together with the normalising factor $1/\sqrt{2\pi}$, is $1/\sqrt2$; the part
+that still depends on $a$ is $\exp(-\delta^2/4)$.  Their product is exactly
+Equation~\eqref{eq:guide-environmental-average}.  No later calculation in the
+one-trait guide requires performing this integral again.
+
+Appendix S2 gives the same calculation with general parameters.  Let the
+environmental variance be $V_E$, let the optimum be $\theta$, and let
+$\omega^2$ describe the width of the phenotype--fitness relationship:
+
+\begin{equation}
+E\sim N(0,V_E),\qquad
+W(Z)=W_{\max}\exp\left\{-\frac{(Z-\theta)^2}{2\omega^2}\right\}.
+\end{equation}
+
+Writing $\delta=a-\theta$, the two terms in the exponent can be rearranged as
+
+\begin{equation}
+\frac{e^2}{V_E}+\frac{(e+\delta)^2}{\omega^2}
+=\frac{V_E+\omega^2}{V_E\omega^2}
+ \left(e+\frac{V_E\delta}{V_E+\omega^2}\right)^2
+ +\frac{\delta^2}{V_E+\omega^2}.
+\label{eq:guide-general-completing-square}
+\end{equation}
+
+The first term on the right is a shifted bell-shaped curve in $e$.  Averaging
+that curve supplies the scale factor below; the final term supplies the part
+that varies with $a$:
+
+\begin{equation}
+W_A(a)=W_{\max}\sqrt{\frac{\omega^2}{\omega^2+V_E}}
+\exp\left\{-\frac{(a-\theta)^2}{2(\omega^2+V_E)}\right\}.
+\label{eq:guide-environmental-average-general}
+\end{equation}
+
+Setting $V_E=\omega^2=1$ and $\theta=4$ recovers
+Equation~\eqref{eq:guide-environmental-average}.  The denominator
+$\omega^2+V_E$ also shows directly why environmental variation makes the
+relationship in breeding-value space broader than the original relationship
+in phenotype space.
+
+\section{How much variation comes from slope and curvature?}
+\label{sec:s1}
+
+\subsection{Averages, variance, and covariance}
+
+For any quantity $Y$, $\E[Y]$ is its population average.  Its variance is
+
+\begin{equation}
+\Var(Y)=\E\left[(Y-\E[Y])^2\right].
+\end{equation}
+
+Variance is an average squared distance from the mean.  It is nonnegative and
+describes the spread of a quantity.  Covariance describes whether two
+quantities change together:
+
+\begin{equation}
+\Cov(U,V)=\E[(U-\E[U])(V-\E[V])].
+\end{equation}
+
+Positive covariance means that large values tend to occur together.  Negative
+covariance means that a large value of one tends to accompany a small value of
+the other.  Zero covariance means that there is no linear association; it does
+not necessarily mean statistical independence.
+
+For a normal variable $X$ with mean 0 and variance $G$, the moments used in
+Appendix S1 are
+
+\begin{equation}
+\E[X]=0,\qquad \E[X^2]=G,\qquad \E[X^3]=0,
+\qquad \E[X^4]=3G^2.
+\label{eq:guide-normal-moments}
+\end{equation}
+
+Here a moment is simply an average of a power, such as $\E[X^2]$ or
+$\E[X^4]$.
+
+\subsection{Separating the linear and quadratic terms}
+
+The linear, or first-order, contribution is the slope multiplied by the deviation from the mean:
+
+\begin{equation}
+L=bX.
+\end{equation}
+
+The quadratic term $HX^2/2$ does not generally have mean zero.  Its mean is
+$HG/2$.  Subtracting that mean gives
+
+\begin{equation}
+Q_c=\frac12H(X^2-G).
+\label{eq:guide-centered-Q}
+\end{equation}
+
+The subscript $c$ means centred: $Q_c$ has mean zero. Subtracting a constant shifts a curve up or down without changing how much its values differ, so this step leaves the quadratic variance unchanged. It makes the linear and quadratic terms easier to compare.
+
+In the recurring example, $G=1$, $b=2$, and $H=-0.5$, so
+
+\begin{equation}
+L=2X,\qquad Q_c=-\frac14(X^2-1).
+\end{equation}
+
+\subsection{Variance of the first-order term}
+
+If every deviation from the mean doubles, every squared deviation becomes four times as large. Variance therefore changes with the square of a multiplier. Applying that rule to $L=bX$ gives
+
+\begin{equation}
+\Vlin=\Var(L)=b^2G.
+\label{eq:guide-vlin-one}
+\end{equation}
+
+For the example, $\Vlin=2^2\times1=4$.
+
+\subsection{Variance of the quadratic term}
+
+For the curved contribution, we need the variance of $X^2$. Subtract the square of its mean from its mean square, using the normal moments above:
+
+\begin{align}
+\Var(X^2)
+&=\E[X^4]-\{\E[X^2]\}^2\nonumber\\
+&=3G^2-G^2=2G^2.
+\end{align}
+
+Consequently,
+
+\begin{equation}
+\Vquad=\Var(Q_c)=\frac12H^2G^2.
+\label{eq:guide-vquad-one}
+\end{equation}
+
+For the example, $\Vquad=(1/2)(0.5)^2(1)^2=0.125$.
+
+\subsection{Why the covariance is zero}
+
+A centred normal distribution is symmetric: $x$ and $-x$ have the same
+frequency.  Replacing $x$ by $-x$ changes the sign of $L=bx$ but does not
+change $Q_c$, which depends on $x^2$.  The product $LQ_c$ at $x$ is therefore
+the negative of the product at $-x$.  The paired products cancel in the
+population average, giving
+
+\begin{equation}
+\Cov(L,Q_c)=0.
+\end{equation}
+
+For example, at $x=2$, $L=4$ and $Q_c=-0.75$, so $LQ_c=-3$.  At $x=-2$,
+$L=-4$ and $Q_c=-0.75$, so $LQ_c=3$.
+
+Because the covariance is zero, the variance of their sum is
+
+\begin{equation}
+\Var(L+Q_c)=\Vlin+\Vquad.
+\end{equation}
+
+The same cancellation gives the squared-correlation identity used in
+Appendix S1.  When $\Vlin>0$,
+
+\begin{align}
+\Corr(L,L+Q_c)^2
+&=\frac{\Cov(L,L+Q_c)^2}
+{\Var(L)\Var(L+Q_c)}\nonumber\\
+&=\frac{\Vlin^2}{\Vlin(\Vlin+\Vquad)}
+=\frac{\Vlin}{\Vlin+\Vquad}=\Ag.
+\label{eq:guide-correlation}
+\end{align}
+
+This statement requires $L$ to have nonzero variance.  The zero-variance
+cases are listed below.
+
+\subsection{The first-order variance share}
+
+Provided the denominator is positive, define
+
+\begin{equation}
+\Ag=\frac{\Vlin}{\Vlin+\Vquad}.
+\label{eq:Ag}
+\end{equation}
+
+For the example,
+
+\begin{equation}
+\Ag=\frac{4}{4+0.125}=0.9697.
+\end{equation}
+
+About 97\% of the variance in our quadratic description of log expected fitness comes from the linear term. The curvature accounts for the remaining 3\%. These percentages describe the fitted relationship across breeding values; individual reproductive output can vary further around that relationship.
+
+This is what the paper calls an \emph{additive channel}: a population whose variation in log expected fitness has a large linear share. The term refers to that relationship, not to interactions among alleles. The value is continuous, so its interpretation does not depend on crossing a universal threshold.
+
+\subsection{The regression interpretation}
+
+A least-squares regression chooses the line that minimises the average squared
+difference between the outcome and the line.  The coefficient of
+determination, $R^2$, is the fraction of outcome variance accounted for by the
+fitted regression.  This use of regression and explained variation has close
+precedents in quantitative-genetic analyses of selection
+\citep{LandeArnold1983,MooradWade2013}.
+
+Consider the outcome $L+Q_c$.  The zero covariance derived above means that a
+linear regression on $X$ recovers $L=bX$ and cannot absorb any of $Q_c$.  The
+line therefore accounts for $\Vlin$ from a total variance of
+$\Vlin+\Vquad$.  Hence
+
+\begin{equation}
+R_1^2=\Ag.
+\label{eq:guide-projection}
+\end{equation}
+
+The algebra is short.  For $G>0$, if $d$ is the fitted slope, the
+least-squares formula is
+
+\begin{equation}
+d=\frac{\Cov(X,L+Q_c)}{\Var(X)}
+=\frac{bG+0}{G}=b.
+\label{eq:guide-one-trait-slope}
+\end{equation}
+
+The zero in the numerator is the covariance between $X$ and the quadratic term. With that contribution absent, the regression slope is exactly $b$. The variance-share calculation has recovered a familiar regression quantity.
+
+For the original, uncentred curve, the fitted line has slope $b$ and intercept $\ell_0+HG/2$. Thus it is parallel to the tangent at the mean but shifted by the average quadratic contribution. We write this intercept as $k$ below; the main paper uses $c$.
+
+If an observed outcome can be written as
+
+\begin{equation}
+Y=k+L+Q_c+\varepsilon,
+\end{equation}
+
+the residual $\varepsilon$ describes variation around the fitted relationship. Assume that its mean is zero at each breeding value and its variance is finite. Compare a linear fit, with coefficient of determination $R_1^2$, with a fit that also includes the quadratic term, with $R_{\leq2}^2$. The two fits have the same outcome variance in their denominators, so
+
+\begin{equation}
+\frac{R_1^2}{R_{\leq2}^2}=\Ag.
+\label{eq:guide-nested-r2}
+\end{equation}
+
+Equivalently, the fraction of the modelled first- and second-order signal
+added by the quadratic terms is
+
+\begin{equation}
+\frac{R_{\leq2}^2-R_1^2}{R_{\leq2}^2}=1-\Ag.
+\end{equation}
+
+For example, if $\Var(\varepsilon)=4$, then
+
+\begin{equation}
+R_1^2=\frac{4}{8.125}=0.4923,
+\qquad
+R_{\leq2}^2=\frac{4.125}{8.125}=0.5077,
+\end{equation}
+
+Their ratio is still 0.9697. The residual has reduced both coefficients of determination, but it has not changed the division between the model's linear and curved contributions. A large share can therefore coexist with a low $R^2$ for the observed outcome.
+
+\begin{commonreading}
+Equation~\eqref{eq:guide-nested-r2} does not generally justify regressing the
+logarithm of realised reproductive output.  Such a regression targets
+$\E[\log W\mid A]$, not $\log\E[W\mid A]$.  The identity applies when the
+fitted outcome and its residual satisfy the stated conditional-mean model on
+the required scale.
+\end{commonreading}
+
+Figure~\ref{fig:guide-projection} brings the two descriptions together. The upper panel shows the linear and curved contributions to log expected fitness. The density below it gives the frequency of breeding values used to calculate each variance. Values near the centre receive more weight because more individuals occur there.
+
+\begin{figure}[htbp]
+\centering
+\guidegraphic{figures/math_guide_fig2.pdf}
+\caption{The Appendix S1 variance and population-projection results in one
+trait.  The first-order term $L$ changes sign around the population mean,
+whereas the centred quadratic term $Q_c$ is symmetric.  Their covariance is
+zero under the centred Gaussian distribution.  The best affine projection
+therefore accounts for the fraction in Equation~\eqref{eq:Ag}.}
+\Description{The upper panel shows the full second-order curve for the
+logarithm of conditional expected fitness,
+its first-order line, and its centred quadratic term.  The lower panel shows
+the bell-shaped breeding-value density that weights their variances.}
+\label{fig:guide-projection}
+\end{figure}
+
+\subsection{Changing population spread while holding the surface fixed}
+
+Suppose the breeding-value variance changes from $G$ to $sG$, where $s$ is a
+positive scaling factor, while $b$ and $H$ remain fixed.  Equations
+\eqref{eq:guide-vlin-one} and \eqref{eq:guide-vquad-one} give
+
+\begin{equation}
+\Vlin(s)=s\Vlin(1),
+\qquad
+\Vquad(s)=s^2\Vquad(1).
+\label{eq:guide-scaling}
+\end{equation}
+
+Halving the breeding-value variance therefore halves the linear contribution but reduces the quadratic contribution to one quarter. In our example, changing $G$ from 1 to 0.5 gives $\Vlin=2$, $\Vquad=0.03125$ and $\Ag=0.9846$. The linear fraction has increased from about 97\% to about 98.5\%, even though both absolute components have decreased. Here ``spread'' means variance; it is the variance multiplier $s$ that is squared in the formula.
+
+Nothing about the fitness curve changed in this comparison. The result isolates the effect of a narrower breeding-value distribution while holding slope and curvature fixed. Along an evolutionary trajectory, those quantities can also change and must be recalculated. For several traits, the same scaling result requires all variances and covariances to change in the same proportion.
+
+\subsection{Changing units does not change the share}
+
+Suppose breeding value is rescaled from $a$ to $a'=10a$.  The variance becomes
+$G'=100$, the slope per new unit becomes $b'=0.2$, and the curvature per
+squared new unit becomes $H'=-0.005$.  Substitution gives
+
+\begin{equation}
+(b')^2G'=0.2^2\times100=4
+\end{equation}
+
+and
+
+\begin{equation}
+\frac12(H')^2(G')^2
+=\frac12(0.005)^2(100)^2=0.125.
+\end{equation}
+
+Both variance terms, and therefore \Ag, are unchanged.  Appendix S1 proves
+the corresponding result for any invertible change of coordinates involving
+several traits.
+
+\subsection{Boundary cases}
+
+If $\Vlin=0$ and $\Vquad>0$, then $\Ag=0$.  The first-order regression is
+constant.  A squared correlation involving $L$ is undefined because $L$ has
+no variance, even though the projection share can be recorded as zero.  If
+both variance terms are zero, \Ag{} and the correlation are both undefined
+because there is no local variation to divide between the terms.
+
+A trait with no breeding-value variation contributes no variation to this calculation. With several traits, we keep the combinations that do vary and restrict any matrix inverses to those combinations.
+
+\begin{checkpoint}{3}
+Recalculate $\Vlin$, $\Vquad$, and \Ag{} for $G=1$, $b=2$, and $H=-0.5$.
+Then state what each number measures.  See Answer~\ref{ans:3}.
+\end{checkpoint}
+
+\begin{checkpoint}{4}
+Explain why the products $LQ_c$ at $x=2$ and $x=-2$ cancel.  Which assumption
+about the distribution makes the two breeding values equally frequent?  See
+Answer~\ref{ans:4}.
+\end{checkpoint}
+
+\begin{checkpoint}{5}
+After changing units to $a'=10a$, verify the transformed values of $G$, $b$,
+and $H$ and confirm that \Ag{} is unchanged.  See Answer~\ref{ans:5}.
+\end{checkpoint}
+
+\section{How selection changes the contributing parents}
+\label{sec:s2}
+
+\subsection{Combining population frequencies and reproductive output}
+
+The preceding calculation compared variation in log expected fitness. To find the distribution among selected contributors, we must instead multiply the initial distribution by expected fitness itself, as in Equation~\eqref{eq:guide-selection-weight}. For normally distributed deviations $X$ with variance $G$, the initial density is proportional to
+
+\begin{equation}
+\exp\left(-\frac{X^2}{2G}\right).
+\end{equation}
+
+``Proportional to'' means that a constant needed to make the total probability
+one has been omitted.  Under stabilising curvature, write $\Gamma=-H$, so
+$\Gamma\geq0$.  The conditional expected-fitness weight, after ignoring a
+constant shared by all breeding values, is
+
+\begin{equation}
+\exp\left(bX-\frac12\Gamma X^2\right).
+\end{equation}
+
+Multiplying exponential terms adds their exponents.  In the recurring
+example, $G=1$, $b=2$, and $\Gamma=0.5$, so the combined exponent is
+
+\begin{align}
+-\frac12X^2+2X-\frac14X^2
+&=-\frac34X^2+2X\nonumber\\
+&=-\frac34\left(X-\frac43\right)^2+\frac43.
+\end{align}
+
+Writing the expression as a multiple of $(X-4/3)^2$ identifies the centre of the selected distribution. This operation is called completing the square. The constant $4/3$ affects only the factor needed to make the density integrate to one. The selected distribution has mean $4/3$ and variance $2/3$: the contributing parents have shifted towards the optimum and have less variation.
+
+For general one-trait values,
+
+\begin{equation}
+g_{\mathrm{sel}}=\frac{1}{1/g+\Gamma},
+\qquad
+\Delta\bar a_{\mathrm{full}}=g_{\mathrm{sel}}b.
+\label{eq:guide-selected-moments}
+\end{equation}
+
+The symbol $g$ is the preselection breeding-value variance,
+$g_{\mathrm{sel}}$ is the variance among selected contributors, and
+$\Delta\bar a_{\mathrm{full}}$ is the change in their mean breeding value.
+The combined coefficient $1/g+\Gamma$ must be positive; otherwise the
+weighted distribution does not have a finite total.  With stabilising
+curvature $\Gamma\geq0$ and $g>0$, this condition is automatic.
+
+Within the exact normal, log-quadratic model, $g_{\mathrm{sel}}$ depends on
+curvature but not on $b$, whereas the selected mean depends on both.  This
+separation need not hold for a nonnormal population or a nonquadratic
+function for the logarithm of conditional expected fitness.
+
+\subsection{Why a high linear share can still give a poor selection prediction}
+
+If curvature were omitted, the predicted selected-parent displacement would
+be
+
+\begin{equation}
+\Delta\bar a_{\mathrm{lin}}=gb.
+\end{equation}
+
+Our example gave a linear share of 0.9697. Yet the linear-only calculation predicts a shift of two units, while the calculation including curvature gives $4/3$. Dividing the difference by the full result gives
+
+\begin{equation}
+\frac{|2-4/3|}{|4/3|}=0.5.
+\end{equation}
+
+In one trait, when $b\ne0$, the exact relative discrepancy is
+$|\Gamma g|$.  Appendix S2 also proves
+
+\begin{equation}
+|\Gamma g|\leq\sqrt{2\Vquad}.
+\label{eq:guide-response-bound-one}
+\end{equation}
+
+Both sides equal 0.5 in one trait. Increasing $b$ enlarges the linear variance and pushes \Ag towards one, but leaves this relative error unchanged. The reason is the difference between the two calculations: the variance share compares squared deviations on the log scale, while the selected mean uses expected reproductive output to weight individuals. A good linear description for the first calculation need not be a good substitute in the second.
+
+We have calculated a difference between the initial population and the parents weighted by their reproductive contributions. An inheritance model is needed to turn that result into a prediction for offspring.
+
+Nor does the regression $R^2$ determine which individuals rank highest. On the far side of an optimum, expected fitness can decline while a linear score continues to rise. Ranking would require a separate comparison.
+
+Figure~\ref{fig:guide-selection} compares the initial distribution with the distribution among parents weighted by their expected reproductive contributions. It shows the change in both the mean and the variance calculated above.
+
+\begin{figure}[htbp]
+\centering
+\guidegraphic{figures/math_guide_fig3.pdf}
+\caption{The Appendix S2 selected-parent moments and the distinction between
+the first-order variance share and displacement accuracy.  Weighting
+$A\sim N(0,1)$ by the recurring log-quadratic fitness function changes the
+mean from 0 to $4/3$ and the variance from 1 to $2/3$, as in
+Equation~\eqref{eq:guide-selected-moments}.  The first-order displacement is
+2, producing the relative discrepancy in
+Equation~\eqref{eq:guide-response-bound-one}, although $\Ag=0.9697$.}
+\Description{The preselection and selected-contributor normal distributions
+are drawn with vertical lines at means zero and four thirds.  Their variances
+are one and two thirds, respectively.}
+\label{fig:guide-selection}
+\end{figure}
+
+\subsection{Why environmental variation changes the curvature}
+
+Equation~\eqref{eq:guide-phenotype-fitness} has phenotype-space curvature
+$-1$.  After environmental deviations with variance 1 are averaged out,
+Equation~\eqref{eq:guide-environmental-average} has breeding-value-space
+curvature $-1/(1+1)=-0.5$.  Individuals with one breeding value occupy a range
+of phenotypes, so their mean fitness changes more gradually with breeding
+value than individual fitness changes with phenotype.
+
+More generally, if phenotype-space fitness has width $\omega^2$ and the
+environmental variance is $V_E$, Gaussian averaging gives width
+$\omega^2+V_E$ and curvature
+
+\begin{equation}
+H=-\frac{1}{\omega^2+V_E},
+\end{equation}
+
+rather than $-1/\omega^2$.  This is why phenotype-space and breeding-value-
+space curvature cannot be treated as interchangeable.
+
+\begin{checkpoint}{6}
+Use Equation~\eqref{eq:guide-selected-moments} with $g=1$, $\Gamma=0.5$, and
+$b=2$.  Calculate the selected variance and selected mean displacement.  See
+Answer~\ref{ans:6}.
+\end{checkpoint}
+
+\begin{checkpoint}{7}
+Replace $b=2$ by $b=10$, keeping $g=1$ and $\Gamma=0.5$.  Calculate \Ag{} and
+the relative discrepancy between the first-order and full displacements.
+Explain why the two answers move in different ways.  See
+Answer~\ref{ans:7}.
+\end{checkpoint}
+
+\section{Adding inheritance: variation across generations}
+\label{sec:s3}
+
+\subsection{The added inheritance assumptions}
+
+What happens to the reduced variance among selected parents when they reproduce? Recombination can reduce the associations between alleles created by selection. We now represent that process with a simple rule, while retaining the normal distribution and exactly quadratic log expected fitness used above. The one-trait update is
+
+\begin{equation}
+g_{t+1}=(1-\rho)B+\rho\frac{g_t}{1+\gamma g_t}.
+\label{eq:guide-recursion}
+\end{equation}
+
+Read this equation as a weighted average of two variances: the baseline $B$ and the selected variance $g_t/(1+\gamma g_t)$. Its symbols are
+
+\begin{itemize}
+\item $g_t$ is breeding-value variance in generation $t$;
+\item $B$ is a fixed genic variance baseline;
+\item $\gamma\geq0$ is fixed stabilising curvature;
+\item $\rho$, between 0 and 1, is the fraction of the postselection covariance
+departure from the baseline retained after reproduction.
+\end{itemize}
+
+\begin{commonreading}
+In this section, lowercase $\gamma$ follows the main paper's scalar recursion
+and denotes stabilising curvature.  Appendix S5 later uses lowercase
+$\gamma$ for the conventional quadratic coefficient in a phenotype-space
+selection regression.  Those coefficients belong to different models and
+should not be interchanged.  Uppercase $\Gamma=-H$ in Appendix S2 is the
+one-trait sign-reversed curvature corresponding to the present scalar
+$\gamma$.
+\end{commonreading}
+
+The model assumes that allelic effects stay fixed and breeding values are their linear sums in every generation. It separately assumes a fixed genic variance $B$, the variance contributed by loci before accounting for associations between them. To see why the second assumption does not follow from the first, consider one biallelic locus. Its genic variance is $2p(1-p)u^2$, where $u$ is the allelic effect. With $u=1$, changing allele frequency from $p=0.5$ to $p=0.8$ reduces the variance from 0.50 to 0.32. The effect stayed fixed; its contribution to variance did not.
+
+Holding $B$ fixed excludes such allele-frequency changes from the update. The equation also omits mutation, drift, migration and changing allelic effects. It isolates how selection-generated associations and their retention affect variance under fixed parameters.
+
+\subsection{A numerical iteration}
+
+Take
+
+\begin{equation}
+B=1,\qquad \gamma=0.5,\qquad \rho=0.5.
+\end{equation}
+
+Starting at $g_0=1$, the selected variance is $1/(1+0.5)=2/3$.  Reproduction
+then gives
+
+\begin{equation}
+g_1=0.5+0.5\left(\frac23\right)=0.8333.
+\end{equation}
+
+Repeating the same calculation gives
+
+\begin{equation}
+g_2=0.7941,\qquad g_3=0.7842,\qquad g_4=0.7817.
+\end{equation}
+
+Every update lies between
+
+\begin{equation}
+(1-\rho)B=0.5\qquad\text{and}\qquad B=1.
+\label{eq:guide-scalar-bounds}
+\end{equation}
+
+For this starting value, every iterate stays in the interval $[0.5,1]$. The lower bound is the baseline contribution supplied at each update. The upper bound follows because selection reduces the current variance, and the update averages that selected variance with $B=1$. A starting variance outside this interval need not enter it immediately.
+
+\subsection{The scalar fixed point and convergence}
+
+A fixed point $g^*$ is a value that the update leaves unchanged.  Setting
+$g_{t+1}=g_t=g^*$ gives
+
+\begin{equation}
+g^*=0.5+0.5\frac{g^*}{1+0.5g^*}.
+\end{equation}
+
+Multiplying both sides by $1+0.5g^*$ and collecting terms gives
+
+\begin{equation}
+2(g^*)^2+g^*-2=0.
+\end{equation}
+
+The positive solution is
+
+\begin{equation}
+g^*=\frac{\sqrt{17}-1}{4}=0.7808.
+\end{equation}
+
+For general $B>0$, $\gamma>0$, and $0\leq\rho<1$, the same steps start from
+
+\nopagebreak[4]
+\begin{equation}
+g^*=(1-\rho)B+\rho\frac{g^*}{1+\gamma g^*}.
+\end{equation}
+
+Multiplication by $1+\gamma g^*$ gives
+
+\begin{equation}
+g^*+\gamma(g^*)^2
+=(1-\rho)B+(1-\rho)\gamma B g^*+\rho g^*.
+\end{equation}
+
+Moving every term to the left and collecting the two terms proportional to
+$g^*$ produces the quadratic displayed in Appendix S3:
+
+\begin{equation}
+\gamma(g^*)^2+(1-\rho)(1-\gamma B)g^*-(1-\rho)B=0.
+\label{eq:guide-general-fixedpoint-quadratic}
+\end{equation}
+
+The quadratic formula has one nonnegative root, namely
+
+\begin{equation}
+g^*=\frac{-(1-\rho)(1-\gamma B)
++\sqrt{(1-\rho)^2(1-\gamma B)^2+4\gamma(1-\rho)B}}
+{2\gamma}.
+\label{eq:guide-scalar-root}
+\end{equation}
+
+When $\gamma=0$, selection does not change variance and the fixed point is
+$g^*=B$ for $0\leq\rho<1$.
+
+Convergence can be shown without derivatives.  Let $F(g)$ denote the right
+side of Equation~\eqref{eq:guide-recursion}.  For any two nonnegative values
+$u$ and $v$,
+
+\begin{equation}
+|F(u)-F(v)|
+=\frac{\rho|u-v|}{(1+\gamma u)(1+\gamma v)}
+\leq\rho|u-v|.
+\label{eq:guide-contraction}
+\end{equation}
+
+Since $\rho<1$, two starting values become closer after each update. In particular, the distance from a starting value to a fixed point becomes at most $\rho$ times as large at every step. It tends to zero, proving convergence. Two different fixed points would have to become closer while remaining unchanged, which is impossible; the scalar fixed point is unique. The matrix proof in Appendix S3 establishes existence and bounds, but does not make those additional claims.
+
+\subsection{The boundary \texorpdfstring{$\rho=1$}{rho = 1}}
+
+When $\rho=1$, the baseline term disappears and
+
+\begin{equation}
+g_{t+1}=\frac{g_t}{1+\gamma g_t}.
+\end{equation}
+
+For a positive starting variance, taking reciprocals gives
+
+\begin{equation}
+\frac{1}{g_{t+1}}=\frac{1}{g_t}+\gamma.
+\end{equation}
+
+Thus precision, defined as inverse variance, rises by $\gamma$ each
+generation:
+
+\begin{equation}
+\frac{1}{g_t}=\frac{1}{g_0}+t\gamma.
+\label{eq:guide-rho-one}
+\end{equation}
+
+If $\gamma>0$, the variance approaches zero.  There is no positive interior
+fixed point at this boundary.  If $\gamma=0$, every positive starting
+variance is fixed because the update becomes $g_{t+1}=g_t$.  With several
+traits, variance can remain only in directions with exactly zero curvature;
+if $\bGamma=\mat0$, every starting covariance is fixed.
+
+The paper treats $\rho$ as a summary of linkage-disequilibrium retention, not
+as a universal function of a recombination rate or mating system.  Its value
+depends on locus pairs, effects, signs of disequilibria, recombination
+architecture, and the population's mating system
+\citep{Bulmer1974,BartonTurelli1991}.
+
+Figure~\ref{fig:guide-recursion} shows the successive variance updates and their approach to the scalar fixed point. Each update uses the same baseline, curvature and retention parameter.
+
+\begin{figure}[htbp]
+\centering
+\guidegraphic{figures/math_guide_fig4.pdf}
+\caption{The scalar fixed-baseline covariance recursion of Appendix S3 for
+$B=1$, $\gamma=0.5$, and $\rho=0.5$.  Successive values remain in the interval
+$[(1-\rho)B,B]=[0.5,1]$ and approach the conditional fixed point
+$g^*=0.7808$.  This is a covariance fixed point under fixed parameters, not a
+mutation--selection equilibrium.}
+\Description{A plot of the scalar update against the identity line marks the
+fixed point at 0.7808.  A short sequence beginning at variance one approaches
+the crossing while remaining between 0.5 and one.}
+\label{fig:guide-recursion}
+\end{figure}
+
+\begin{checkpoint}{8}
+Starting from $g_0=1$, calculate $g_1$, $g_2$, and $g_3$ for $B=1$,
+$\gamma=0.5$, and $\rho=0.5$.  Are all three values inside the interval in
+Equation~\eqref{eq:guide-scalar-bounds}?  See Answer~\ref{ans:8}.
+\end{checkpoint}
+
+\begin{checkpoint}{9}
+Let $g_0=1$, $\gamma=0.5$, and $\rho=1$.  Use
+Equation~\eqref{eq:guide-rho-one} to calculate $g_4$.  Why is $B$ irrelevant
+at this boundary?  See Answer~\ref{ans:9}.
+\end{checkpoint}
+
+\section{Checking the approximation in simulated populations}
+\label{sec:s4}
+
+The Gaussian formulas are exact under their stated assumptions. Breeding values in a finite population need not follow an exact normal distribution, so the paper also asks how closely the formula agrees with its squared-correlation counterpart in a multilocus simulation.
+
+The paper's forward-time simulation used SLiM 5.2 \citep{HallerEtAl2026}.  It
+contained 20 replicate diploid populations of 2,000 individuals, using seeds
+42--61.  Two hundred loci contributed additively to four breeding values, with
+50 loci per trait.  The trait-specific standard deviations of allelic effects
+were 0.346, 0.283, 0.200, and 0.141.  Stabilising-selection strengths were
+0.10, 0.05, 0.04, and 0.03.  The optimum for trait one moved by 0.3 per
+generation for 40 generations, reaching 12, and then remained fixed.  Each
+replicate ran for 200 generations.  No environmental deviation was added in
+the simulation, so simulated phenotype equaled the additive trait value.
+
+At each generation, the analysis estimated covariance and calculated the slope and curvature of log expected fitness. It then compared the formula for \Ag with the squared sample correlation between the linear term and the full quadratic expression. Across the 20 replicates and 200 generations, the median absolute difference was 0.0157. A fresh run with the same seeds reproduced the archived diagnostics to numerical precision.
+
+The agreement means that the Gaussian calculation remained close to the sample comparison in this simulated design. It does not establish an exact identity for every finite-population distribution. The simulation also did not test the displacement error bound or the fixed-baseline recursion.
+
+Allele frequencies change through selection and drift in this simulation. Genic variance can therefore change even though the allelic effects remain fixed. That is why this simulation checks the variance-share approximation, while the recursion in Section~\ref{sec:s3} is a separate calculation with a fixed baseline.
+
+You can make a simpler check using our one-trait example. Draw many values from $N(0,1)$, calculate $L=2X$ and $Q_c=-(X^2-1)/4$, then compare the squared sample correlation of $L$ and $L+Q_c$ with 0.9697. Independent samples give slightly different answers. As sample size grows, the estimate converges to the population value, although the error need not decrease at every increase in sample size.
+
+\begin{checkpoint}{10}
+Suppose a simulation reproduces the first-order variance share closely but
+does not transmit parental breeding values to offspring using the fixed-$B$
+recursion.  Can it validate the recursion's fixed point?  Explain.  See
+Answer~\ref{ans:10}.
+\end{checkpoint}
+
+\section{Using results from a phenotypic selection regression}
+\label{sec:s5}
+
+\subsection{The regression being converted}
+
+Many selection studies measure phenotypes and reproductive output rather than breeding values. Under specified assumptions, a linear--quadratic regression from such a study can be used to calculate the selected breeding-value mean and variance. We can then find a log-quadratic model that gives the same two quantities. Begin with the classical regression of relative fitness on centred phenotype \citep{LandeArnold1983}:
+
+\begin{equation}
+w=\alpha+\beta x+\frac12\gamma x^2+\varepsilon.
+\label{eq:guide-LA}
+\end{equation}
+
+Relative fitness, $w$, is individual fitness divided by its population mean, so $\E[w]=1$. Here $x$ is phenotype measured from its mean, $\alpha$ is the fitted intercept, and $\beta$ and $\gamma$ are the linear and quadratic coefficients. Least squares leaves a residual $\varepsilon$ with mean zero and zero covariance with $x$ and $x^2$. The factor $1/2$ is a convention: a software coefficient on $x^2$ must be doubled to give $\gamma$ if the software omits that factor \citep{StinchcombeEtAl2008}.
+
+Let phenotypic variance be $P=1.5$, with $\beta=0.4$ and $\gamma=-0.2$.  Since
+$\E[w]=1$, averaging Equation~\eqref{eq:guide-LA} gives
+
+\begin{equation}
+1=\alpha+\frac12\gamma P,
+\end{equation}
+
+and therefore
+
+\begin{equation}
+\alpha=1-\frac12\gamma P=1.15.
+\label{eq:guide-intercept}
+\end{equation}
+
+The fitted value at mean phenotype is 1.15, not 1.  Relative fitness equals
+one on average over the population; it need not equal one at the population
+mean.
+
+\subsection{The two selected moments}
+
+For a centred normal phenotype, Equation~\eqref{eq:guide-normal-moments}
+applies with $G$ replaced by $P$.  Multiplying Equation~\eqref{eq:guide-LA}
+by $x$ and averaging gives
+
+\begin{equation}
+\E[xw]=P\beta.
+\label{eq:guide-first-moment}
+\end{equation}
+
+This is the mean phenotype after weighting by relative fitness.  Multiplying
+by $x^2$ and averaging gives
+
+\begin{equation}
+\E[x^2w]=P+\gamma P^2.
+\label{eq:guide-second-moment}
+\end{equation}
+
+Variance is the second moment minus the square of the mean, so selected
+phenotypic variance is
+
+\begin{equation}
+P+P^2(\gamma-\beta^2).
+\end{equation}
+
+Now let centred breeding value $A$ have variance $G=0.5$ and
+$\Cov(A,x)=G$.  Under the joint-normal and selection-mediation assumptions
+stated below, the corresponding selected breeding-value mean and variance
+have a short derivation.  For an individual with centred phenotype $x$,
+normal conditioning gives
+
+\begin{equation}
+\E[A\mid x]=\frac{G}{P}x,
+\qquad
+\Var(A\mid x)=G-\frac{G^2}{P}.
+\label{eq:guide-conditional-A-one}
+\end{equation}
+
+For these jointly normal variables, the predicted breeding value at phenotype $x$ is $Gx/P$. Individuals with that phenotype still differ in breeding value, with conditional variance $G-G^2/P$. To find the mean among selected contributors, average the prediction using relative fitness as the weight:
+
+\begin{equation}
+\E[A\mid\mathrm{sel}]
+=\frac{G}{P}\E[xw]=G\beta.
+\end{equation}
+
+For the second moment, add the conditional variance to the squared
+conditional mean, then average with the same fitness weights:
+
+\begin{align}
+\E[A^2\mid\mathrm{sel}]
+&=G-\frac{G^2}{P}
++\frac{G^2}{P^2}\E[x^2w]\nonumber\\
+&=G+G^2\gamma.
+\end{align}
+
+Subtracting the square of the selected mean gives
+
+\begin{equation}
+\Delta\bar A_{\mathrm{sel}}=G\beta,
+\qquad
+G_{\mathrm{sel}}=G+G^2(\gamma-\beta^2).
+\label{eq:guide-BV-moments}
+\end{equation}
+
+For the numerical values,
+
+\begin{equation}
+\Delta\bar A_{\mathrm{sel}}=0.5(0.4)=0.2,
+\qquad
+G_{\mathrm{sel}}=0.5+0.25(-0.2-0.16)=0.41.
+\end{equation}
+
+\subsection{Matching those moments to a log-quadratic model}
+
+Appendix S2 gives the selected moments produced by a normal,
+log-quadratic breeding-value model.  Requiring that model to produce the same
+selected mean and variance gives
+
+\begin{equation}
+b=\frac{G\beta}{G_{\mathrm{sel}}},
+\qquad
+H=\frac{1}{G}-\frac{1}{G_{\mathrm{sel}}}.
+\label{eq:guide-conversion-one}
+\end{equation}
+
+For the example,
+
+\begin{equation}
+b=\frac{0.2}{0.41}=0.4878,
+\qquad
+H=2-\frac{1}{0.41}=-0.4390.
+\end{equation}
+
+These values of $b$ and $H$ were chosen to reproduce the selected mean and variance. A different calculation would take the logarithm of the fitted phenotype regression and differentiate it at the mean. Provided its intercept is positive, that would give
+
+\begin{equation}
+b_{\mathrm{raw}}=\frac{\beta}{\alpha}=0.3478,
+\qquad
+H_{\mathrm{raw}}=\frac{\gamma}{\alpha}
+-\frac{\beta^2}{\alpha^2}=-0.2949.
+\end{equation}
+
+The answers differ because the calculations describe different relationships. The values $b_{\mathrm{raw}}$ and $H_{\mathrm{raw}}$ describe the fitted regression on phenotype. Equation~\eqref{eq:guide-conversion-one} describes a quadratic log-fitness relationship on breeding value that reproduces the selected breeding-value mean and variance.
+
+Figure~\ref{fig:guide-conversion} follows the calculation from a compatible phenotype regression to the selected breeding-value mean and variance, then to the log-fitness model that matches those moments.
+
+\begin{figure}[htbp]
+\centering
+\guidegraphic{figures/math_guide_fig5.pdf}
+\caption{The Appendix S5 moment-conversion route.  A compatible phenotype-
+space regression supplies $\beta$ and $\gamma$.  Together with breeding-value
+variance $G$, these give the selected breeding-value mean and variance in
+Equation~\eqref{eq:guide-BV-moments}.  Matching those moments to the Appendix
+S2 Gaussian selection result gives $b$ and $H$ through
+Equation~\eqref{eq:guide-conversion-one}.  Direct differentiation of the
+phenotype regression targets a different function.}
+\Description{A left-to-right diagram begins with phenotype regression
+coefficients beta and gamma plus breeding-value variance G, passes through
+selected breeding-value mean and variance, and ends with breeding-value-space
+slope b and curvature H.}
+\label{fig:guide-conversion}
+\end{figure}
+
+\subsection{Conditions required for the conversion}
+
+Before making this conversion, check the following conditions. They connect the measured phenotypes to the breeding values whose fitness relationship we want to describe.
+
+\begin{enumerate}
+\item Coefficients are unstandardised or have been converted into compatible
+trait coordinates and the same quadratic convention.
+\item The selection coefficients and $G$ refer to the same population and
+selection episode.
+\item Breeding value and phenotype are jointly normal, or the required
+conditional-moment relations are otherwise justified.
+\item Selection is mediated by the measured phenotypes, or the equivalent
+conditional-independence condition holds.
+\item $G_{\mathrm{sel}}$ is positive on every direction with breeding-value
+variation.
+\item Uncertainty in $\beta$, $\gamma$, $G$, and every transformation is
+propagated to $b$, $H$, $\Vlin$, $\Vquad$, and \Ag.
+\end{enumerate}
+
+If the moment conditions hold but exact log-quadraticity does not, the result
+is a moment-matched quadratic approximation.  If the normality, mediation,
+coordinate, or positivity conditions fail, the conversion is not justified.
+It does not recover point derivatives of an arbitrary
+$\log\E[W\mid A]$.
+
+In a direct empirical analysis, a conditional-mean model appropriate for the
+fitness response should target $\E[W\mid A]$ \citep{MorrisseyGoudie2022}.
+Predicted breeding values
+should be treated as uncertain latent quantities rather than error-free
+measurements \citep{HadfieldEtAl2010}.  Generalised mixed models also require
+care when moving between latent and observed scales \citep{deVillemereuilEtAl2016}.
+Regressing logged realised fitness is valid for the paper's
+target only under an additional error model that makes the gap in
+Equation~\eqref{eq:guide-jensen} constant with breeding value.
+
+Prediction uncertainty can also affect the variance share. Suppose $b$ and $H$ are known on the true breeding-value scale, but the variance of predicted breeding values is only $rG$, where $0<r<1$. If we mistakenly use that reduced variance as the population's biological variance, we obtain $r\Vlin$ and $r^2\Vquad$. Their ratio gives
+
+\begin{equation}
+\widehat{\Ag}_{\mathrm{naive}}
+=\frac{\Vlin}{\Vlin+r\Vquad}.
+\label{eq:guide-ebv}
+\end{equation}
+
+With reliability $r=0.6$ in the recurring example, this gives
+$4/(4+0.6\times0.125)=0.9816$, compared with the true value 0.9697.  This
+direction of bias belongs only to the stated substitution.  It is not a
+general correction when $b$ and $H$ are themselves estimated from predicted
+breeding values or when reliability differs among directions.
+
+The worked estimation tutorial in this repository shows how to estimate the share from noisy height measurements and offspring counts. Its Shiny app lets readers vary measurement error, compare the estimated components with their generating values, and check the consequences of a nonquadratic fitness relationship.
+
+\begin{checkpoint}{11}
+Using $P=1.5$, $\beta=0.4$, $\gamma=-0.2$, and $G=0.5$, calculate $\alpha$,
+$G_{\mathrm{sel}}$, $b$, and $H$.  Why is $\alpha$ not one?  See
+Answer~\ref{ans:11}.
+\end{checkpoint}
+
+\section{Extending the calculation to several traits}
+\label{sec:manytraits}
+
+With several traits, individuals differ in combinations of breeding values. A covariance matrix records both the variation in each trait and the associations between traits. The operations are the same as in one trait---form a linear term, form a quadratic term, and calculate their variances---but the notation keeps track of all the trait combinations. We introduce that notation first and then work through the two-trait example from Figure~3 of the paper.
+
+\subsection{Notation and operators}
+\label{sec:multi-language}
+
+A \emph{vector} is an ordered list of numbers.  For $n$ traits,
+$\vect X=(X_1,\ldots,X_n)^{\mathsf T}$ lists centred breeding values.  The
+superscript $\mathsf T$, called transpose, changes a column into a row.  The
+product $\vect b^{\mathsf T}\vect X=\sum_i b_iX_i$ is the weighted sum across
+traits; the symbol $\sum_i$ means add one term for every trait $i$.
+
+A \emph{matrix} is a rectangular table of numbers.  The covariance matrix
+$\mat G$ has variances $G_{ii}$ on its diagonal and covariances $G_{ij}$ away
+from the diagonal.  It is symmetric because $G_{ij}=G_{ji}$.  Matrix
+multiplication forms weighted sums using rows of the first matrix and columns
+of the second.
+
+The identity matrix $\mat I$ leaves a vector unchanged.  An inverse
+$\mat M^{-1}$ undoes multiplication by $\mat M$, so
+$\mat M^{-1}\mat M=\mat I$.  An inverse exists only on directions that the
+matrix does not collapse to zero.  The \emph{support} of $\mat G$ is the set
+of directions with positive breeding-value variance; inverse-based formulas
+for a singular $\mat G$ are evaluated only on that support.
+
+The trace $\tr(\mat M)$ is the sum of diagonal entries of $\mat M$.  A
+quadratic form $\vect x^{\mathsf T}\mat M\vect x$ returns one number.  A
+symmetric matrix is positive semidefinite, written $\mat M\succeq0$, if this
+number is never negative.  The notation $\mat M\preceq\mat N$ means that
+$\mat N-\mat M$ is positive semidefinite.  For covariance matrices it says
+that $\mat N$ has at least as much variance as $\mat M$ in every direction.
+
+An eigenvector is a vector whose image under a matrix is a scalar multiple of itself. The scalar is its eigenvalue; a negative value reverses its direction. For a covariance matrix, eigenvectors identify uncorrelated combinations of traits, and their eigenvalues give the corresponding variances. A positive semidefinite covariance matrix also has a symmetric positive semidefinite square root, $\mat G^{1/2}$, satisfying $\mat G^{1/2}\mat G^{1/2}=\mat G$.
+
+The Euclidean norm $\norm{\vect x}=(\vect x^{\mathsf T}\vect x)^{1/2}$ is
+ordinary length.  The covariance-scaled norm
+$\norm{\vect x}_{\mat G^{-1}}=(\vect x^{\mathsf T}\mat G^{-1}\vect x)^{1/2}$
+measures a displacement relative to the population's covariance.  The
+spectral norm $\norm{\mat M}_2$ is the largest factor by which $\mat M$
+stretches any unit vector.  The Frobenius norm
+$\norm{\mat M}_{\mathrm F}$ is the square root of the sum of squared matrix
+entries.  The largest directional stretch cannot exceed that total
+root-sum-of-squares, so $\norm{\mat M}_2\leq\norm{\mat M}_{\mathrm F}$.
+
+\subsection{Appendix S1 in several traits}
+\label{sec:multi-s1}
+
+The local terms are
+
+\begin{equation}
+L=\vect b^{\mathsf T}\vect X,
+\qquad
+Q_c=\frac12\{\vect X^{\mathsf T}\mat H\vect X-
+\tr(\mat H\mat G)\}.
+\end{equation}
+
+For a centred multivariate normal distribution, the product-moment rule is
+
+\begin{equation}
+\Cov(X_iX_j,X_kX_l)=G_{ik}G_{jl}+G_{il}G_{jk}.
+\end{equation}
+
+This is the several-trait counterpart of $\E[X^4]=3G^2$ and is a form of the
+Gaussian fourth-moment identity \citep{Isserlis1918}.  Expanding the variance
+of the centred quadratic term means summing over every four-index
+combination:
+
+\begin{align}
+\Var(Q_c)
+&=\frac14\sum_{i,j,k,l}H_{ij}H_{kl}
+\Cov(X_iX_j,X_kX_l)\nonumber\\
+&=\frac14\sum_{i,j,k,l}H_{ij}H_{kl}
+(G_{ik}G_{jl}+G_{il}G_{jk})\nonumber\\
+&=\frac12\tr[(\mat H\mat G)^2].
+\label{eq:guide-trace-reduction}
+\end{align}
+
+The two sums in the middle line are equal because $\mat H$ and $\mat G$ are
+symmetric.  Matrix multiplication and the trace provide a compact way to
+write that repeated sum.  Similarly,
+
+\begin{equation}
+\Cov(L,Q_c)=\frac12\sum_{i,j,k}b_iH_{jk}
+\E[X_iX_jX_k]=0,
+\end{equation}
+
+because every third-order moment of a centred multivariate normal is zero.
+Together with the usual variance of a weighted sum, these calculations give
+
+\begin{equation}
+\Vlin=\vect b^{\mathsf T}\mat G\vect b,
+\qquad
+\Vquad=\frac12\tr[(\mat H\mat G)^2],
+\qquad
+\Cov(L,Q_c)=0.
+\label{eq:guide-multi-variances}
+\end{equation}
+
+For a numerical example, take the values from Figure~3 of the paper:
+\[
+\vect b=\begin{pmatrix}0.75\\0.30\end{pmatrix},\qquad
+\mat G=\begin{pmatrix}1&0.3\\0.3&0.6\end{pmatrix},\qquad
+\mat H=-0.8\mat I.
+\]
+The linear variance includes the two trait variances and their covariance:
+\[
+\Vlin=(0.75)^2(1)+2(0.75)(0.30)(0.3)+(0.30)^2(0.6)=0.7515.
+\]
+The middle term is the contribution from the association between the two breeding values. Because curvature here is $-0.8$ times the identity matrix, the quadratic variance is
+\[
+\Vquad=\frac{0.8^2}{2}\tr(\mat G^2)
+=0.32\{1^2+0.6^2+2(0.3)^2\}=0.4928.
+\]
+In the paper's Figure~3, the axes give these two breeding values. Grey contours join combinations with equal log expected fitness. The blue and orange ellipses each contain 95\% of the corresponding Gaussian population; they are density contours, not fitness contours. Under the Gaussian assumption the mean and covariance specify the complete distribution, so they determine how frequently each combination contributes to these variances. The first-order share is therefore $0.7515/(0.7515+0.4928)=0.604$ after rounding. Multiplying every entry of $\mat G$ by 0.11 changes the two variances to $0.11(0.7515)$ and $0.11^2(0.4928)$, giving a share of 0.933. The same proportional-scaling result holds for any number of traits.
+
+For completeness, write an affine predictor as
+$k+\vect d^{\mathsf T}\vect X$.  A least-squares fit makes its residual
+uncorrelated with each predictor.  These normal equations give
+
+\begin{equation}
+k=\ell_0+\frac12\tr(\mat H\mat G),
+\qquad
+\mat G\vect d
+=\Cov(\vect X,\widetilde\ell_A)
+=\mat G\vect b.
+\end{equation}
+
+The last equality follows because $\Cov(\vect X,Q_c)=\vect0$.  Therefore
+$\vect d=\vect b$ on the positive-variance support of $\mat G$.  The explained
+variance is $\Vlin$ and the full second-order variance is
+$\Vlin+\Vquad$, so the population $R^2$ is \Ag.  A
+conditional-mean-zero response residual adds the same residual variance to the
+linear and quadratic denominators, giving the normalized identity in
+Equation~\eqref{eq:guide-nested-r2}.
+
+Under an invertible coordinate change $\vect X'=\mat D\vect X$,
+
+\begin{equation}
+\mat G'=\mat D\mat G\mat D^{\mathsf T},\quad
+\vect b'=\mat D^{-\mathsf T}\vect b,\quad
+\mat H'=\mat D^{-\mathsf T}\mat H\mat D^{-1}.
+\end{equation}
+
+Substitution leaves both quantities in
+Equation~\eqref{eq:guide-multi-variances} unchanged.  The one-trait unit
+conversion in Section~\ref{sec:s1} is the simplest instance of this result.
+
+For the linear term, the cancellation can be seen directly:
+
+\begin{equation}
+(\vect b')^{\mathsf T}\mat G'\vect b'
+=\vect b^{\mathsf T}\mat D^{-1}
+(\mat D\mat G\mat D^{\mathsf T})
+\mat D^{-\mathsf T}\vect b
+=\vect b^{\mathsf T}\mat G\vect b.
+\end{equation}
+
+For the quadratic term,
+$\mat H'\mat G'=\mat D^{-\mathsf T}\mat H\mat G\mat D^{\mathsf T}$.
+Multiplying two copies and cycling the factors inside the trace cancels
+$\mat D^{\mathsf T}\mat D^{-\mathsf T}$, leaving
+$\tr[(\mat H\mat G)^2]$.  The transformation changes the numerical coordinates but leaves the variance components unchanged.
+
+Whitening means changing coordinates so that breeding-value covariance
+becomes the identity matrix.  Define
+$\widetilde{\mat H}=\mat G^{1/2}\mat H\mat G^{1/2}$ and let $\mu_i$ be its
+eigenvalues.  Then
+
+\begin{equation}
+\Vlin=\norm{\mat G^{1/2}\vect b}^2,
+\qquad
+\Vquad=\frac12\sum_i\mu_i^2.
+\end{equation}
+
+This expression also shows that $\Vquad\geq0$ even though $\mat H\mat G$ need
+not be symmetric.  No alignment between the whitened gradient and the
+eigenvectors of $\widetilde{\mat H}$ enters \Ag.  Two different orientation
+statements remain valid: alignment of $\vect b$ with high-variance directions
+of $\mat G$ changes $\Vlin$, and orientation of $\mat H$ relative to
+$\mat G$ changes $\Vquad$.  For gradients of fixed ordinary length,
+$\vect b^{\mathsf T}\mat G\vect b$ is largest along the leading eigenvector of
+$\mat G$.  To see this, write $\vect b=r\vect u$, where $r$ is fixed and
+$\norm{\vect u}=1$.  Then
+
+\begin{equation}
+\Vlin=r^2\vect u^{\mathsf T}\mat G\vect u
+\leq r^2\lambda_{\max}(\mat G),
+\end{equation}
+
+with equality when $\vect u$ is the eigenvector of the largest eigenvalue.
+This is the connection to the genetic line of least resistance
+\citep{Schluter1996}.
+
+\subsection{Appendix S2 in several traits}
+\label{sec:multi-s2}
+
+Let $\bGamma=-\mat H$ denote sign-reversed curvature.  When
+$\bGamma\succeq0$, it represents stabilising curvature; the result below also
+allows an indefinite $\bGamma$, and therefore saddle-shaped curvature, if the
+stated integrability condition holds.  Multiplying a normal breeding-value
+density by the exact log-quadratic selection weight gives
+
+\begin{equation}
+\Gsel=(\mat G^{-1}+\bGamma)^{-1},
+\qquad
+\vect\Delta_{\mathrm{full}}=\Gsel\vect b,
+\label{eq:guide-multi-selected}
+\end{equation}
+
+provided $\mat G^{-1}+\bGamma$ is positive definite on the support of
+$\mat G$.  Here positive definite means that the combined precision
+coefficient is positive in every occupied direction, so the exponent bends
+downward sufficiently to define a finite weighted distribution.  The
+covariance in Equation~\eqref{eq:guide-multi-selected} is
+independent of $\vect b$ only within this exact closure.
+
+Define the standardised gradient and curvature
+
+\begin{equation}
+\vect c=\mat G^{1/2}\vect b,
+\qquad
+\mat T=\mat G^{1/2}\bGamma\mat G^{1/2}.
+\end{equation}
+
+The first-order displacement is $\vect\Delta_{\mathrm{lin}}=\mat G\vect b$.
+Expressing both displacements in coordinates measured in units of
+breeding-value covariance gives
+
+\begin{equation}
+\mat G^{-1/2}\vect\Delta_{\mathrm{full}}
+=(\mat I+\mat T)^{-1}\vect c,
+\label{eq:guide-whitened-full}
+\end{equation}
+
+and, after subtracting this expression from the first-order displacement,
+
+\begin{equation}
+\mat G^{-1/2}
+(\vect\Delta_{\mathrm{lin}}-\vect\Delta_{\mathrm{full}})
+=\mat T(\mat I+\mat T)^{-1}\vect c.
+\label{eq:guide-whitened-error}
+\end{equation}
+
+The first equation is the exact selected-parent displacement; the second is
+the part introduced by omitting curvature.  Their Euclidean lengths in these
+coordinates are the $\mat G^{-1}$-norms in the next display.
+
+When $\mat G^{1/2}\vect b\ne\vect0$, so the full displacement in the
+denominator is nonzero, Appendix S2 proves
+
+\begin{equation}
+\frac{\norm{\vect\Delta_{\mathrm{lin}}-
+\vect\Delta_{\mathrm{full}}}_{\mat G^{-1}}}
+{\norm{\vect\Delta_{\mathrm{full}}}_{\mat G^{-1}}}
+\leq\norm{\mat T}_2
+\leq\norm{\mat T}_{\mathrm F}
+=\sqrt{2\Vquad}.
+\label{eq:guide-multi-bound}
+\end{equation}
+
+If $\vect c$ is an eigenvector of $\mat T$ with eigenvalue $\tau_k$, the relative error is exactly $|\tau_k|$. It equals the spectral-norm bound only when $|\tau_k|$ is the largest absolute eigenvalue. Thus the gradient's direction can affect the selected-parent displacement even though its alignment with curvature eigenvectors does not enter the variance share.
+
+\subsection{Appendix S3 in several traits}
+\label{sec:multi-s3}
+
+With fixed allelic effects $\vect\alpha_j$, the genic covariance that would be
+present without linkage disequilibrium is
+
+\begin{equation}
+\mat B_t=2\sum_j p_{j,t}(1-p_{j,t})
+\vect\alpha_j\vect\alpha_j^{\mathsf T}.
+\label{eq:guide-genic-baseline}
+\end{equation}
+
+Here $p_{j,t}$ is the allele frequency at locus $j$ in generation $t$, and
+$\vect\alpha_j\vect\alpha_j^{\mathsf T}$ is the table obtained by multiplying
+each trait effect at that locus by every trait effect.  Fixed allelic effects
+do not make $\mat B_t$ fixed: allele-frequency change can change it.  Replacing
+$\mat B_t$ by a constant $\mat B$ is therefore a separate short-timescale
+closure \citep{WalshLynch2018}.
+
+The covariance update is
+
+\begin{equation}
+F(\mat G)=(1-\rho)\mat B+\rho(\mat G^{-1}+\bGamma)^{-1}.
+\end{equation}
+
+For $\mat B$ positive definite, $\bGamma\succeq0$, and
+$0\leq\rho<1$, stabilising selection gives
+
+\begin{equation}
+(\mat G^{-1}+\bGamma)^{-1}\preceq\mat G.
+\end{equation}
+
+Write $S(\mat G)=(\mat G^{-1}+\bGamma)^{-1}$.  For any covariance matrix in
+the interval
+
+\begin{equation}
+(1-\rho)\mat B\preceq\mat G\preceq\mat B
+\end{equation}
+
+the selection inequality $\mat0\prec S(\mat G)\preceq\mat G$ gives both
+sides of the next calculation:
+
+\begin{equation}
+(1-\rho)\mat B
+\preceq F(\mat G)
+\preceq(1-\rho)\mat B+\rho\mat G
+\preceq\mat B.
+\label{eq:guide-matrix-interval-map}
+\end{equation}
+
+Thus the update maps the whole interval back into itself.  This matrix
+interval is nonempty, closed, bounded, and convex; convex means that an average
+of two members is also a member.  The update is continuous.  Brouwer's
+fixed-point theorem states that a continuous map from such a
+finite-dimensional set into itself has at least one fixed point.  The theorem
+establishes existence here; it does not establish uniqueness or convergence.
+
+The bounds apply to every positive-definite fixed point, even when a trajectory
+starts outside the interval.  The lower bound follows because the second term
+of $F$ is nonnegative.  For the upper bound, substitute a fixed point into the
+selection inequality:
+
+\begin{equation}
+\mat G^*=F(\mat G^*)
+\preceq(1-\rho)\mat B+\rho\mat G^*.
+\end{equation}
+
+Subtracting $\rho\mat G^*$ and dividing by the positive number $1-\rho$
+gives $\mat G^*\preceq\mat B$.  Combining the two arguments gives
+
+\begin{equation}
+(1-\rho)\mat B\preceq\mat G^*\preceq\mat B.
+\end{equation}
+
+Uniqueness and convergence are proved only for the scalar recursion in
+Equation~\eqref{eq:guide-contraction}.
+
+At $\rho=1$, for positive-definite $\mat G_0$ or with every inverse restricted
+to one fixed positive-variance support,
+
+\begin{equation}
+\mat G_{t+1}^{-1}=\mat G_t^{-1}+\bGamma,
+\qquad
+\mat G_t^{-1}=\mat G_0^{-1}+t\bGamma.
+\end{equation}
+
+Strictly positive stabilising curvature removes covariance in every
+direction.  If curvature is zero in some directions, covariance can remain in
+that null space, meaning the set of directions that $\bGamma$ maps to zero.
+
+\subsection{Appendix S5 in several traits}
+\label{sec:multi-s5}
+
+Let $\vect x$ be centred phenotype, $\mat P$ its covariance matrix,
+$\vect\beta$ the vector of linear coefficients, and $\bgamma$ the symmetric
+matrix of quadratic coefficients in
+
+\begin{equation}
+w=\alpha+\vect\beta^{\mathsf T}\vect x
++\frac12\vect x^{\mathsf T}\bgamma\vect x+\varepsilon.
+\end{equation}
+
+Gaussian moments give
+
+\begin{equation}
+\alpha=1-\frac12\tr(\bgamma\mat P),\quad
+\E[\vect xw]=\mat P\vect\beta,\quad
+\E[\vect x\vect x^{\mathsf T}w]
+=\mat P+\mat P\bgamma\mat P.
+\end{equation}
+
+If centred breeding value $\vect A$ and centred phenotype $\vect x$ are
+jointly Gaussian in compatible coordinates, if
+$\Cov(\vect A,\vect x)=\mat G$, if $\mat P$ is positive definite on the
+occupied support, and if selection is mediated by the measured phenotypes,
+then
+
+\begin{equation}
+\E[\vect A\mid\vect x]=\mat G\mat P^{-1}\vect x,
+\qquad
+\Var(\vect A\mid\vect x)
+=\mat G-\mat G\mat P^{-1}\mat G.
+\label{eq:guide-multi-conditioning}
+\end{equation}
+
+Average the first expression using the selection weights and substitute
+$\E[\vect xw]=\mat P\vect\beta$.  This gives
+
+\begin{equation}
+\E[\vect A\mid\mathrm{sel}]-\E[\vect A]=\mat G\vect\beta,
+\end{equation}
+
+For the second moment, add the conditional covariance in
+Equation~\eqref{eq:guide-multi-conditioning} to the outer product of its
+conditional mean, average, and substitute
+$\E[\vect x\vect x^{\mathsf T}w]
+=\mat P+\mat P\bgamma\mat P$.  The resulting selected second moment is
+$\mat G+\mat G\bgamma\mat G$.  Subtracting the outer product of the selected
+mean gives
+
+\begin{equation}
+\Gsel=\mat G+
+\mat G(\bgamma-\vect\beta\vect\beta^{\mathsf T})\mat G.
+\end{equation}
+
+Matching these moments to Equation~\eqref{eq:guide-multi-selected} yields
+
+\begin{equation}
+\vect b=\Gsel^{-1}\mat G\vect\beta,
+\qquad
+\mat H=\mat G^{-1}-\Gsel^{-1}.
+\end{equation}
+
+For comparison, one could instead differentiate the fitted raw-scale
+phenotype regression itself.  At the centred phenotype $\vect x=\vect0$ and
+provided $\alpha>0$, that separate calculation gives
+
+\begin{equation}
+\nabla\log\widehat w(\vect0)=\frac{\vect\beta}{\alpha},
+\qquad
+\nabla^2\log\widehat w(\vect0)
+=\frac{\bgamma}{\alpha}
+-\frac{\vect\beta\vect\beta^{\mathsf T}}{\alpha^2}.
+\label{eq:guide-multi-raw-derivatives}
+\end{equation}
+
+These are derivatives of the fitted phenotype-space projection.  They are not
+generally the breeding-value-space $\vect b$ and $\mat H$ above.  This is why
+Appendix S5 matches selected breeding-value moments rather than equating the
+two sets of derivatives.
+
+These formulas require the conditions listed in Section~\ref{sec:s5}.  If
+$\mat G$ or $\mat P$ is singular, inverses and calculations are restricted to
+the relevant positive-variance support.
+
+\section{Answers to the checks}
+
+\answerheading{1}
+The first conditional mean is $(0+2)/2=1$, so its logarithm is 0.  The second
+mean is $(1+3)/2=2$, so its logarithm is $\log 2\simeq0.693$.  The mean of the
+logged values is undefined in the first group because $\log 0$ is not finite.
+This demonstrates why averaging and taking the logarithm cannot generally be
+reversed.
+
+\answerheading{2}
+The slope calculation is
+
+\begin{equation}
+\frac{0.39-(-0.41)}{2(0.2)}=\frac{0.80}{0.40}=2.
+\end{equation}
+
+Because $\ell_A(0)-\ell_0=0$, the curvature calculation is
+
+\begin{equation}
+\frac{0.39-2(0)-0.41}{0.2^2}
+=\frac{-0.02}{0.04}=-0.5.
+\end{equation}
+
+\answerheading{3}
+$\Vlin=b^2G=4$ is variance in the first-order term over the current
+breeding-value distribution.  $\Vquad=H^2G^2/2=0.125$ is variance in the
+centred quadratic term.  Their share is
+$\Ag=4/(4+0.125)=0.9697$.  It is a share of variance in the second-order
+approximation to log conditional expected fitness, not of realised-fitness
+variance.
+
+\answerheading{4}
+At $x=2$, the product is $4(-0.75)=-3$; at $x=-2$, it is
+$(-4)(-0.75)=3$.  A normal distribution centred at zero assigns equal
+density to $x$ and $-x$, so these contributions cancel.  The same pairing
+holds for every positive and negative value.
+
+\answerheading{5}
+Multiplying breeding values by 10 multiplies variance by $10^2$, so $G'=100$.
+A one-unit change on the new scale is one tenth of a unit on the old scale, so
+$b'=b/10=0.2$ and $H'=H/10^2=-0.005$.  The transformed variance terms are 4
+and 0.125, giving the same value 0.9697 for \Ag.
+
+\answerheading{6}
+
+\begin{equation}
+g_{\mathrm{sel}}=\frac{1}{1/1+0.5}=\frac23,
+\qquad
+\Delta\bar a_{\mathrm{full}}=\frac23(2)=\frac43.
+\end{equation}
+
+These describe selected contributors, not offspring.
+
+\answerheading{7}
+With $b=10$, $\Vlin=100$ and $\Vquad=0.125$, so
+
+\begin{equation}
+\Ag=\frac{100}{100.125}=0.9988.
+\end{equation}
+
+The first-order displacement is 10 and the full displacement is
+$10/1.5=6.6667$.  Their relative discrepancy is
+$|10-6.6667|/6.6667=0.5$.  Increasing $b$ enlarges the numerator of \Ag, but
+the relative displacement discrepancy in one trait depends on $\Gamma g$,
+which has not changed.
+
+\answerheading{8}
+
+\begin{align}
+g_1&=0.5+0.5\frac{1}{1+0.5}=0.8333,\\
+g_2&=0.5+0.5\frac{0.8333}{1+0.5(0.8333)}=0.7941,\\
+g_3&=0.5+0.5\frac{0.7941}{1+0.5(0.7941)}=0.7842.
+\end{align}
+
+All three values lie between 0.5 and 1.
+
+\answerheading{9}
+Equation~\eqref{eq:guide-rho-one} gives
+$1/g_4=1/g_0+4\gamma=1+2=3$, so $g_4=1/3$.  When $\rho=1$, the multiplier
+$1-\rho$ is zero, so the baseline contribution containing $B$ is absent.
+
+\answerheading{10}
+No.  Agreement for the current-state share checks the variance or projection
+calculation under the simulated distribution.  The fixed point belongs to a
+separate across-generation model with fixed $B$, fixed curvature, and a
+specified retention rule.  A simulation that does not implement that update
+cannot test its fixed point.
+
+\answerheading{11}
+
+\begin{align}
+\alpha&=1-\tfrac12(-0.2)(1.5)=1.15,\\
+G_{\mathrm{sel}}&=0.5+(0.5)^2\{-0.2-(0.4)^2\}=0.41,\\
+b&=0.5(0.4)/0.41=0.4878,\\
+H&=1/0.5-1/0.41=-0.4390.
+\end{align}
+
+$\alpha$ is the fitted value at mean phenotype.  The normalisation
+$\E[w]=1$ fixes the fitted average over the whole phenotype distribution, not
+the fitted value at its mean.
+
+\section{Glossary}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}X@{}}
+\toprule
+Term or symbol & Meaning in this guide \\
+\midrule
+$A$, $a$ & A breeding-value variable and one possible value of it. \\
+$E$ & Environmental deviation in the recurring example. \\
+$Z$ & Phenotype, with $Z=A+E$ in the recurring example. \\
+$W$ & Realised reproductive output in one specified selection episode.  In
+the recurring example, $W(Z)$ is the deterministic selection weight assigned
+to phenotype $Z$. \\
+$\bar W$, $w$ & Population mean fitness and relative fitness
+$w=W/\bar W$. \\
+$W_A(a)$ & Mean realised reproductive output conditional on breeding value
+$a$. \\
+$\ell_A(a)$ & $\log W_A(a)$, the logarithm of conditional expected fitness. \\
+$p_A(a)$, $p_{\mathrm{sel}}(a)$ & Breeding-value distributions before and
+after weighting by conditional expected fitness. \\
+$X$ & Random breeding value centred on the current population mean. \\
+$x$ & A possible value of centred breeding value in Appendix S1; centred
+phenotype in Appendix S5. \\
+$Y$ & Generic observed outcome in the nested-regression identity. \\
+$G$, $g$ & Breeding-value variance; bold $\mat G$ denotes the covariance
+matrix for several traits. \\
+$P$, $\mat P$ & Phenotypic variance; bold $\mat P$ denotes the phenotypic
+covariance matrix for several traits. \\
+$b$, $\vect b$ & Local slope in one trait; vector of slopes in several traits. \\
+$H$, $\mat H$ & Local curvature in one trait; curvature matrix in several
+traits. \\
+$L$ & First-order contribution to the local description of the logarithm of
+conditional expected fitness. \\
+$Q_c$ & Quadratic contribution after subtracting its population mean. \\
+$\Vlin$ & Variance of $L$ over the current breeding-value distribution. \\
+$\Vquad$ & Variance of $Q_c$ over the current breeding-value distribution. \\
+$\Ag$ & First-order variance share $\Vlin/(\Vlin+\Vquad)$. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}X@{}}
+\toprule
+Term or symbol & Meaning in this guide \\
+\midrule
+$\alpha$ & Intercept in the phenotype-space relative-fitness regression. \\
+$\beta$, $\vect\beta$ & Linear coefficient in that phenotype-space regression. \\
+$\gamma$, $\bgamma$ & Context-dependent notation.  In Appendix S3, scalar
+$\gamma$ is stabilising curvature in the one-trait recursion.  In Appendix
+S5, $\gamma$ and matrix $\bgamma$ are conventional quadratic coefficients in
+the phenotype-space regression. \\
+$\varepsilon$ & Regression residual: the part not represented by the fitted
+constant, linear, and quadratic terms. \\
+$\vect\alpha_j$ & Fixed vector of allelic effects at locus $j$ in the
+across-generation model; this is distinct from the regression intercept
+$\alpha$. \\
+$\Gamma$, $\bGamma$ & Sign-reversed curvature, defined as $-H$ or
+$-\mat H$; it represents stabilising curvature when it is nonnegative in one
+trait or positive semidefinite in several traits. \\
+$g_{\mathrm{sel}}$, $G_{\mathrm{sel}}$, $\Gsel$ & Breeding-value variance or
+covariance among selected contributors. \\
+$\Delta\bar a_{\mathrm{lin}}$, $\Delta\bar a_{\mathrm{full}}$,
+$\vect\Delta_{\mathrm{lin}}$, $\vect\Delta_{\mathrm{full}}$ & Selected-parent
+mean displacements from the first-order model and the full log-quadratic
+model, in one or several traits. \\
+$d$, $\vect d$, $k$ & Fitted slope, fitted slope vector, and intercept in the
+least-squares projection.  The paper calls the intercept $c$; the guide uses
+$k$ to distinguish it from $\vect c$. \\
+$\vect c$, $\mat T$ & Slope and sign-reversed curvature after rescaling trait
+coordinates by the breeding-value covariance. \\
+$p$, $u$ & Allele frequency and allelic effect in the one-locus illustration. \\
+$B$, $\mat B$ & Fixed genic variance or covariance baseline in the
+across-generation closure. \\
+$\rho$ & Scalar retention of the postselection covariance departure from the
+baseline. \\
+$\E$ & Population average or expectation. \\
+$\Var$ & Variance: average squared distance from the mean. \\
+$\Cov$ & Covariance: average product of two centred quantities. \\
+$\Corr$ & Correlation: covariance divided by the two standard deviations. \\
+$R^2$ & Fraction of outcome variance accounted for by a fitted regression. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\clearpage
+\begingroup
+\small
+\bibliographystyle{plainnat}
+\bibliography{references}
+\endgroup
+
+\end{document}

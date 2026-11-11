@@ -1,0 +1,29 @@
+name: Reproduce the examples
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical and app dependencies
+        run: python -m pip install -r requirements-app.txt -c requirements-tested.txt
+      - name: Reproduce the figures, simulation summary and bootstrap estimates
+        run: bash run_all.sh
+      - name: Check the estimator independently
+        run: python -m unittest discover -s examples/estimating_variance_share -p 'test_*.py' -v
+      - name: Check that the Shiny app serves the example
+        working-directory: examples/estimating_variance_share
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m shiny run --host 127.0.0.1 --port 8050 app.py &
+          app_pid=$!
+          trap 'kill "$app_pid" 2>/dev/null || true' EXIT
+          curl --retry 12 --retry-connrefused --retry-delay 1 --fail --silent http://127.0.0.1:8050/ -o "$RUNNER_TEMP/app.html"
+          grep -q 'Generate and estimate' "$RUNNER_TEMP/app.html"

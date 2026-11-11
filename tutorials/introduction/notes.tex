@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}\usepackage{lmodern,amsmath,amssymb,booktabs,graphicx,microtype}
+\usepackage[a4paper,margin=24mm]{geometry}\usepackage{xcolor}\usepackage[hidelinks]{hyperref}
+\graphicspath{{figures/}}
+\definecolor{teal}{HTML}{206A61}
+\setlength{\parindent}{0pt}\setlength{\parskip}{6pt}\raggedbottom
+\newcommand{\pg}[2]{\clearpage{\small\color{teal}\bfseries #1}\par{\LARGE\bfseries #2}\par\medskip}
+\newcommand{\fig}[3]{\par\begin{center}\includegraphics[width=#2\linewidth]{#1.pdf}\end{center}{\small #3}\par}
+\newcommand{\Ag}{\mathcal A_g}\newcommand{\VL}{V_{\rm lin}}\newcommand{\VQ}{V_{\rm quad}}\newcommand{\E}{\mathbb E}\newcommand{\Var}{\operatorname{Var}}\newcommand{\Cov}{\operatorname{Cov}}\newcommand{\tr}{\operatorname{tr}}
+\begin{document}
+{\small\bfseries\color{teal} GRADUATE TUTORIAL \quad / \quad ADDITIVE CHANNELS}\par
+{\huge\bfseries How much fitness variation\\ can a straight line describe?}\par
+Daniel Ortiz-Barrientos and Mark Cooper \hfill November 2026
+
+Two plants with the same breeding value for height can leave different numbers of offspring. Suppose one leaves none and the other leaves four. Their mean is two. We can take the logarithm of that mean; we cannot first take the logarithm of each count because one count is zero. The order of these operations determines what the fitness curve describes.
+
+A breeding value is the part of a trait predicted by adding the average effects of an individual's alleles in a specified population. For height it has units of height. It does not specify the plant's observed height or its offspring count. Write $Z$ for breeding value and $W$ for reproductive output in one selection episode. At each value $z$, define
+\[
+ m(z)=\E[W\mid Z=z],\qquad \ell(z)=\log m(z),\qquad m(z)>0.
+\]
+The first quantity is mean output at that breeding value. A difference of $\log 2$ in the second means that expected output doubles. Variation in this curve across plants need not account for much of the variation in individual offspring counts.
+
+\fig{fig01_offspring_counts}{.76}{\textbf{Figure 1.} Filled points are illustrative individual counts; open circles are the three sample means (1, 2 and 4). Points are offset horizontally to keep them visible. A population conditional mean would require more than four observations per group to estimate precisely.}
+
+\textbf{What to read.} Pages 2--4 explain how the breeding-value distribution determines the fit and why a good fit need not predict a change among selected parents. Try the companion worksheet, then use the estimation tutorial to fit the share from data.
+\pg{01 \quad / \quad ONE TRAIT}{The population determines which parts of the curve count}
+Let $X=Z-\E[Z]$ be an individual's deviation from the mean breeding value, with variance $G$. At the mean, $b$ is the slope of $\ell$ and $H$ its second derivative: $H$ measures how the slope changes per unit of breeding value. Near the mean the quadratic approximation is
+\[
+  y(X)=c+\underbrace{bX}_{L}+\underbrace{\tfrac12 HX^2}_{Q}.
+\]
+The constant $c$ changes the level but not the variance. The values of $b$ and $H$ describe the surface at the mean. The distribution of $X$ tells us how often to weight each value in the variance calculation.
+
+Take $b=1$, $H=-1$ and $c=0$. Compare two normally distributed populations with the same mean and variances 1 and $1/4$. The curve is \emph{exactly} $x-x^2/2$ in this example. Its tangent at zero is $y=x$ in both populations. The population regression line has that slope too, but its intercept depends on the distribution: it equals the mean of $Q$, namely $-G/2$.
+\fig{fig02_two_populations}{.93}{\textbf{Figure 2.} The blue curve is the same in both panels. Dashed lines minimise mean squared error within their respective populations; they are not tangents. The lower panels show the two normal densities on the same scale. The narrow population puts less weight on points far from the mean.}
+
+A narrow distribution does not by itself guarantee a large linear share. At the top of a quadratic peak $b=0$. Narrowing the population reduces the magnitude of variation, but all remaining variation still comes from curvature. To see when narrowing raises the share, we need the variances of both terms.
+\pg{02 \quad / \quad DERIVATION}{Separate the variance due to slope from the variance due to curvature}
+Assume $X\sim N(0,G)$ with $G>0$. For the linear term, multiplying $X$ by $b$ multiplies its variance by $b^2$. For the curved term we also need the fourth moment. The normal moment identity gives $\E[X^4]=3G^2$ (Isserlis, 1918), so
+\begin{align*}
+\VL&=\Var(bX)=b^2G,\\
+\Var(X^2)&=\E[X^4]-\E[X^2]^2=3G^2-G^2=2G^2,\\
+\VQ&=\Var(HX^2/2)=H^2(2G^2)/4=H^2G^2/2.
+\end{align*}
+The cross term is $\Cov(L,Q)=bH\E[X^3]/2=0$. Positive and negative deviations of the same magnitude are equally frequent. Their contributions to the third moment cancel. Symmetry suffices for this cancellation; the fourth-moment formula requires more than symmetry.
+
+When $\VL+\VQ>0$, the linear share is $\Ag=\VL/(\VL+\VQ)$. Why is this an $R^2$? The centred quadratic term $Q-\E Q$ is uncorrelated with $X$, so no fitted slope can explain it. The least-squares line is $c+\E Q+bX$, and the residual variance is $\VQ$. Hence $R^2=1-\VQ/(\VL+\VQ)=\Ag$. If $\VL>0$ this is also $\operatorname{Corr}^2(L,y)$. At zero slope and positive quadratic variance, the regression has $R^2=0$ but the correlation with a constant is undefined. If only the linear variance is positive, $R^2=1$; if both vanish, there is no variance to partition.
+
+\begin{center}\begin{tabular}{rrrr}\toprule
+$G$ & $\VL$ & $\VQ$ & Linear share\\\midrule
+1 & 1 & $1/2$ & $2/3$\\
+$1/4$ & $1/4$ & $1/32$ & $8/9$\\\bottomrule\end{tabular}\end{center}
+These are the values in Figure 2. Reducing $G$ by a factor of four reduces $\VL$ fourfold but $\VQ$ sixteenfold. The share rises although the absolute linear variance falls. This comparison holds the mean and conditional fitness curve fixed. In field populations both can change.
+
+\textbf{Several traits.} For a centred Gaussian vector $X$ with covariance $G$, slope vector $b$ and symmetric curvature matrix $H$, $\VL=b^\mathsf{T}Gb$ and $\VQ=\tfrac12\tr(HGHG)$. To see why, write $X=G^{1/2}U$ for a standard normal vector $U$ and diagonalise $G^{1/2}HG^{1/2}$. The quadratic term becomes $\tfrac12\sum_i\lambda_i U_i'^2$ in rotated, independent normal coordinates. Each squared coordinate has variance 2, so $\VQ=\tfrac12\sum_i\lambda_i^2$. This reasoning also applies on the varying directions if $G$ is singular. For a non-quadratic surface the identity concerns its quadratic approximation, not all variation in the original curve.
+\pg{03 \quad / \quad SELECTION}{Why a 97\% fit can still miss selection by 50\%}
+To find the mean breeding value among selected parents, weight each value by expected reproductive output, $m(x)=\exp\{\ell(x)\}$. A fit on the log scale instead weights squared deviations by their frequency \emph{before} selection. To compare the two calculations, let $G=1$, $b=2$ and $H=-1/2$. Then $\VL=4$, $\VQ=1/8$, and $\Ag=4/(4+1/8)=32/33$.
+
+For a centred normal population on an exactly quadratic log mean, the density among contributing parents is proportional to
+\[
+ \exp\{-x^2/(2G)\}\exp\{bx+Hx^2/2\}
+ =\exp\{-Px^2/2+bx\},\qquad P=G^{-1}-H.
+\]
+We need $P>0$ for this expression to define a density. Completing the square gives $-P(x-b/P)^2/2+b^2/(2P)$. The selected mean is therefore $b/P=Gb/(1-GH)$. Since the initial mean is zero, that mean is also the displacement. Omitting curvature gives $Gb$.
+\fig{fig03_parental_shift}{.82}{\textbf{Figure 3.} The exact shift is $2/(1+1/2)=4/3$. Omitting curvature gives 2, an overestimate of $(2-4/3)/(4/3)=1/2$. Neither bar is an offspring mean.}
+
+A breeder interested in the next generation also needs to know what parents transmit. A high linear share answers none of these questions on its own. In several traits $b^\mathsf{T}Gb/\|b\|^2$ measures variance in the slope direction when $b\ne0$. The angle between $Gb$ and $b$ describes alignment of the linear displacement approximation only when both vectors are nonzero. Neither statistic is a substitute for weighting by reproductive output.
+\par{\small\textbf{Reading.} Isserlis (1918), \emph{Biometrika} 12:134--139, \href{https://doi.org/10.1093/biomet/12.1-2.134}{Gaussian moment identities}. The mathematics guide in this repository extends the example to several traits and to the covariance model.}
+\end{document}

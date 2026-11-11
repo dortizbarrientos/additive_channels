@@ -1,0 +1,150 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+
+\definecolor{forest}{HTML}{1A6B4A}
+\definecolor{blue}{HTML}{0072B2}
+\definecolor{orange}{HTML}{E69F00}
+\definecolor{purple}{HTML}{CC79A7}
+\definecolor{softgreen}{HTML}{E8F8F0}
+\definecolor{softblue}{HTML}{E8F2FB}
+\definecolor{softorange}{HTML}{FFF6DF}
+\definecolor{softpurple}{HTML}{F7EAF4}
+\definecolor{ink}{HTML}{222222}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist[enumerate]{itemsep=0.55em,topsep=0.4em,leftmargin=1.7em}
+\setlist[itemize]{itemsep=0.25em,topsep=0.4em,leftmargin=1.5em}
+
+\newtcolorbox{taskbox}{colback=softblue,colframe=blue,title=Task,fonttitle=\bfseries,arc=2mm}
+\newtcolorbox{hintbox}{colback=softorange,colframe=orange,title=Hint,fonttitle=\bfseries,arc=2mm}
+\newtcolorbox{biologybox}{colback=softgreen,colframe=forest,title=Biological interpretation,fonttitle=\bfseries,arc=2mm}
+\newtcolorbox{answerbox}{colback=softpurple,colframe=purple,title=Solution guide,fonttitle=\bfseries,arc=2mm}
+\newcommand{\G}{\mathbf G}
+\newcommand{\C}{\mathbf C}
+\newcommand{\A}{\mathbf A}
+\newcommand{\bvec}{\mathbf b}
+\newcommand{\Hess}{\mathbf H}
+\newcommand{\dz}{\Delta\mathbf z}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Ag}{\mathcal A_g}
+\newcommand{\Vlin}{V_{\mathrm{lin}}}
+\newcommand{\Vquad}{V_{\mathrm{quad}}}
+\newcommand{\Rmat}{\mathbf R_G}
+\newcommand{\Psigen}{\boldsymbol\Psi}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+
+\title{Additive Channels Derivation Worksheet\\\large For entry-level graduate students}
+\author{Daniel Ortiz-Barrientos and Mark Cooper}
+\date{November 2026}
+
+\begin{document}
+{\small\color{forest}\bfseries ADDITIVE CHANNELS / GRADUATE WORKSHEET}\par{\LARGE\bfseries Deriving the first-order variance share}\par
+
+\begin{taskbox}
+Let $W$ be offspring count and $Z$ breeding value. The surface in these exercises is $\ell(z)=\log\E[W\mid Z=z]$, defined where the conditional mean is positive. A plant can have zero offspring. Explain why this operation differs from averaging log counts. The four parts concern a single population before and after selection.
+\end{taskbox}
+
+\section*{Part 1. Warm-up: slope and curvature}
+
+Consider a one-trait log-fitness surface
+\begin{equation}
+\ell(z)=\ell_0+b(z-\bar z)+\frac12H(z-\bar z)^2.
+\end{equation}
+
+\begin{enumerate}
+\item What does \(b\) measure? What does \(H\) measure?
+\item If \(b=0\) and \(H<0\), where is the population relative to a local peak?
+\item If $b=0$, $H<0$ and $G>0$, can narrowing the distribution make the linear share positive? Distinguish absolute deviations from the fraction of variance.
+\end{enumerate}
+
+\begin{biologybox}
+The slope specifies the local change in log expected output per unit change in breeding value. Curvature describes how that slope changes. Neither number tells us the distribution of breeding values.
+\end{biologybox}
+
+\section*{Part 2. Derive the one-trait additivity index}
+
+Let \(\Delta z=z-\bar z\), with \(\mathbb E[\Delta z]=0\) and \(\Var(\Delta z)=G\). Define
+\begin{equation}
+L=b\Delta z,
+\qquad
+Q=\frac12H(\Delta z)^2.
+\end{equation}
+
+\begin{enumerate}
+\item Show that \(\Var(L)=b^2G\).
+\item Assume \(\Delta z\) is Gaussian. Use \(\Var((\Delta z)^2)=2G^2\) to show that \(\Var(Q)=\frac12H^2G^2\).
+\item Write the additivity index \(\Ag\).
+\item What happens to \(\Ag\) when $G$ is multiplied by $0<s<1$ at fixed $b,H$? Evaluate the components and share for $b=1,H=-1$ and $G=1$ or $1/4$.
+\end{enumerate}
+
+\begin{hintbox}
+The linear part has one copy of \(G\). The quadratic part has two copies of \(G\). This scaling difference is the easiest way to remember the result.
+\end{hintbox}
+
+\section*{Part 3. Move to many traits}
+
+Let \(\dz\sim N(\mathbf 0,\G)\). The local expansion is
+\begin{equation}
+\delta\ell=L+Q,
+\qquad
+L=\bvec^{\mathsf T}\dz,
+\qquad
+Q=\frac12\dz^{\mathsf T}\Hess\dz.
+\end{equation}
+
+\begin{enumerate}
+\item Use the variance rule for a linear combination to show that
+\begin{equation}
+\Vlin=\bvec^{\mathsf T}\G\bvec.
+\end{equation}
+\item State the Gaussian result for the quadratic component:
+\begin{equation}
+\Vquad=\frac12\tr[(\Hess\G)^2].
+\end{equation}
+\item Explain verbally why \(\G\) appears once in \(\Vlin\) and twice in \(\Vquad\).
+\end{enumerate}
+
+\section*{Part 4. Prove the local \texorpdfstring{\(R^2\)}{R2} result}
+
+Assume $\Cov(L,Q)=0$ and $\Vlin>0$. Show that
+\begin{equation}
+\operatorname{Corr}^2(L,L+Q)=\frac{\Vlin}{\Vlin+\Vquad}=\Ag.
+\end{equation}
+
+\begin{hintbox}
+Start from \(\operatorname{Corr}^2(X,Y)=\Cov(X,Y)^2/[\Var(X)\Var(Y)]\). Put \(X=L\) and \(Y=L+Q\).
+\end{hintbox}
+
+What is the intercept of the regression of $c+L+Q$ on $\Delta z$? If $b=0$ and $Q$ varies, distinguish regression $R^2$ from correlation with $L$. If neither term varies, which measures are defined?
+
+\textbf{Selection check.} For $G=1,b=2,H=-1/2$, calculate the share. Multiply the centred normal density by $\exp(bx+Hx^2/2)$ and complete the square to find the selected-parent mean. Calculate the error from using $Gb$ instead. Does either result give an offspring mean?
+
+\clearpage
+\section*{Solution guide}
+
+
+\textbf{1. Fitness and derivatives.} The counts 0 and 4 have mean 2; the logarithm of the mean is $\log 2$. The log of the first count does not exist. At $b=0,H<0$ the mean lies at a local maximum; narrowing a nondegenerate Gaussian distribution reduces absolute variation but leaves the linear share zero.
+
+\textbf{2. Normal moments.} $\Vlin=b^2G$. Since $\E X^4=3G^2$ and $\E X^2=G$, $\Var(X^2)=3G^2-G^2=2G^2$. Thus $\Vquad=H^2G^2/2$. Symmetry gives $\E X^3=0$, so $\Cov(L,Q)=0$. With $b=1,H=-1$, the pairs $(\Vlin,\Vquad)$ are $(1,1/2)$ and $(1/4,1/32)$. The shares are $2/3$ and $8/9$. A proportional contraction raises the share only when both components are positive.
+
+\textbf{3. Several traits.} $\Var(\bvec^\mathsf T X)=\bvec^\mathsf T\G\bvec$. In independent standard normal coordinates the quadratic term is $\sum_j\lambda_j U_j^2/2$, with $\lambda_j$ the eigenvalues of $\G^{1/2}\Hess\G^{1/2}$. Each squared coordinate has variance 2. Hence $\Vquad=\sum_j\lambda_j^2/2=\tr(\Hess\G\Hess\G)/2$. On multiplying $\G$ by $s$ the eigenvalues scale by $s$ and their squares by $s^2$.
+
+\textbf{4. Regression and selection.} The intercept is $c+\E Q$; symmetry makes the centred quadratic uncorrelated with each predictor. The population line explains $\Vlin$ of total variance $\Vlin+\Vquad$. If $\Vlin>0$, $\Cov(L,L+Q)=\Vlin$ gives the same share by squared correlation. If only the quadratic varies, regression $R^2=0$ but the correlation with a constant is undefined. With zero total variance neither the share nor the usual $R^2$ exists.
+
+For the selection check the variance share is $4/(4+1/8)=32/33$. The exponent of the weighted density is $-3x^2/4+2x=-3(x-4/3)^2/4+4/3$. The selected-parent shift is $4/3$. Ignoring curvature gives 2, an overestimate of $(2-4/3)/(4/3)=50\%$. Neither is an offspring mean.
+
+\end{document}

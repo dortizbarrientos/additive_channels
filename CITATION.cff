@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Please cite this resource when reusing its code, data or teaching materials."
+title: "Additive channels in curved fitness landscapes: code, data and tutorials"
+type: software
+authors:
+  - family-names: "Ortiz-Barrientos"
+    given-names: "Daniel"
+  - family-names: "Cooper"
+    given-names: "Mark"
+repository-code: "https://github.com/dortizbarrientos/additive_channels"
+license: MIT
