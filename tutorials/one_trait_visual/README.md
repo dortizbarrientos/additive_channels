@@ -1,6 +1,18 @@
-# A one-trait visual explanation
+# Can one fitness curve give different linear fits?
 
-This is the source of the first visual walkthrough in Appendix S7 of *Additive Channels in Curved Fitness Landscapes*. It requires no matrix notation. All examples are mathematical populations, not empirical observations.
+Suppose expected reproduction rises and then falls as breeding value for height increases. Would a line describe fitness equally well in a broad population, a narrow population, and a population centered at the peak? Keep the curve fixed and compare the three populations below. This walkthrough uses no matrix notation. All examples are specified mathematical populations.
+
+[![A broad population, a narrow population and a population at the peak](figures/one_trait_additive_channel.png)](figures/one_trait_additive_channel.pdf)
+
+[Open the PDF](figures/one_trait_additive_channel.pdf), [download the SVG](figures/one_trait_additive_channel.svg?raw=1), or [inspect the numerical values](values.json).
+
+## Try the comparison
+
+1. Compare **A and B**. Their means and fitness curve are identical. Which variance component falls faster as the population narrows?
+2. Compare **B and C**. They have the same variance. Why does moving the mean to the peak remove the linear contribution?
+3. Look at the equally long bars. Are the populations equally variable, or do the bars show fractions of different totals? Check the component values printed below them.
+
+## Check the calculation
 
 The same relationship holds in every panel: log expected reproductive output is `ell(a) = a - a²/2`. Breeding value `a` is measured in the same arbitrary units throughout. The maximum occurs at `a = 1`.
 
@@ -26,6 +38,6 @@ Dependencies are NumPy, SciPy and Matplotlib, already included in the root requi
 
 ## Distinguish representation from selection
 
-This figure weights the squared log-fitness deviations by the frequency of breeding values. Selection instead weights individuals by expected reproductive output, `exp(ell(a))`. A high linear share alone does not establish an accurate selected-parent shift, an offspring response, or a statement about how individual alleles interact. The paper's separate 97%/50% example and [parental-weighting tutorial](../parental_weighting/README.md) examine reproductive weighting.
+This figure weights the squared log-fitness deviations by the frequency of breeding values. Selection instead weights individuals by expected reproductive output, `exp(ell(a))`. A high linear share alone does not establish an accurate selected-parent shift, an offspring response, or a statement about how individual alleles interact. The [introductory derivation](../introduction/README.md) gives the separate 97%/50% example, and the [parental-weighting tutorial](../parental_weighting/README.md) lets you inspect the change of weights directly.
 
 For two traits, continue to the [geometry tutorial](../geometry/README.md). Its rotation example changes the direction of breeding-value variation on a fixed fitness surface. Its projection triangles concern functions evaluated across the population, a different geometry from the physical rotation of a two-trait distribution.

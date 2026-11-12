@@ -1,0 +1,2075 @@
+{
+  "schema_version": 1,
+  "title": "Scientific result catalogue",
+  "scope": "Reproduction map for the four main figures, substantive mathematical results, Appendices S1–S7, the mathematics guide, worked estimation example and additional teaching tools.",
+  "conventions": {
+    "paths": "Relative to the repository root.",
+    "python": "Python commands assume the numeric environment described in REPRODUCING.md is active. Shell launchers prepare it when needed.",
+    "commands": "Command IDs below expand to exact invocations; result records refer to them.",
+    "check_groups": "Named groups in outputs/result_checks.json.",
+    "inputs": "Generated parameters and seeds are in the cited code unless an input file is listed. Reference files are comparison records, not necessarily estimator inputs.",
+    "undefined": "JSON null denotes an undefined quantity, not zero.",
+    "proofs": "Theoretical claims require their stated assumptions and analytical derivations. Finite numerical checks are examples and implementation checks, not general proofs.",
+    "output_locations": "Default scientific analyses write outputs/. Visual rebuilds update the explicitly listed tutorial artifacts.",
+    "simulation": "Archive summarisation and a fresh SLiM run are different commands."
+  },
+  "commands": {
+    "main_figures": {
+      "command": "python code/figures.py",
+      "code": [
+        "code/figures.py"
+      ],
+      "inputs": [
+        "reference/figures.json"
+      ],
+      "outputs": [
+        "outputs/figure_results.json",
+        "outputs/figures/"
+      ],
+      "description": "Generate the four main figures from recorded parameters and seeds."
+    },
+    "core_mathematics": {
+      "command": "python code/verify_mathematics.py",
+      "code": [
+        "code/verify_mathematics.py",
+        "code/figures.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "outputs/mathematics_checks.json"
+      ],
+      "description": "Check 30 matrix cases, coordinate changes, proportional scaling, bounds and scalar trajectories."
+    },
+    "result_checks": {
+      "command": "python code/reproduce_result_checks.py",
+      "code": [
+        "code/reproduce_result_checks.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "outputs/result_checks.json"
+      ],
+      "description": "Independent small numerical examples of the identities, scope conditions and counterexamples; no random simulation or document rebuild."
+    },
+    "simulation_archive": {
+      "command": "python code/summarize_simulation.py",
+      "code": [
+        "code/summarize_simulation.py",
+        "code/compare_simulations.py"
+      ],
+      "inputs": [
+        "slim/diagnostics/"
+      ],
+      "outputs": [
+        "outputs/simulation_summary.json"
+      ],
+      "description": "Validate and summarise the 20 archived diagnostic tables; does not run SLiM."
+    },
+    "fresh_simulation": {
+      "command": "bash run_all.sh --simulate",
+      "code": [
+        "slim/slim_sim_n_traits.slim",
+        "slim/run_simulations.sh",
+        "slim/compute_diagnostics.py",
+        "code/compare_simulations.py"
+      ],
+      "inputs": [
+        "slim/diagnostics/"
+      ],
+      "outputs": [
+        "outputs/simulation/"
+      ],
+      "description": "Run seeds 42–61 with SLiM 5.2, reconstruct diagnostics and compare every diagnostic table with the archive.",
+      "requires": [
+        "SLiM 5.2",
+        "space for 8 million individual-generation records"
+      ]
+    },
+    "guide_figures": {
+      "command": "python code/guide_figures.py",
+      "code": [
+        "code/guide_figures.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "tutorials/mathematics/figures/"
+      ],
+      "description": "Regenerate all five mathematics-guide figures and check their stated values."
+    },
+    "intro_checks": {
+      "command": "python tutorials/introduction/check_examples.py",
+      "code": [
+        "tutorials/introduction/check_examples.py"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "description": "Print quadrature checks of one-trait population regressions and selected-parent weighting."
+    },
+    "intro_figures": {
+      "command": "python tutorials/introduction/make_figures.py",
+      "code": [
+        "tutorials/introduction/make_figures.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "tutorials/introduction/figures/"
+      ],
+      "description": "Rebuild three introductory teaching figures from their specified examples."
+    },
+    "one_trait": {
+      "command": "python tutorials/one_trait_visual/make_figure.py",
+      "code": [
+        "tutorials/one_trait_visual/make_figure.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "tutorials/one_trait_visual/values.json",
+        "tutorials/one_trait_visual/figures/one_trait_additive_channel.pdf",
+        "tutorials/one_trait_visual/figures/one_trait_additive_channel.png",
+        "tutorials/one_trait_visual/figures/one_trait_additive_channel.svg"
+      ],
+      "description": "Calculate and quadrature-check the three one-trait populations, then draw Figure A1."
+    },
+    "geometry_values": {
+      "command": "python tutorials/geometry/code/geometry.py",
+      "code": [
+        "tutorials/geometry/code/geometry.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "tutorials/geometry/values.json"
+      ],
+      "description": "Quadrature-check all rotation and comparison cases without rebuilding visual documents."
+    },
+    "geometry_visuals": {
+      "command": "bash tutorials/geometry/run.sh",
+      "code": [
+        "tutorials/geometry/code/geometry.py",
+        "tutorials/geometry/code/figure.py",
+        "tutorials/geometry/code/explorer.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "tutorials/geometry/values.json",
+        "tutorials/geometry/figures/geometry_of_additive_channels.pdf",
+        "tutorials/geometry/rotate_the_cloud.html"
+      ],
+      "description": "Rebuild the two-page geometry figure and offline explorer; Figure A2 is page one."
+    },
+    "parental_weighting": {
+      "command": "bash tutorials/parental_weighting/run.sh",
+      "code": [
+        "tutorials/parental_weighting/code/calculate.py",
+        "tutorials/parental_weighting/code/fitness_scenarios.py",
+        "tutorials/parental_weighting/code/draw.py",
+        "tutorials/parental_weighting/code/export_interactive.py"
+      ],
+      "inputs": [
+        "tutorials/parental_weighting/data/fitness_scenario_results.json",
+        "tutorials/parental_weighting/data/observed_data.csv",
+        "tutorials/parental_weighting/data/simulation_truth.csv"
+      ],
+      "outputs": [
+        "tutorials/parental_weighting/data/results.json",
+        "tutorials/parental_weighting/data/parent_cloud.csv.gz",
+        "tutorials/parental_weighting/figures/",
+        "tutorials/parental_weighting/explore_parental_cloud.html"
+      ],
+      "description": "Recover the fixed parental cloud, compare frequency and reproductive weights, and rebuild its figures and offline explorer."
+    },
+    "estimation": {
+      "command": "bash run_estimation.sh",
+      "code": [
+        "examples/estimating_variance_share/model.py",
+        "examples/estimating_variance_share/run_case.py",
+        "examples/estimating_variance_share/plots.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "outputs/estimation/observed_data.csv",
+        "outputs/estimation/simulation_truth.csv",
+        "outputs/estimation/estimates.csv",
+        "outputs/estimation/bootstrap_draws.csv",
+        "outputs/estimation/summary.json",
+        "outputs/estimation/numbers.tex",
+        "outputs/estimation/estimates_table.tex",
+        "outputs/estimation/case1_relationship.pdf",
+        "outputs/estimation/case2_components.pdf",
+        "outputs/estimation/case3_diagnostics.pdf"
+      ],
+      "description": "Recreate the default observations, latent-value fit, 500 bootstrap refits and three estimation figures. The seed is 20261005; the bootstrap seed is 20261006."
+    },
+    "estimation_checks": {
+      "command": "python -m unittest discover -s examples/estimating_variance_share -p test_model.py",
+      "code": [
+        "examples/estimating_variance_share/test_model.py",
+        "examples/estimating_variance_share/model.py"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "description": "Run eight scientific checks: moments, observation/truth separation, independent integration, recovery, bootstrap calibration, quartic scope, integration failure and failed calibration."
+    },
+    "quartic_case": {
+      "command": "bash run_estimation.sh --quartic 0.08 --output outputs/estimation_quartic",
+      "code": [
+        "examples/estimating_variance_share/model.py",
+        "examples/estimating_variance_share/run_case.py",
+        "examples/estimating_variance_share/plots.py"
+      ],
+      "inputs": [],
+      "outputs": [
+        "outputs/estimation_quartic/"
+      ],
+      "description": "Generate the optional misspecified quadratic analysis of data from a quartic log mean. These fitted results are an exploratory case; the cited 0.2424 is the exact generating full-curve R²."
+    },
+    "shiny": {
+      "command": "bash run_shiny.sh",
+      "code": [
+        "examples/estimating_variance_share/app.py",
+        "examples/estimating_variance_share/model.py",
+        "examples/estimating_variance_share/plots.py"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "description": "Launch the local Shiny for Python teaching app. Its download records the displayed data, settings, estimates and any completed bootstrap."
+    },
+    "reference_comparison": {
+      "command": "python code/check_results.py default",
+      "code": [
+        "code/check_results.py"
+      ],
+      "inputs": [
+        "reference/figures.json",
+        "examples/estimating_variance_share/results/",
+        "outputs/figure_results.json",
+        "outputs/mathematics_checks.json",
+        "outputs/simulation_summary.json",
+        "outputs/estimation/"
+      ],
+      "outputs": [],
+      "description": "After a complete default run, compare figure parameters/results, archived-simulation summary, observations and every bootstrap draw with the reference records."
+    }
+  },
+  "results": [
+    {
+      "id": "main_figure_1",
+      "title": "Construct conditional expected fitness before taking logs",
+      "locations": [
+        "Main Figure 1"
+      ],
+      "kind": "figure",
+      "commands": [
+        "main_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "Environmental-deviation samples illustrate phenotype-dependent assigned fitness. They are not offspring-count draws. The dashed curve is an analytic conditional mean.",
+      "expected": {
+        "parameters": {
+          "breeding_value_variance_G": 0.49,
+          "environmental_variance": 0.49,
+          "omega": 0.6,
+          "population_mean": 0.0,
+          "theta": 1.0
+        },
+        "results": {
+          "H": -1.1764705882352942,
+          "b": 1.1764705882352942,
+          "conditional_mean_monte_carlo_max_abs_error": 0.0018169897240085664
+        }
+      },
+      "reference_files": [
+        "reference/figures.json",
+        "reference/figures/figure1_conditional_fitness.pdf"
+      ],
+      "outputs": [
+        "outputs/figures/figure1_conditional_fitness.pdf",
+        "outputs/figures/figure1_conditional_fitness.png",
+        "outputs/figure_results.json"
+      ]
+    },
+    {
+      "id": "main_figure_2",
+      "title": "Gaussian population projection identity",
+      "locations": [
+        "Main Figure 2"
+      ],
+      "kind": "figure",
+      "commands": [
+        "main_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "360 Gaussian scenarios (120 each in dimensions 2, 4 and 8), with 20,000 sampled individuals per scenario, compare the Gaussian expression with sample squared correlations. Finite sampling error is expected.",
+      "expected": {
+        "parameters": {
+          "G_eigenvalue_range": [
+            0.08,
+            2.5
+          ],
+          "absolute_H_eigenvalue_range": [
+            0.03,
+            0.9
+          ],
+          "b_norm_range": [
+            0.08,
+            1.5
+          ],
+          "curvature_classes": [
+            "stabilizing",
+            "saddle"
+          ],
+          "dimensions": [
+            2,
+            4,
+            8
+          ],
+          "number_of_current_state_triples": 360,
+          "random_seed": 20260905,
+          "sample_size_per_triple": 20000,
+          "triples_per_dimension": 120
+        },
+        "results": {
+          "maximum_absolute_error": 0.025270780935931325,
+          "median_absolute_error": 0.0023672601162535722,
+          "p95_absolute_error": 0.010326419167027591
+        }
+      },
+      "reference_files": [
+        "reference/figures.json",
+        "reference/figures/figure2_projection_identity.pdf"
+      ],
+      "outputs": [
+        "outputs/figures/figure2_projection_identity.pdf",
+        "outputs/figures/figure2_projection_identity.png",
+        "outputs/figure_results.json"
+      ]
+    },
+    {
+      "id": "main_figure_3",
+      "title": "Proportional covariance contraction on a fixed surface",
+      "locations": [
+        "Main Figure 3"
+      ],
+      "kind": "figure",
+      "commands": [
+        "main_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The fitness surface and mean stay fixed; the narrow covariance is 0.11 times the broad covariance. This is proportional contraction, not an arbitrary reduction of total variance.",
+      "expected": {
+        "parameters": {
+          "G_broad": [
+            [
+              1.0,
+              0.3
+            ],
+            [
+              0.3,
+              0.6
+            ]
+          ],
+          "G_narrow": [
+            [
+              0.11,
+              0.033
+            ],
+            [
+              0.033,
+              0.066
+            ]
+          ],
+          "Gamma": [
+            [
+              0.8,
+              0.0
+            ],
+            [
+              0.0,
+              0.8
+            ]
+          ],
+          "H": [
+            [
+              -0.8,
+              -0.0
+            ],
+            [
+              -0.0,
+              -0.8
+            ]
+          ],
+          "b": [
+            0.75,
+            0.3
+          ],
+          "narrow_scale": 0.11
+        },
+        "results": {
+          "broad": {
+            "A_g": 0.603954030378526,
+            "V_lin": 0.7515,
+            "V_quad": 0.4928,
+            "trace_G": 1.6
+          },
+          "narrow": {
+            "A_g": 0.9327200424967854,
+            "V_lin": 0.082665,
+            "V_quad": 0.005962880000000002,
+            "trace_G": 0.176
+          },
+          "verified_scaling_ratios": {
+            "V_lin_narrow_over_broad": 0.11000000000000001,
+            "V_quad_narrow_over_broad": 0.012100000000000003
+          }
+        }
+      },
+      "reference_files": [
+        "reference/figures.json",
+        "reference/figures/figure3_covariance_contraction.pdf"
+      ],
+      "outputs": [
+        "outputs/figures/figure3_covariance_contraction.pdf",
+        "outputs/figures/figure3_covariance_contraction.png",
+        "outputs/figure_results.json"
+      ]
+    },
+    {
+      "id": "main_figure_4",
+      "title": "Scalar covariance trajectory with a separately changing gradient",
+      "locations": [
+        "Main Figure 4"
+      ],
+      "kind": "figure",
+      "commands": [
+        "main_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "Four equal covariance directions follow the specified fixed-baseline scalar closure. The gradient is held constant through generation 40 and then changed separately; its decline is not generated by an offspring-mean recursion.",
+      "expected": {
+        "parameters": {
+          "B": 1.0,
+          "final_generation": 100,
+          "g_initial": 4.0,
+          "gamma": 0.3,
+          "gradient_decay_after_maintenance": 0.06,
+          "gradient_norm_initial": 1.0,
+          "maintained_gradient_through_generation": 40,
+          "n_dimensions": 4,
+          "rho": 0.9
+        },
+        "results": {
+          "A_g_at_end_of_maintained_gradient": 0.9216389048825107,
+          "A_g_final": 0.008704492774063599,
+          "A_g_initial": 0.5813953488372093,
+          "V_lin_at_end_of_maintained_gradient": 0.4723535595265275,
+          "V_lin_initial": 4.0,
+          "V_quad_at_end_of_maintained_gradient": 0.040161219335528534,
+          "V_quad_initial": 2.88,
+          "fixed_point_residual": 0.0,
+          "g_at_final_generation": 0.4723532349024099,
+          "scalar_fixed_point": 0.47235323490240977,
+          "verified_max_abs_V_lin_scaling_error": 0.0,
+          "verified_max_abs_V_quad_scaling_error": 1.734723475976807e-18,
+          "verified_max_abs_scalar_recursion_error": 1.1102230246251565e-16
+        }
+      },
+      "reference_files": [
+        "reference/figures.json",
+        "reference/figures/figure4_fixedB_trajectory.pdf"
+      ],
+      "outputs": [
+        "outputs/figures/figure4_fixedB_trajectory.pdf",
+        "outputs/figures/figure4_fixedB_trajectory.png",
+        "outputs/figure_results.json"
+      ]
+    },
+    {
+      "id": "conditional_target",
+      "title": "Conditional mean, logarithm and reproductive weighting",
+      "locations": [
+        "Main: eq:target, eq:selection_weight, eq:log_ratio, eq:jensen",
+        "Appendix S2",
+        "SF1: Sections 2–3; checks 1–2"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "guide_figures"
+      ],
+      "check_groups": [
+        "conditional_mean_and_log"
+      ],
+      "assumptions": [
+        "Conditional expected output is positive where its logarithm is evaluated.",
+        "Selected-parent weighting requires a finite positive population mean output."
+      ],
+      "evidence_scope": "Direct integration verifies a specified environmental average; discrete examples distinguish population frequencies from reproductive contributions. Log individual counts is a different target.",
+      "expected": {
+        "guide_population_mean_outputs": [
+          1.25,
+          1.75
+        ],
+        "guide_upper_reproductive_fractions": [
+          0.4,
+          0.8571428571428571
+        ]
+      }
+    },
+    {
+      "id": "environmental_convolution",
+      "title": "Gaussian environmental averaging changes breeding-value curvature",
+      "locations": [
+        "Main Figure 1",
+        "Appendix S2: eq:fitness_model, eq:environmental_average",
+        "SF1: Sections 3 and 5; Figure 1"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "main_figures",
+        "result_checks",
+        "guide_figures"
+      ],
+      "check_groups": [
+        "conditional_mean_and_log",
+        "phenotype_regression_conversion"
+      ],
+      "assumptions": [
+        "Independent Gaussian environmental deviations.",
+        "Gaussian phenotype-dependent expected fitness."
+      ],
+      "evidence_scope": "Finite numerical examples check the formula; the mathematical derivation is not replaced by computation.",
+      "expected": {
+        "guide_phenotype_curvature": -1.0,
+        "guide_breeding_value_curvature": -0.5
+      },
+      "related_results": [
+        "main_figure_1",
+        "sf1_figure_1"
+      ]
+    },
+    {
+      "id": "local_expansion",
+      "title": "Local quadratic approximation and the full nonquadratic curve",
+      "locations": [
+        "Main: eq:taylor",
+        "SF3: eq:quarticvar, eq:quarticR2"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "estimation_checks"
+      ],
+      "check_groups": [
+        "conditional_mean_and_log",
+        "local_quadratic_and_full_curve"
+      ],
+      "assumptions": [
+        "The slope and Hessian are evaluated at the current population mean.",
+        "Population moments of the quadratic approximation need not equal those of the complete function."
+      ],
+      "evidence_scope": "Finite numerical examples check the formula; the mathematical derivation is not replaced by computation.",
+      "expected": {
+        "quartic_strength": 0.08,
+        "local_share": 0.6666666666666666,
+        "full_curve_R2": 0.24240625309191652
+      }
+    },
+    {
+      "id": "gaussian_variance",
+      "title": "Linear and centred-quadratic Gaussian moments",
+      "locations": [
+        "Main: eq:centered_terms, eq:vlin, eq:vquad, eq:Ag",
+        "Appendix S1",
+        "SF1: Sections 4 and 9"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "main_figures"
+      ],
+      "check_groups": [
+        "gaussian_projection"
+      ],
+      "assumptions": [
+        "Centred Gaussian breeding values and symmetric H.",
+        "The share has a positive total denominator."
+      ],
+      "evidence_scope": "Finite numerical examples check the formula; the mathematical derivation is not replaced by computation.",
+      "expected": {
+        "guide_V_linear": 4.0,
+        "guide_V_quadratic": 0.125,
+        "guide_share": 0.9696969696969697
+      },
+      "related_results": [
+        "main_figure_2",
+        "sf1_figure_2"
+      ]
+    },
+    {
+      "id": "affine_projection",
+      "title": "Affine regression intercept, slope and R²",
+      "locations": [
+        "Main: eq:affine_projection, eq:r2_identity",
+        "Appendix S1",
+        "SF1: Section 4"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "intro_checks",
+        "main_figures"
+      ],
+      "check_groups": [
+        "gaussian_projection"
+      ],
+      "assumptions": [
+        "Gaussian population weighting and a quadratic target.",
+        "An intercept is fitted; the tangent at the mean generally has a different intercept."
+      ],
+      "evidence_scope": "Finite numerical examples check the formula; the mathematical derivation is not replaced by computation.",
+      "expected": {
+        "guide_intercept_shift": -0.25,
+        "guide_slope": 2.0,
+        "guide_R2": 0.9696969696969697
+      }
+    },
+    {
+      "id": "nested_noisy_R2",
+      "title": "Noise reduces both R² values but their ratio recovers the share",
+      "locations": [
+        "Main: eq:nested_r2, eq:log_error_model",
+        "Appendix S1",
+        "SF1: Section 4"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks"
+      ],
+      "check_groups": [
+        "noisy_regression_ratio"
+      ],
+      "assumptions": [
+        "The response has the quadratic conditional mean plus a constant and zero conditional-mean residual.",
+        "Finite residual variance; for multiplicative noise, finite second moment of log U."
+      ],
+      "evidence_scope": "An independent lognormal observation model verifies the constant-gap case. The identity does not justify taking logs of arbitrary individual offspring counts.",
+      "expected": {
+        "noise_variance": 4.0,
+        "linear_R2": 0.49230769230769234,
+        "quadratic_R2": 0.5076923076923077,
+        "ratio": 0.9696969696969697
+      }
+    },
+    {
+      "id": "covariance_scaling",
+      "title": "Proportional covariance scaling and the omitted fraction",
+      "locations": [
+        "Main: eq:scaling",
+        "Main Figure 3",
+        "Appendix S6: Q11",
+        "SF1: Section 4"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "core_mathematics",
+        "result_checks",
+        "main_figures"
+      ],
+      "check_groups": [
+        "gaussian_projection"
+      ],
+      "assumptions": [
+        "Mean, slope and Hessian stay fixed.",
+        "G is multiplied by one positive scalar.",
+        "Strict improvement under contraction requires both variance terms positive."
+      ],
+      "evidence_scope": "Checks V_linear → s V_linear, V_quadratic → s² V_quadratic and share L/(L+sQ). The omitted fraction is sQ/(L+sQ), not a quantity that scales as s².",
+      "expected": {
+        "narrow_to_broad_linear_ratio": 0.11,
+        "narrow_to_broad_quadratic_ratio": 0.0121,
+        "guide_half_variance_share": 0.9846153846153847
+      },
+      "related_results": [
+        "main_figure_3"
+      ]
+    },
+    {
+      "id": "anisotropic_counterexample",
+      "title": "A smaller covariance can reduce the linear share",
+      "locations": [
+        "Main: changing the breeding-value distribution",
+        "Appendix S6: Q11"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "core_mathematics"
+      ],
+      "check_groups": [],
+      "assumptions": [
+        "b=(1,0), H=-I; compare I with diag(0.1,0.9)."
+      ],
+      "evidence_scope": "A numerical counterexample rules out extending proportional-scaling monotonicity to arbitrary covariance changes.",
+      "expected": {
+        "shares": [
+          0.5,
+          0.19607843137254902
+        ]
+      }
+    },
+    {
+      "id": "coordinate_invariance",
+      "title": "Changing trait units leaves the component variances unchanged",
+      "locations": [
+        "Main: changing coordinates",
+        "Appendix S1",
+        "SF1: Sections 4 and 9; check 5"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "core_mathematics",
+        "result_checks"
+      ],
+      "check_groups": [
+        "gaussian_projection"
+      ],
+      "assumptions": [
+        "An invertible linear change transforms G, b and H together."
+      ],
+      "evidence_scope": "Finite numerical examples check the formula; the mathematical derivation is not replaced by computation.",
+      "expected": {
+        "guide_new_b": 0.2,
+        "guide_new_H": -0.005,
+        "guide_new_G": 100.0,
+        "unchanged_components": [
+          4.0,
+          0.125
+        ]
+      }
+    },
+    {
+      "id": "whitening_orientation",
+      "title": "Whitening, curvature eigenvalues and the separate Rayleigh quotient",
+      "locations": [
+        "Main: eq:whitening",
+        "Appendix S1",
+        "Appendix S6: Q9",
+        "Appendix S7: Figure A2"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "core_mathematics",
+        "result_checks",
+        "geometry_values"
+      ],
+      "check_groups": [
+        "orientation_and_absolute_scale"
+      ],
+      "assumptions": [
+        "The whitened gradient norm and curvature spectrum are fixed in the no-alignment statement.",
+        "Rotating population covariance in fixed physical coordinates is a different comparison."
+      ],
+      "evidence_scope": "The numerical examples distinguish coordinate invariance, physical rotation, and rotation at fixed whitened norms. The selected-parent error can change while the share is fixed.",
+      "expected": {
+        "same_share": 0.7547169811320755,
+        "eigenaligned_relative_errors": [
+          0.1,
+          0.8
+        ]
+      },
+      "related_results": [
+        "appendix_S7",
+        "geometry_comparisons"
+      ]
+    },
+    {
+      "id": "zero_and_singular_cases",
+      "title": "Zero terms, undefined correlation and singular covariance support",
+      "locations": [
+        "Main: boundaries of the variance share",
+        "Appendix S1",
+        "Appendix S6: Q7"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "intro_checks",
+        "estimation_checks"
+      ],
+      "check_groups": [
+        "boundaries_and_non_gaussian_cases"
+      ],
+      "assumptions": [
+        "Inverse matrices and displacement norms are restricted to the varying support when G is singular."
+      ],
+      "evidence_scope": "JSON null records an undefined quantity. A zero linear share is valid with positive quadratic variance, but the correlation expression then has a constant argument.",
+      "expected": {
+        "zero_gradient_share": 0.0,
+        "zero_curvature_share": 1.0,
+        "both_zero_share": null,
+        "zero_gradient_correlation": null,
+        "rank_one_share": 0.9696969696969697
+      }
+    },
+    {
+      "id": "non_gaussian_scope",
+      "title": "Asymmetry and non-Gaussian fourth moments can change the partition",
+      "locations": [
+        "Appendix S6: Q5",
+        "Introductory tutorial"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "intro_checks"
+      ],
+      "check_groups": [
+        "boundaries_and_non_gaussian_cases"
+      ],
+      "assumptions": [],
+      "evidence_scope": "Two specified discrete distributions show why symmetry suffices for orthogonality but does not supply Gaussian fourth moments. They are counterexamples, not a general non-Gaussian estimator.",
+      "expected": {
+        "asymmetric_actual_R2": 1.0,
+        "asymmetric_gaussian_expression": 0.8,
+        "asymmetric_linear_quadratic_covariance": -0.5,
+        "symmetric_actual_quadratic_variance": 0.0,
+        "symmetric_gaussian_quadratic_variance": 0.5
+      }
+    },
+    {
+      "id": "selected_gaussian",
+      "title": "Exact selected-parent mean and covariance",
+      "locations": [
+        "Main: eq:log_quadratic_weight, eq:selected_mean, eq:selected_covariance",
+        "Appendix S2",
+        "SF1: Sections 5 and 9"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "guide_figures"
+      ],
+      "check_groups": [
+        "selected_parent_moments"
+      ],
+      "assumptions": [
+        "Gaussian initial breeding values.",
+        "An exactly log-quadratic conditional mean and positive-definite combined precision.",
+        "Covariance contraction additionally requires stabilising, positive-semidefinite curvature."
+      ],
+      "evidence_scope": "Independent integration weights the original population. Both stabilising and integrable saddle examples are checked; a nonintegrable combined precision is identified.",
+      "expected": {
+        "guide_selected_mean": 1.3333333333333333,
+        "guide_selected_variance": 0.6666666666666666
+      }
+    },
+    {
+      "id": "share_not_displacement_accuracy",
+      "title": "A large share does not ensure an accurate parental shift or perfect rankings",
+      "locations": [
+        "Main: eq:counterexample",
+        "Appendix S6: Q8",
+        "SF1: Section 5; check 7"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "intro_checks"
+      ],
+      "check_groups": [
+        "selected_parent_moments"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The exact quadratic Gaussian example gives a 50% relative parental displacement error. A separate pair in its tail reverses ranking; no claim is made about how frequent such reversals are.",
+      "expected": {
+        "share": 0.9696969696969697,
+        "first_order_shift": 2.0,
+        "exact_shift": 1.3333333333333333,
+        "relative_error": 0.5,
+        "slope_10_share": 0.9987515605493134
+      }
+    },
+    {
+      "id": "displacement_bound",
+      "title": "Absolute covariance-weighted curvature bounds relative displacement error",
+      "locations": [
+        "Main: eq:T, eq:response_bound",
+        "Appendix S2",
+        "SF1: Section 9"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "core_mathematics"
+      ],
+      "check_groups": [
+        "selected_parent_moments",
+        "orientation_and_absolute_scale"
+      ],
+      "assumptions": [
+        "Exact Gaussian/log-quadratic closure with positive combined precision.",
+        "Nonzero full selected-parent displacement on the support of G.",
+        "Error and displacement use the same G-inverse norm."
+      ],
+      "evidence_scope": "Checks relative error ≤ spectral norm of G^(1/2) Gamma G^(1/2) ≤ sqrt(2 V_quadratic), including equality along eigenvectors. The share alone is not this bound."
+    },
+    {
+      "id": "genic_baseline",
+      "title": "Fixed allelic effects do not imply fixed genic covariance",
+      "locations": [
+        "Main: eq:genic_baseline",
+        "Appendix S6: Q10",
+        "SF1: Section 6"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks"
+      ],
+      "check_groups": [
+        "inheritance_matrix_and_limits"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The single-locus calculation isolates the frequency dependence of 2p(1-p)u². It does not claim to model frequency dynamics.",
+      "expected": {
+        "allelic_effect": 1.0,
+        "frequencies": [
+          0.5,
+          0.8
+        ],
+        "genic_variances": [
+          0.5,
+          0.32
+        ]
+      }
+    },
+    {
+      "id": "matrix_inheritance",
+      "title": "Fixed-baseline covariance interval and matrix fixed-point bounds",
+      "locations": [
+        "Main: eq:fixedB_recursion, eq:loewner_interval, eq:fixedpoint_bounds",
+        "Appendix S3",
+        "SF1: Sections 6 and 9"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "core_mathematics"
+      ],
+      "check_groups": [
+        "inheritance_matrix_and_limits"
+      ],
+      "assumptions": [
+        "Positive-definite fixed genic baseline B.",
+        "Fixed positive-semidefinite stabilising curvature.",
+        "Scalar retention 0 ≤ rho < 1 and the stated inheritance closure."
+      ],
+      "evidence_scope": "Twelve cases check interval invariance for noncommuting matrices, and one numerical fixed point satisfies the bounds. General existence follows from the proof; general matrix uniqueness or convergence is not asserted."
+    },
+    {
+      "id": "scalar_inheritance",
+      "title": "Scalar fixed point, contraction and a transient increase",
+      "locations": [
+        "Main: eq:scalar_recursion, eq:scalar_root",
+        "Main Figure 4",
+        "Appendix S3",
+        "SF1: Section 6; checks 8–9"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "core_mathematics",
+        "result_checks",
+        "main_figures",
+        "guide_figures"
+      ],
+      "check_groups": [
+        "inheritance_matrix_and_limits"
+      ],
+      "assumptions": [
+        "B > 0, gamma ≥ 0 and 0 ≤ rho < 1.",
+        "The closed-form positive-root expression uses gamma > 0; gamma=0 gives B."
+      ],
+      "evidence_scope": "Scalar contraction is checked directly for three pairs and from starts 0, 0.1 and 4. A low initial variance can increase; the model does not imply monotone contraction from every starting value.",
+      "expected": {
+        "main_fixed_point": 0.47235323490240977,
+        "main_update_from_0_1": 0.18737864077669902,
+        "guide_fixed_point": 0.7807764064044151
+      }
+    },
+    {
+      "id": "rho_one_limit",
+      "title": "No-restoration boundary and retained null-space variation",
+      "locations": [
+        "Main: eq:rho_one",
+        "Appendix S3",
+        "SF1: Section 6; check 9"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks"
+      ],
+      "check_groups": [
+        "inheritance_matrix_and_limits"
+      ],
+      "assumptions": [
+        "rho=1 and constant positive-semidefinite curvature.",
+        "Positive initial covariance on its support."
+      ],
+      "evidence_scope": "Repeated inversion is compared with G_t=(G_0^-1+t Gamma)^-1. Positive curvature removes all variation; a correlated singular-curvature example retains 1.84, not its initial marginal variance 2.",
+      "expected": {
+        "guide_g_at_generation_4": 0.3333333333333333,
+        "null_space_example_retained_variance": 1.84
+      }
+    },
+    {
+      "id": "prediction_shrinkage",
+      "title": "Prediction shrinkage can mimic proportional biological contraction",
+      "locations": [
+        "Main: eq:ebv_inflation",
+        "SF1: Section 8"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks"
+      ],
+      "check_groups": [
+        "prediction_shrinkage"
+      ],
+      "assumptions": [
+        "Slope and curvature are known on the true breeding-value scale.",
+        "Only G is replaced by rG with 0<r<1."
+      ],
+      "evidence_scope": "This substitution has a specified direction of error. It is not a universal correction when slopes/curvatures are refitted or reliabilities differ among directions.",
+      "expected": {
+        "reliability": 0.6,
+        "true_share": 0.9696969696969697,
+        "naive_share": 0.9815950920245399
+      }
+    },
+    {
+      "id": "phenotype_conversion",
+      "title": "Convert compatible phenotype regression moments to breeding-value parameters",
+      "locations": [
+        "Main: eq:LA_regression, eq:LA_conversion",
+        "Appendix S5: eq:LA_moments, eq:LA_selected_mean, eq:LA_selected_cov",
+        "SF1: Sections 8–9; check 11"
+      ],
+      "kind": "theoretical_result",
+      "commands": [
+        "result_checks",
+        "guide_figures"
+      ],
+      "check_groups": [
+        "phenotype_regression_conversion"
+      ],
+      "assumptions": [
+        "Joint Gaussian breeding values and phenotypes, with Cov(A,Z)=G.",
+        "Selection mediated by the measured phenotype or equivalent conditional-moment independence.",
+        "Same population, compatible unstandardised coordinates and the half-quadratic-form coefficient convention.",
+        "Selected covariance positive definite on the support.",
+        "Exact target derivatives additionally require the log-quadratic closure; otherwise these are moment-matched parameters."
+      ],
+      "evidence_scope": "Positive-fitness examples in one and two traits independently integrate and fit the phenotype regression. The guide polynomial is a moment calculation and need not be positive in the tails; its raw log-polynomial derivatives differ from the converted parameters.",
+      "expected": {
+        "guide_alpha": 1.15,
+        "guide_selected_variance": 0.41,
+        "guide_b": 0.4878048780487805,
+        "guide_H": -0.4390243902439024
+      }
+    },
+    {
+      "id": "appendix_S1",
+      "title": "Gaussian moments and population projections",
+      "locations": [
+        "Appendix S1"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "main_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "gaussian_variance",
+        "affine_projection",
+        "nested_noisy_R2",
+        "coordinate_invariance",
+        "whitening_orientation",
+        "zero_and_singular_cases"
+      ]
+    },
+    {
+      "id": "appendix_S2",
+      "title": "Gaussian selection, environmental averaging and displacement bound",
+      "locations": [
+        "Appendix S2"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "result_checks",
+        "core_mathematics"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "conditional_target",
+        "environmental_convolution",
+        "selected_gaussian",
+        "share_not_displacement_accuracy",
+        "displacement_bound"
+      ]
+    },
+    {
+      "id": "appendix_S3",
+      "title": "Fixed-baseline inheritance and its limits",
+      "locations": [
+        "Appendix S3"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "main_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "genic_baseline",
+        "matrix_inheritance",
+        "scalar_inheritance",
+        "rho_one_limit"
+      ]
+    },
+    {
+      "id": "appendix_S4",
+      "title": "Forward-time finite-population approximation",
+      "locations": [
+        "Appendix S4"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "simulation_archive",
+        "fresh_simulation"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "finite_population_check"
+      ]
+    },
+    {
+      "id": "appendix_S5",
+      "title": "Moment conversion from phenotype regressions",
+      "locations": [
+        "Appendix S5"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "result_checks",
+        "guide_figures"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "phenotype_conversion"
+      ]
+    },
+    {
+      "id": "appendix_S6",
+      "title": "Interpretation, assumptions and boundaries",
+      "locations": [
+        "Appendix S6"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "estimation"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "conditional_target",
+        "gaussian_variance",
+        "non_gaussian_scope",
+        "zero_and_singular_cases",
+        "share_not_displacement_accuracy",
+        "whitening_orientation",
+        "matrix_inheritance",
+        "covariance_scaling",
+        "prediction_shrinkage",
+        "phenotype_conversion",
+        "estimation_default"
+      ],
+      "question_map": {
+        "Q1": [
+          "gaussian_variance"
+        ],
+        "Q2": {
+          "type": "conceptual_context",
+          "note": "Historical attribution and the relation among established results; no separate numerical claim."
+        },
+        "Q3": [
+          "conditional_target"
+        ],
+        "Q4": {
+          "type": "interpretation",
+          "note": "The linear representation does not identify gene action and supplies no universal threshold."
+        },
+        "Q5": [
+          "non_gaussian_scope"
+        ],
+        "Q6": [
+          "estimation_default",
+          "nested_noisy_R2",
+          "prediction_shrinkage",
+          "phenotype_conversion"
+        ],
+        "Q7": [
+          "zero_and_singular_cases"
+        ],
+        "Q8": [
+          "share_not_displacement_accuracy",
+          "displacement_bound"
+        ],
+        "Q9": [
+          "whitening_orientation"
+        ],
+        "Q10": [
+          "genic_baseline",
+          "matrix_inheritance",
+          "scalar_inheritance",
+          "rho_one_limit"
+        ],
+        "Q11": [
+          "covariance_scaling",
+          "anisotropic_counterexample"
+        ]
+      }
+    },
+    {
+      "id": "appendix_S7",
+      "title": "Visual one-trait and rotation examples",
+      "locations": [
+        "Appendix S7"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "one_trait",
+        "geometry_visuals"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The linked records identify all substantive calculations. Proofs and conceptual qualifications are not replaced by numerical examples.",
+      "related_results": [
+        "appendix_figure_A1",
+        "appendix_figure_A2"
+      ]
+    },
+    {
+      "id": "finite_population_check",
+      "title": "SLiM approximation check over 4,000 generation records",
+      "locations": [
+        "Appendix S4",
+        "SF1: Section 7; check 10"
+      ],
+      "kind": "simulation",
+      "commands": [
+        "simulation_archive",
+        "fresh_simulation"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "Default reproduction checks archived diagnostics. The fresh command reruns SLiM and compares all diagnostics. Agreement assesses the Gaussian current-population expression in this finite multilocus design, not the fixed-B inheritance recursion or selected-parent displacement.",
+      "expected": {
+        "replicates": 20,
+        "generations_each": 200,
+        "rows": 4000,
+        "seeds": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61
+        ],
+        "median_absolute_share_minus_sample_R2": 0.015667885704792002,
+        "maximum_absolute_share_minus_sample_R2": 0.1239726173174778
+      },
+      "reference_files": [
+        "slim/diagnostics/reference_summary.csv"
+      ]
+    },
+    {
+      "id": "appendix_figure_A1",
+      "title": "One fixed curve with broad, narrow and peak-centred populations",
+      "locations": [
+        "Appendix S7: Figure A1; eq:visual_model, eq:visual_variances, eq:visual_line"
+      ],
+      "kind": "figure",
+      "commands": [
+        "one_trait"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "Full Gaussian integrals determine all numbers; the displayed central 95% is illustrative. Points are log conditional means, not observed offspring counts.",
+      "expected": {
+        "means": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "variances": [
+          1.0,
+          0.1,
+          0.1
+        ],
+        "linear_components": [
+          1.0,
+          0.1,
+          0.0
+        ],
+        "quadratic_components": [
+          0.5,
+          0.005,
+          0.005
+        ],
+        "shares": [
+          0.6666666666666666,
+          0.9523809523809523,
+          0.0
+        ],
+        "fitted_values_at_mean": [
+          -0.5,
+          -0.05,
+          0.45
+        ]
+      },
+      "reference_files": [
+        "tutorials/one_trait_visual/values.json"
+      ]
+    },
+    {
+      "id": "appendix_figure_A2",
+      "title": "Rotate the same covariance eigenvalues on a fixed surface",
+      "locations": [
+        "Appendix S7: Figure A2; eq:visual_rotation_surface, eq:visual_rotation_variances"
+      ],
+      "kind": "figure",
+      "commands": [
+        "geometry_values",
+        "geometry_visuals"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "Figure A2 is page one of geometry_of_additive_channels.pdf. The full two-trait distribution determines the fit; a horizontal long-axis section at 90 degrees does not make the complete fitted plane horizontal.",
+      "expected": {
+        "angles_degrees": [
+          0,
+          45,
+          90
+        ],
+        "principal_variances": [
+          0.2,
+          0.005
+        ],
+        "V_linear": [
+          0.1305,
+          0.06688125,
+          0.0032625
+        ],
+        "V_quadratic": 0.012808,
+        "shares": [
+          0.9106260641415691,
+          0.839275686494728,
+          0.20301172956659716
+        ]
+      },
+      "reference_files": [
+        "tutorials/geometry/values.json"
+      ]
+    },
+    {
+      "id": "sf1_figure_1",
+      "title": "Average phenotype-dependent expected output at each breeding value",
+      "locations": [
+        "SF1: mathematics-guide Figure 1"
+      ],
+      "kind": "figure",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ],
+      "check_groups": [
+        "conditional_mean_and_log"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The guide figure generator checks the stated values; the result-check script adds independent integration or regression examples for the linked scientific result.",
+      "expected": {
+        "W_max": 1.0,
+        "theta": 4.0,
+        "omega_squared": 1.0,
+        "environmental_variance": 1.0
+      },
+      "related_results": [
+        "conditional_target",
+        "environmental_convolution"
+      ],
+      "reference_files": [
+        "tutorials/mathematics/figures/math_guide_fig1.pdf"
+      ]
+    },
+    {
+      "id": "sf1_figure_2",
+      "title": "Compare the linear and centred quadratic contributions",
+      "locations": [
+        "SF1: mathematics-guide Figure 2"
+      ],
+      "kind": "figure",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ],
+      "check_groups": [
+        "gaussian_projection"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The guide figure generator checks the stated values; the result-check script adds independent integration or regression examples for the linked scientific result.",
+      "expected": {
+        "b": 2.0,
+        "H": -0.5,
+        "G": 1.0,
+        "V_linear": 4.0,
+        "V_quadratic": 0.125,
+        "share": 0.9696969696969697
+      },
+      "related_results": [
+        "gaussian_variance",
+        "affine_projection"
+      ],
+      "reference_files": [
+        "tutorials/mathematics/figures/math_guide_fig2.pdf"
+      ]
+    },
+    {
+      "id": "sf1_figure_3",
+      "title": "Reproductive weighting gives a selected-parent distribution",
+      "locations": [
+        "SF1: mathematics-guide Figure 3"
+      ],
+      "kind": "figure",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ],
+      "check_groups": [
+        "selected_parent_moments"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The guide figure generator checks the stated values; the result-check script adds independent integration or regression examples for the linked scientific result.",
+      "expected": {
+        "mean": 1.3333333333333333,
+        "variance": 0.6666666666666666
+      },
+      "related_results": [
+        "selected_gaussian",
+        "share_not_displacement_accuracy"
+      ],
+      "reference_files": [
+        "tutorials/mathematics/figures/math_guide_fig3.pdf"
+      ]
+    },
+    {
+      "id": "sf1_figure_4",
+      "title": "Iterate the scalar covariance closure",
+      "locations": [
+        "SF1: mathematics-guide Figure 4"
+      ],
+      "kind": "figure",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ],
+      "check_groups": [
+        "inheritance_matrix_and_limits"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The guide figure generator checks the stated values; the result-check script adds independent integration or regression examples for the linked scientific result.",
+      "expected": {
+        "B": 1.0,
+        "gamma": 0.5,
+        "rho": 0.5,
+        "g0": 1.0,
+        "fixed_point": 0.7807764064044151
+      },
+      "related_results": [
+        "scalar_inheritance",
+        "rho_one_limit"
+      ],
+      "reference_files": [
+        "tutorials/mathematics/figures/math_guide_fig4.pdf"
+      ]
+    },
+    {
+      "id": "sf1_figure_5",
+      "title": "From phenotype moments to log conditional-fitness parameters",
+      "locations": [
+        "SF1: mathematics-guide Figure 5"
+      ],
+      "kind": "figure",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ],
+      "check_groups": [
+        "phenotype_regression_conversion"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The guide figure generator checks the stated values; the result-check script adds independent integration or regression examples for the linked scientific result.",
+      "expected": {
+        "P": 1.5,
+        "beta": 0.4,
+        "gamma": -0.2,
+        "G": 0.5,
+        "alpha": 1.15,
+        "selected_G": 0.41,
+        "b": 0.4878048780487805,
+        "H": -0.4390243902439024
+      },
+      "related_results": [
+        "phenotype_conversion"
+      ],
+      "reference_files": [
+        "tutorials/mathematics/figures/math_guide_fig5.pdf"
+      ]
+    },
+    {
+      "id": "sf1_calculations",
+      "title": "Every numerical checkpoint and the multivariate extension",
+      "locations": [
+        "SF1: Sections 2–10; checks 1–11"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "guide_figures",
+        "simulation_archive"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "All eleven numerical/conceptual checkpoints are mapped below. Section 9 extends these same identities to matrices; its Figure 3 covariance example is covered by the main figure record.",
+      "related_results": [
+        "conditional_target",
+        "environmental_convolution",
+        "gaussian_variance",
+        "affine_projection",
+        "nested_noisy_R2",
+        "covariance_scaling",
+        "coordinate_invariance",
+        "selected_gaussian",
+        "share_not_displacement_accuracy",
+        "scalar_inheritance",
+        "rho_one_limit",
+        "phenotype_conversion",
+        "prediction_shrinkage",
+        "matrix_inheritance",
+        "finite_population_check"
+      ],
+      "reference_files": [
+        "tutorials/mathematics/guide.pdf",
+        "tutorials/mathematics/guide.tex"
+      ],
+      "checkpoint_map": {
+        "1": [
+          "conditional_target"
+        ],
+        "2": [
+          "conditional_target"
+        ],
+        "3": [
+          "gaussian_variance"
+        ],
+        "4": [
+          "gaussian_variance"
+        ],
+        "5": [
+          "coordinate_invariance"
+        ],
+        "6": [
+          "selected_gaussian"
+        ],
+        "7": [
+          "share_not_displacement_accuracy"
+        ],
+        "8": [
+          "scalar_inheritance"
+        ],
+        "9": [
+          "rho_one_limit"
+        ],
+        "10": [
+          "finite_population_check"
+        ],
+        "11": [
+          "phenotype_conversion"
+        ]
+      }
+    },
+    {
+      "id": "estimation_default",
+      "title": "Two-stage estimation from repeated measurements and offspring counts",
+      "locations": [
+        "Main: estimating the variance share",
+        "SF3: Steps 1–4 and table of estimates"
+      ],
+      "kind": "estimation",
+      "commands": [
+        "estimation",
+        "estimation_checks",
+        "reference_comparison"
+      ],
+      "check_groups": [],
+      "assumptions": [
+        "The specified simulated trait is wholly additive; repeated independent measurement environments identify its variance in this teaching model.",
+        "Count likelihood integrates over latent breeding-value uncertainty; zero counts remain in the data.",
+        "The primary fitted family restricts H≤0."
+      ],
+      "evidence_scope": "The generating breeding values are kept separate from the estimator. The calibrated latent-variable model, not observed plant height alone, supplies the breeding-value quantities. This is simulated data, not an empirical estimate.",
+      "expected": {
+        "settings": {
+          "n": 800,
+          "repeats": 3,
+          "G": 1.0,
+          "E": 1.0,
+          "b": 0.7,
+          "H": -0.7,
+          "mean_output": 4.0,
+          "quartic": 0,
+          "seed": 20261005
+        },
+        "truth": {
+          "b": 0.7,
+          "H": -0.7,
+          "G": 1.0,
+          "V_lin": 0.48999999999999994,
+          "V_quad": 0.24499999999999997,
+          "A_g": 0.6666666666666667,
+          "full_log_mean_R2": 0.6666666666666667
+        },
+        "estimate": {
+          "b": 0.6825596268213241,
+          "H": -0.7697991738587763,
+          "G": 1.0021488086470591,
+          "V_lin": 0.46688874756480814,
+          "V_quad": 0.29757011631139735,
+          "A_g": 0.6107441088424803,
+          "alpha": 1.4234060616912736,
+          "mu": -0.019910277326608612,
+          "E": 0.979881353359702,
+          "reliability": 0.7541894676981246,
+          "boundary": false,
+          "loglik": -1648.429878206117
+        },
+        "naive": {
+          "b": 0.5904787416712503,
+          "H": -0.6680475159850289,
+          "G": 0.7558100765478352,
+          "V_lin": 0.2635246294525738,
+          "V_quad": 0.12747061075892194,
+          "A_g": 0.673984239066514
+        },
+        "zero_count": 88
+      },
+      "reference_files": [
+        "examples/estimating_variance_share/results/summary.json",
+        "examples/estimating_variance_share/results/observed_data.csv",
+        "examples/estimating_variance_share/results/simulation_truth.csv",
+        "examples/estimating_variance_share/results/estimates.csv"
+      ]
+    },
+    {
+      "id": "estimation_bootstrap",
+      "title": "Joint refitting and model-conditional uncertainty",
+      "locations": [
+        "SF3: Step 5, intervals and component figure"
+      ],
+      "kind": "estimation",
+      "commands": [
+        "estimation",
+        "estimation_checks",
+        "reference_comparison"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "All 500 parametric replicates recalibrate measurement and genetic variance and refit the conditional mean. The interval reflects uncertainty under the fitted model, not uncertainty that the biological or quadratic model is correct.",
+      "expected": {
+        "intervals": {
+          "b": [
+            0.6003343446239241,
+            0.7788854754210665
+          ],
+          "H": [
+            -0.9167190168505176,
+            -0.6301326413133982
+          ],
+          "G": [
+            0.8766421869408043,
+            1.136257187178964
+          ],
+          "V_lin": [
+            0.3547493952803019,
+            0.5996023824847114
+          ],
+          "V_quad": [
+            0.19563595533185063,
+            0.42117752534569264
+          ],
+          "A_g": [
+            0.533023924839025,
+            0.685712668631295
+          ]
+        },
+        "bootstrap_replicates": 500,
+        "bootstrap_failed": [],
+        "bootstrap_boundary": 0
+      },
+      "reference_files": [
+        "examples/estimating_variance_share/results/bootstrap_draws.csv",
+        "examples/estimating_variance_share/results/summary.json"
+      ]
+    },
+    {
+      "id": "estimation_integration",
+      "title": "Latent integration, recovery and explicit numerical failures",
+      "locations": [
+        "SF3: likelihood calculation and integration checks"
+      ],
+      "kind": "estimation",
+      "commands": [
+        "estimation",
+        "estimation_checks"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "Checks include a closed expected-output formula, an independent adaptive likelihood integral, the known-value limit, repeated-seed recovery, more quadrature points, and rejection of unresolved integration or failed variance calibration.",
+      "expected": {
+        "integration": {
+          "fit": {
+            "order": 41,
+            "checked_order": 81,
+            "boundary": false
+          },
+          "alternative": {
+            "order": 41,
+            "checked_order": 81,
+            "boundary": false
+          }
+        },
+        "quadrature_change": {
+          "b": 3.3928415632544784e-13,
+          "H": 2.4791280139879746e-13,
+          "A_g": 8.315570454442422e-14
+        }
+      },
+      "reference_files": [
+        "examples/estimating_variance_share/results/summary.json"
+      ]
+    },
+    {
+      "id": "estimation_quartic",
+      "title": "Model shape, diagnostics and the local-versus-full distinction",
+      "locations": [
+        "SF3: Step 5; eq:quarticvar, eq:quarticR2"
+      ],
+      "kind": "estimation",
+      "commands": [
+        "estimation",
+        "result_checks",
+        "estimation_checks",
+        "quartic_case"
+      ],
+      "check_groups": [
+        "local_quadratic_and_full_curve"
+      ],
+      "assumptions": [],
+      "evidence_scope": "The default AIC comparison uses the same measurement calibration for both fits. The quartic generating example retains the local derivatives but changes the full-curve regression. Its model-conditional bootstrap cannot remove misspecification.",
+      "expected": {
+        "default_quartic_minus_quadratic_AIC": 3.4108830155041687,
+        "generating_quartic_strength": 0.08,
+        "generating_local_quadratic_share": 0.6666666666666666,
+        "generating_full_curve_R2": 0.24240625309191652
+      },
+      "reference_files": [
+        "examples/estimating_variance_share/results/summary.json"
+      ]
+    },
+    {
+      "id": "sf3_figure_1",
+      "title": "Observed counts and latent conditional relationship",
+      "locations": [
+        "SF3: Figure 1"
+      ],
+      "kind": "figure",
+      "commands": [
+        "estimation"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The figure and its numerical records are generated from the same simulated dataset and fitted model. Diagnostic bars condition on fitted parameters and are not confidence bands for the fitness surface.",
+      "related_results": [
+        "estimation_default",
+        "estimation_integration"
+      ],
+      "reference_files": [
+        "examples/estimating_variance_share/results/case1_relationship.pdf"
+      ],
+      "outputs": [
+        "outputs/estimation/case1_relationship.pdf",
+        "outputs/estimation/case1_relationship.png"
+      ]
+    },
+    {
+      "id": "sf3_figure_2",
+      "title": "Component estimates, naive comparison and conditional interval",
+      "locations": [
+        "SF3: Figure 2"
+      ],
+      "kind": "figure",
+      "commands": [
+        "estimation"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The figure and its numerical records are generated from the same simulated dataset and fitted model. Diagnostic bars condition on fitted parameters and are not confidence bands for the fitness surface.",
+      "related_results": [
+        "estimation_default",
+        "estimation_bootstrap"
+      ],
+      "reference_files": [
+        "examples/estimating_variance_share/results/case2_components.pdf"
+      ],
+      "outputs": [
+        "outputs/estimation/case2_components.pdf",
+        "outputs/estimation/case2_components.png"
+      ]
+    },
+    {
+      "id": "sf3_figure_3",
+      "title": "Observable-bin predictions and zero-count checks",
+      "locations": [
+        "SF3: Figure 3"
+      ],
+      "kind": "figure",
+      "commands": [
+        "estimation"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The figure and its numerical records are generated from the same simulated dataset and fitted model. Diagnostic bars condition on fitted parameters and are not confidence bands for the fitness surface.",
+      "related_results": [
+        "estimation_default",
+        "estimation_quartic"
+      ],
+      "reference_files": [
+        "examples/estimating_variance_share/results/case3_diagnostics.pdf"
+      ],
+      "outputs": [
+        "outputs/estimation/case3_diagnostics.pdf",
+        "outputs/estimation/case3_diagnostics.png"
+      ]
+    },
+    {
+      "id": "sf2_reproduction_resources",
+      "title": "Runnable scientific source, reference data and result checks",
+      "locations": [
+        "SF2: reproducibility resources"
+      ],
+      "kind": "coverage_group",
+      "commands": [
+        "main_figures",
+        "core_mathematics",
+        "result_checks",
+        "simulation_archive",
+        "estimation",
+        "reference_comparison"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The repository contains source and reference records for scientific reproduction; this entry groups resources rather than asserting another result.",
+      "related_results": [
+        "main_figure_1",
+        "main_figure_2",
+        "main_figure_3",
+        "main_figure_4",
+        "appendix_S1",
+        "appendix_S2",
+        "appendix_S3",
+        "appendix_S4",
+        "appendix_S5",
+        "appendix_S6",
+        "appendix_S7",
+        "sf1_calculations",
+        "estimation_default",
+        "estimation_bootstrap"
+      ]
+    },
+    {
+      "id": "introductory_examples",
+      "title": "Observation means, population-fitted lines and parental shift",
+      "locations": [
+        "Introductory notes, worksheet and slides"
+      ],
+      "kind": "tutorial",
+      "commands": [
+        "intro_checks",
+        "intro_figures",
+        "result_checks"
+      ],
+      "check_groups": [
+        "conditional_mean_and_log",
+        "selected_parent_moments"
+      ],
+      "assumptions": [],
+      "evidence_scope": "These are specified teaching observations and Gaussian model examples, not empirical estimates.",
+      "expected": {
+        "count_group_means": [
+          1.0,
+          2.0,
+          4.0
+        ],
+        "population_variances": [
+          1.0,
+          0.25
+        ],
+        "shares": [
+          0.6666666666666666,
+          0.8888888888888888
+        ],
+        "parental_shifts": [
+          1.3333333333333333,
+          2.0
+        ]
+      },
+      "reference_files": [
+        "tutorials/introduction/notes.pdf",
+        "tutorials/introduction/worksheet.pdf",
+        "tutorials/introduction/slides.pdf"
+      ]
+    },
+    {
+      "id": "geometry_comparisons",
+      "title": "Rotate, narrow or move a Gaussian population on one fixed surface",
+      "locations": [
+        "Geometry tutorial; two-page figure and offline explorer"
+      ],
+      "kind": "tutorial",
+      "commands": [
+        "geometry_values",
+        "geometry_visuals"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "All seven model cases are quadrature-checked. B and D have the same share through different combinations of covariance and distance from the peak; the projection triangle is in function space, not a path of evolution.",
+      "expected": {
+        "comparison_A_share": 0.603954030378526,
+        "comparison_B_share": 0.9327200424967854,
+        "comparison_C_share": 0.0,
+        "comparison_D_share": 0.9327200424967854
+      },
+      "related_results": [
+        "appendix_figure_A2",
+        "main_figure_3",
+        "share_not_displacement_accuracy"
+      ],
+      "reference_files": [
+        "tutorials/geometry/values.json"
+      ]
+    },
+    {
+      "id": "parental_weighting_examples",
+      "title": "Frequency, expected-output and recorded-count weights",
+      "locations": [
+        "Parental-weighting tutorial and offline explorer"
+      ],
+      "kind": "tutorial",
+      "commands": [
+        "parental_weighting"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The fixed 20,000-parent cloud and 800-genotype count example keep population weights, expected reproductive weights and realised count weights separate. Their weighted means concern parents; no offspring breeding-value distribution is inferred.",
+      "expected": {
+        "cloud_individuals": 20000,
+        "cloud_sample_plane_R2": 0.9020951784111114,
+        "cloud_group_shares": [
+          0.15899999999999959,
+          0.2846675159568362,
+          0.34126809148769216
+        ],
+        "cloud_relative_overestimate": 0.3007590568363574,
+        "count_example_individuals": 800,
+        "observed_total_offspring": 2862,
+        "zero_counts": 88,
+        "count_example_group_shares": [
+          0.15250000000000005,
+          0.21293967897280972,
+          0.37126583076213493,
+          0.20440251572327045
+        ]
+      },
+      "related_results": [
+        "conditional_target",
+        "share_not_displacement_accuracy",
+        "estimation_default"
+      ],
+      "reference_files": [
+        "tutorials/parental_weighting/data/results.json"
+      ]
+    },
+    {
+      "id": "shiny_exploration",
+      "title": "Change measurement uncertainty, sample size and model shape",
+      "locations": [
+        "SF3: companion Shiny app"
+      ],
+      "kind": "interactive_tutorial",
+      "commands": [
+        "shiny"
+      ],
+      "check_groups": [],
+      "assumptions": [],
+      "evidence_scope": "The app calls the same estimation functions as the batch analysis. A changed scenario is an exploratory result; a download records its settings and completed bootstrap.",
+      "related_results": [
+        "estimation_default",
+        "estimation_bootstrap",
+        "estimation_quartic"
+      ]
+    }
+  ]
+}

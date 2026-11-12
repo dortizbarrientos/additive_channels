@@ -38,7 +38,7 @@ def main():
     }
     if result['data_source']=='archived diagnostic tables':
         if not np.isclose(value,0.015667885704792002,atol=1e-12,rtol=0):
-            raise ValueError('Archived-data summary differs from the manuscript value')
+            raise ValueError('Archived-data summary differs from the reference value')
     metrics=diagnostic_summary(df)
     result['diagnostic_summary']=metrics
     if result['data_source']=='archived diagnostic tables':

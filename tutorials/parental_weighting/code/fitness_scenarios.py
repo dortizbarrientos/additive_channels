@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Reproduce the four figures and write their parameters and numerical results to outputs/.
+"""Retain the scientific scenarios used to recover one fixed parental cloud.
 
-Run python code/figures.py from the repository root. The random seed is fixed.
+The ordered random draws reproduce Figure 2 of the accompanying paper.
+This module is imported by calculate.py; its scientific functions and random
+stream are retained from the public generator at commit 10a865c.
 """
 
 from __future__ import annotations
@@ -28,7 +30,7 @@ import numpy as np
 
 
 
-MANUSCRIPT_RESULTS = {
+SCIENTIFIC_RESULTS = {
     "conditional_fitness": (
         "Definition: W_A(a) = E[W | A=a].  Average individual fitness at a "
         "fixed breeding value before taking the logarithm."
@@ -72,7 +74,7 @@ MANUSCRIPT_RESULTS = {
 
 
 
-MANUSCRIPT_EQUATION_LABELS = {
+EQUATION_LABELS = {
     "conditional_fitness": "eq:target",
     "log_conditional_fitness": "eq:target",
     "local_expansion": "eq:taylor",
@@ -148,7 +150,7 @@ def _style_axis(ax: plt.Axes, *, grid: bool = True) -> None:
 
 
 def _save_figure(fig: plt.Figure, stem: str) -> dict[str, str]:
-    """Save one scientific figure as vector PDF and a PNG review copy."""
+    """Save one scientific figure as vector PDF and a PNG preview."""
 
     FIGURE_DIR.mkdir(parents=True, exist_ok=True)
     pdf_path = FIGURE_DIR / f"{stem}.pdf"
@@ -261,7 +263,7 @@ def variance_components(
 
 
 def first_order_share(v_lin: float, v_quad: float) -> float:
-    """Return A_g, with the boundary convention stated in the manuscript.
+    """Return A_g, with the boundary convention for the variance-share calculation.
 
     Main-text result
     ----------------
@@ -319,7 +321,7 @@ def fixed_baseline_update(
 def make_figure_1() -> dict[str, Any]:
     """Build Figure 1: average fitness first, then take its logarithm.
 
-    Panels and manuscript results
+    Panels and scientific results
     -----------------------------
     A. ``conditional_fitness``.  Repeated residual outcomes at the same
        breeding value are averaged to construct W_A(a).
@@ -508,10 +510,10 @@ def make_figure_1() -> dict[str, Any]:
     fig.subplots_adjust(wspace=0.34)
     paths = _save_figure(fig, "figure1_conditional_fitness")
     return {
-        "manuscript_results": [
-            MANUSCRIPT_RESULTS["conditional_fitness"],
-            MANUSCRIPT_RESULTS["log_conditional_fitness"],
-            MANUSCRIPT_RESULTS["local_expansion"],
+        "scientific_results": [
+            SCIENTIFIC_RESULTS["conditional_fitness"],
+            SCIENTIFIC_RESULTS["log_conditional_fitness"],
+            SCIENTIFIC_RESULTS["local_expansion"],
         ],
         "parameters": {
             "theta": theta,
@@ -681,9 +683,9 @@ def make_figure_2() -> dict[str, Any]:
     paths = _save_figure(fig, "figure2_projection_identity")
 
     return {
-        "manuscript_results": [
-            MANUSCRIPT_RESULTS["variance_share"],
-            MANUSCRIPT_RESULTS["projection_identity"],
+        "scientific_results": [
+            SCIENTIFIC_RESULTS["variance_share"],
+            SCIENTIFIC_RESULTS["projection_identity"],
         ],
         "parameters": {
             "random_seed": SEED + 2,
@@ -844,10 +846,10 @@ def make_figure_3() -> dict[str, Any]:
     paths = _save_figure(fig, "figure3_covariance_contraction")
 
     return {
-        "manuscript_results": [
-            MANUSCRIPT_RESULTS["local_expansion"],
-            MANUSCRIPT_RESULTS["variance_share"],
-            MANUSCRIPT_RESULTS["scaling"],
+        "scientific_results": [
+            SCIENTIFIC_RESULTS["local_expansion"],
+            SCIENTIFIC_RESULTS["variance_share"],
+            SCIENTIFIC_RESULTS["scaling"],
         ],
         "parameters": {
             "b": b,
@@ -892,7 +894,7 @@ def scalar_fixed_point(B: float, gamma: float, rho: float) -> float:
     ``scalar_dynamics``.  For gamma>0 the positive quadratic root is used.
     For gamma=0 there is no covariance compression and g*=B.  The function is
     restricted to rho<1 because rho=1 is the separate collapse boundary
-    G_t=(G_0^{-1}+t Gamma)^{-1} discussed in the manuscript.
+    G_t=(G_0^{-1}+t Gamma)^{-1} for complete retention.
     """
 
     if B <= 0.0 or gamma < 0.0 or not 0.0 <= rho < 1.0:
@@ -1068,11 +1070,11 @@ def make_figure_4() -> dict[str, Any]:
     fig.subplots_adjust(wspace=0.32)
     paths = _save_figure(fig, "figure4_fixedB_trajectory")
     return {
-        "manuscript_results": [
-            MANUSCRIPT_RESULTS["variance_share"],
-            MANUSCRIPT_RESULTS["fixed_B_recursion"],
-            MANUSCRIPT_RESULTS["scalar_dynamics"],
-            MANUSCRIPT_RESULTS["scaling"],
+        "scientific_results": [
+            SCIENTIFIC_RESULTS["variance_share"],
+            SCIENTIFIC_RESULTS["fixed_B_recursion"],
+            SCIENTIFIC_RESULTS["scalar_dynamics"],
+            SCIENTIFIC_RESULTS["scaling"],
         ],
         "parameters": {
             "n_dimensions": n_dimensions,
@@ -1133,8 +1135,8 @@ def main() -> None:
                 "Every scientific calculation is linked to a named main-text result."
             ),
         },
-        "manuscript_result_map": MANUSCRIPT_RESULTS,
-        "manuscript_equation_labels": MANUSCRIPT_EQUATION_LABELS,
+        "result_map": SCIENTIFIC_RESULTS,
+        "equation_labels": EQUATION_LABELS,
         "figure1": make_figure_1(),
         "figure2": make_figure_2(),
         "figure3": make_figure_3(),

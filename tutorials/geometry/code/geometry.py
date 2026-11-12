@@ -4,10 +4,10 @@ All populations in this module are specified Gaussian models. The dots in the
 figures are simulated illustrations; they are not empirical observations and
 do not enter these population calculations.
 
-The manuscript writes the log-fitness Hessian as H. Here that matrix is
+Write the log-fitness Hessian as H. In these examples that matrix is
 -H_STRENGTH * I, and its sign-reversed stabilising curvature is
 Gamma = H_STRENGTH * I. Naming the scalar explicitly avoids confusing it with
-H itself or with the manuscript's genic covariance matrix B.
+H itself or with the genic covariance matrix B.
 
 Run from this module's directory with ``python3 code/geometry.py``. The script
 writes values.json and checks each analytic result by Gaussian quadrature.
@@ -27,7 +27,7 @@ PRINCIPAL_VARIANCES = np.array([0.20, 0.005])  # Variances, not standard deviati
 BASELINE_COVARIANCE = np.array([[1.0, 0.3], [0.3, 0.6]])
 
 # Each entry gives (label, covariance multiplier, distance-to-peak multiplier).
-# Cases A and B reproduce the covariance comparison in manuscript Figure 3.
+# Cases A and B reproduce the covariance comparison in Figure 3 of the accompanying paper.
 # Cases C and D are additional teaching examples on the same fixed surface.
 COMPARISONS = [
     ("A", 1.0, 1.0),

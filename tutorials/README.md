@@ -1,12 +1,52 @@
-# Learn the variance share
+# Why can a curved fitness relationship look linear?
 
-Start with the [one-trait visual explanation](one_trait_visual/README.md), which is also the first figure in the paper’s visual appendix. It separates the fitness curve, the population density, the fitted line and the variance components. Then use the [two-trait geometry guide](geometry/README.md) to turn the distribution on a fixed surface. The [parental-weighting guide](parental_weighting/README.md) explains why describing fitness variation and predicting selected-parent means require different weights. Both visual guides include offline HTML explorers.
+Two populations can share the same relationship between breeding value and expected reproduction, yet differ in how well a line describes fitness variation. The breeding values present—and how often they occur—help determine the fit. These tutorials let you change the population, inspect individual parents, and estimate the share from noisy measurements.
 
-1. **Read:** [illustrated introduction](introduction/notes.pdf). Start from observed offspring counts, compare two breeding-value distributions on the same curve, then calculate the selected-parent mean.
-2. **Try the calculation:** [worksheet with solutions](introduction/worksheet.pdf). For a 35-minute class, start with zero and four offspring (5 min), compare the two populations (10 min), derive the fitted line (10 min), and calculate the parental shift (10 min). [Slides](introduction/slides.pdf), [editable slides](introduction/slides.pptx) and [speaker notes](introduction/speaker_notes.md) follow this sequence.
-3. **Follow the mathematics:** [full guide](mathematics/guide.pdf). Work from one trait through the Gaussian variance calculation, parental selection, the inheritance model, and the several-trait case. Section numbers in the guide navigate its own derivations; appendix references identify the corresponding results in the study.
-4. **Estimate rather than derive:** the [worked example](../examples/estimating_variance_share/worked_example.pdf) uses three noisy height measurements and surviving offspring counts. Open the [interactive app](../examples/estimating_variance_share/) to vary the data-generating assumptions.
+[![One fitness curve, three populations and three linear shares](one_trait_visual/figures/one_trait_additive_channel.png)](one_trait_visual/README.md)
 
-**Rebuild teaching materials.** The PDFs are ready to read. To edit and compile them, run `bash run_all.sh --tutorials` from the repository root. Install TeX Live or MacTeX with pdfLaTeX, latexmk, BibTeX, latex-extra, science and recommended fonts; Node.js with npm; and LibreOffice (`soffice`). The script generates the diagrams, compiles the LaTeX sources, and builds the editable PowerPoint and PDF export. On first use it installs PptxGenJS locally if missing. The worked-example PDF uses the reference tables and figures shipped beside its source.
+## Start with a question
 
-To rebuild only these visual companions, run `bash tutorials/build_visuals.sh`. This does not require TeX, R, Node.js, SLiM or presentation software. See the individual module README files for optional PowerPoint export dependencies.
+| Question | Explore | Check your understanding |
+|---|---|---|
+| **Can the population change the fit while the curve stays fixed?** | [One-trait walkthrough](one_trait_visual/README.md): compare a broad population, a narrow one and a population at the peak. | Explain why narrowing raises the share in one comparison but leaves it at zero in another. |
+| **Does the direction of genetic variation matter?** | [Two-trait geometry](geometry/README.md): rotate the population on a fixed surface. | Separate turning the population from turning the viewing angle. |
+| **Does a close fit predict who contributes to reproduction?** | [Follow individual parents](parental_weighting/README.md): switch from frequency weights to reproductive weights. | Compare the two weighted parental means; neither is an offspring mean. |
+| **Can the share be estimated from observations?** | [Worked example and Shiny app](../examples/estimating_variance_share/README.md): use repeated height measurements and offspring counts. | Compare measurement uncertainty with failure of the quadratic assumption. |
+| **Why do the formulas work?** | [Mathematics guide](mathematics/README.md): derive the one-trait result, then extend it to several traits and inheritance. | Use the checkpoints and worked answers before moving to the next calculation. |
+
+The examples use specified mathematical populations or simulated data. Their generating values are available so you can check a calculation against a known answer. For a particular figure, formula or proof, use the [result index](../RESULTS.md) to find its source, output and numerical check.
+
+## Open an explorer in your browser
+
+Download either self-contained HTML file and open the saved file in a browser:
+
+- [Download the geometry explorer](geometry/rotate_the_cloud.html?raw=1).
+- [Download the parental-weighting explorer](parental_weighting/explore_parental_cloud.html?raw=1).
+
+On GitHub, use **Download raw file** if a link opens the file viewer. If you downloaded the repository ZIP, unzip it first and double-click the HTML file in its tutorial folder. Both explorers work offline; they need no Python installation or local server. The module guides above give a short experiment to try in each.
+
+## Estimate a share in Shiny
+
+From the downloaded or cloned repository's root, run:
+
+```bash
+bash run_shiny.sh
+```
+
+Use Python 3.11 or newer. The launcher installs missing Python dependencies into a local environment on first use, then starts the app on your computer. Open `http://127.0.0.1:8000` if the browser does not open automatically. Stop the app with **Ctrl-C** in the terminal. [The app guide](../examples/estimating_variance_share/README.md) explains the controls, downloads and alternative port setting.
+
+## Teach a short class
+
+The [illustrated introduction](introduction/README.md) starts with offspring counts, derives the fitted line, and asks whether that line predicts the selected-parent mean. It includes a four-page explanation, a worksheet with solutions, slides, editable PowerPoint and speaker notes. A suggested 35-minute sequence is included.
+
+## Rebuild the materials
+
+The PDFs, slides and explorers are ready to use. To regenerate the three visual modules, run this from the repository root:
+
+```bash
+bash tutorials/build_visuals.sh
+```
+
+It uses the Python dependencies in the root requirements and needs no TeX, Node.js, R, SLiM or presentation software. Each module explains its independent numerical checks and optional PowerPoint export.
+
+To rebuild the full teaching collection, run `bash run_all.sh --tutorials`. In addition to the Python requirements, install TeX Live or MacTeX with pdfLaTeX, latexmk, BibTeX, latex-extra, science and recommended fonts; Node.js with npm; and LibreOffice (`soffice`). The script rebuilds the diagrams, LaTeX PDFs, editable slides and slide PDF. First use installs PptxGenJS locally if needed. The worked-example PDF uses the reference tables and figures shipped beside its source.

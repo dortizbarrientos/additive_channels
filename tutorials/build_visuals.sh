@@ -8,3 +8,4 @@ python_bin="${PYTHON_BIN:-python3}"
 "$python_bin" tutorials/one_trait_visual/make_figure.py
 bash tutorials/geometry/run.sh
 bash tutorials/parental_weighting/run.sh
+"$python_bin" code/build_readme_visuals.py

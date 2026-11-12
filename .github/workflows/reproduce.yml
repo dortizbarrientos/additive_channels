@@ -15,6 +15,8 @@ jobs:
         run: python -m pip install -r requirements-app.txt -c requirements-tested.txt
       - name: Reproduce the figures, simulation summary and bootstrap estimates
         run: bash run_all.sh
+      - name: Rebuild the visual explanations and offline explorers
+        run: bash run_all.sh --visuals
       - name: Check the estimator independently
         run: python -m unittest discover -s examples/estimating_variance_share -p 'test_*.py' -v
       - name: Check that the Shiny app serves the example

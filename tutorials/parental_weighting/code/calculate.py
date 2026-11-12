@@ -4,7 +4,7 @@ import numpy as np, json, csv
 import matplotlib
 from scipy.special import softmax
 from scipy.stats import norm
-from manuscript_figures import _draw_current_state, variance_components, first_order_share, SEED
+from fitness_scenarios import _draw_current_state, variance_components, first_order_share, SEED
 root=Path(__file__).resolve().parents[1]; data=root/'data'; out=root/'figures'
 sample_n=20000; scenario=25
 def fit(x,y):
@@ -14,7 +14,7 @@ def fit(x,y):
 def calc():
     import gzip
     rng=np.random.default_rng(SEED+2); errors=[]
-    ref=json.loads((data/'manuscript_figure_results.json').read_text())['figure2']['results']
+    ref=json.loads((data/'fitness_scenario_results.json').read_text())['figure2']['results']
     # Repeat the ordered draws from the reference script; don't seed a new cloud.
     for n in [2,4,8]:
         for j in range(120):
@@ -33,7 +33,7 @@ def calc():
         assert abs(v-ref[found])<1e-10,(k,v,ref[found])
     X,b,H,G,analytic,empirical=picked
     # A constant in log expected fitness cannot affect normalised parental weights.
-    # The original manuscript centres its quadratic term; the identical convention is used here.
+    # The Figure 2 calculation centres its quadratic term; the same convention is used here.
     f=X@b+.5*(np.einsum('ni,ij,nj->n',X,H,X)-np.trace(H@G))
     coef,fl,r2=fit(X,f); weights=np.array([np.full(len(X),1/len(X)),softmax(f),softmax(fl)])
     # Express both axes in the starting cloud's own SD so distances do not depend on trait units.

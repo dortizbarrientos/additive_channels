@@ -1,4 +1,4 @@
-"""Reproduce numerical checks of the manuscript's mathematical identities."""
+"""Reproduce numerical checks of covariance scaling, selection and inheritance."""
 from pathlib import Path
 import json
 import numpy as np
