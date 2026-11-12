@@ -24,13 +24,13 @@
 \begin{document}
 \maketitle
 
-Suppose taller plants tend to leave more offspring, but the advantage weakens and eventually reverses. How much of the variation in log expected fitness can a straight line still describe? This example estimates that share from noisy height measurements and offspring counts. The five steps are: define the observations, fit expected fitness, obtain slope and curvature, calculate the variance components, and assess uncertainty and model adequacy. The accompanying Shiny app uses exactly the same analysis code.
+Suppose taller plants tend to leave more offspring, but the advantage weakens and eventually reverses. How much of the variation in log expected fitness can a straight line still describe? This example estimates that share from noisy height measurements and offspring counts. It follows the five steps in the manuscript's section \emph{Estimating the variance share}: define the observations, fit expected fitness, obtain slope and curvature, calculate the variance components, and assess uncertainty and model adequacy. The accompanying Shiny app uses exactly the same analysis code.
 
 We simulate one population during one reproductive episode, so we know the true share before we fit the model. Comparing the estimate with that value checks the estimation procedure. It does not test inheritance or predict an offspring mean.
 
 \section{Step 1: define the population, trait and reproductive output}
 
-Consider 800 unrelated plant genotypes. In this model, a breeding value is the additive genetic contribution to height. Each genotype's value $A_i$ is expressed in centimetres relative to the population mean. To keep the example identifiable, assume that the genetic contribution to height is wholly additive. Three independent clonal replicates of each genotype provide height deviations $Y_{ij}$:
+Consider 800 unrelated plant genotypes. In this model, a breeding value is the additive genetic contribution to height. Each genotype's value $A_i$ is expressed in centimeters relative to the population mean. To keep the example identifiable, assume that the genetic contribution to height is wholly additive. Three independent clonal replicates of each genotype provide height deviations $Y_{ij}$:
 \begin{align}
  A_i&\sim N(0,G), & G&=1\ \mathrm{cm}^2,\label{eq:A}\\
  Y_{ij}&=A_i+e_{ij}, & e_{ij}&\sim N(0,E),\quad E=1\ \mathrm{cm}^2.\label{eq:measurement}
@@ -70,14 +70,14 @@ Averaging $m$ independent measurements reduces environmental variance to $E/m$. 
 \end{equation}
 The default data give $\widehat E=\EstimatedE$ and $\widehat G=\EstimatedG$. A nonpositive estimate of $G$ stops this analysis: the code does not replace it silently with a small positive number.
 
-Under the normal measurement model, the distribution of a genotype's centred breeding value $Z_i=A_i-\mu$ conditional on its height measurements is also normal. Substituting the calibrated parameters gives
+Let $\mu$ denote the population mean, which is zero in the generating model and estimated by $\widehat\mu=\bar Y$ when fitting the observations. Under the normal measurement model, a genotype's centered breeding value $Z_i=A_i-\mu$ is normally distributed conditional on its height measurements. Substituting the calibrated parameters gives
 \begin{align}
  r&=\frac{\widehat G}{\widehat G+\widehat E/m}, &
  M_i&=r(\bar Y_i-\bar Y),\label{eq:shrink}\\
  Z_i\mid Y_{i1},\ldots,Y_{im}&\sim N(M_i,v), &
  v&=\widehat G(1-r).\label{eq:posterior}
 \end{align}
-Here $r=\EstimatedReliability$. The quantity $M_i$ is a prediction of the centred breeding value; $v$ expresses the uncertainty that remains. Replacing $Z_i$ by $M_i$ and discarding $v$ would treat a prediction as an observation. Problems with using estimated breeding values in subsequent regressions are discussed by Hadfield et al.\ (2010).
+Here $r=\EstimatedReliability$. The quantity $M_i$ is a prediction of the centered breeding value; $v$ expresses the uncertainty that remains. Replacing $Z_i$ by $M_i$ and discarding $v$ would treat a prediction as an observation. Problems with using estimated breeding values in subsequent regressions are discussed by Hadfield et al.\ (2010).
 
 \subsection{Fit counts, without taking their logarithms}
 We now estimate $\alpha,b,H$ from reproductive counts. For each genotype, average the Poisson probability over the possible breeding values in Equation~\eqref{eq:posterior}:
@@ -88,9 +88,9 @@ We now estimate $\alpha,b,H$ from reproductive counts. For each genotype, averag
  \qquad \lambda(z)=\exp(\alpha+bz+Hz^2/2).
  \label{eq:likelihood}
 \end{equation}
-The symbol $\phi$ denotes a normal density. Each possible breeding value contributes according to its probability given the height measurements. We maximise $\sum_i\log L_i$. This takes logarithms of probabilities, not of offspring counts, so observations with $W_i=0$ present no difficulty. The use of a log link for expected fitness follows the distinction between response and link scales discussed by Morrissey and Goudie (2022).
+The symbol $\phi$ denotes a normal density. Each possible breeding value contributes according to its probability given the height measurements. We maximize $\sum_i\log L_i$. This takes logarithms of probabilities, not of offspring counts, so observations with $W_i=0$ present no difficulty. The use of a log link for expected fitness follows the distinction between response and link scales discussed by Morrissey and Goudie (2022).
 
-The implementation uses normal quadrature: it evaluates the integral at weighted points representing the normal distribution. The default fit uses 41 points. Repeating it with 81 points changes $b$, $H$ and $\Ag$ by less than $4\times10^{-13}$ in this dataset. For other settings and every bootstrap sample, the code increases the quadrature order and checks that the fitted coefficients and likelihood stabilise. It stops rather than reports an unresolved integral. Two starting values are used for optimisation. The primary fit restricts $H\leq0$, matching the stabilising family used here; this example is not designed to fit disruptive selection. Numerical parameter bounds are reported in the code, and a fit at a bound is flagged.
+The implementation uses normal quadrature: it evaluates the integral at weighted points representing the normal distribution. The default fit uses 41 points. Repeating it with 81 points changes $b$, $H$ and $\Ag$ by less than $4\times10^{-13}$ in this dataset. For other settings and every bootstrap sample, the code increases the quadrature order and checks that the fitted coefficients and likelihood stabilize. It stops rather than reports an unresolved integral. Two starting values are used for optimization. The primary fit restricts $H\leq0$, matching the stabilizing family used here; this example is not designed to fit disruptive selection. Numerical parameter bounds are reported in the code, and a fit at a bound is flagged.
 
 This is a \emph{two-stage estimator}. The height measurements determine $\widehat G$, $\widehat E$ and the conditional normal distributions; the counts then determine the fitness parameters. We do not claim that it is the most efficient estimator or that it replaces a joint pedigree or genomic analysis. The bootstrap below repeats both stages.
 
@@ -153,9 +153,9 @@ Group genotypes by their observed mean height. Within each group, compare mean o
 \end{figure}
 
 \subsection{Examine the quadratic assumption explicitly}
-The app can add a term $-\kappa a^4$ to the generating log mean, with $\kappa=0.08$. The primary analysis still fits a quadratic. A second fit includes cubic and quartic terms, allowing for an estimated population centre. Comparing the two fits shows how sensitive the result is to the assumed shape of the fitness curve. For the default quadratic data, quartic minus quadratic AIC is \AICDifference; a negative difference would favour the more flexible fit. The two fits share the measurement calibration. This approximate conditional-likelihood comparison is not a formal test of the observation model, and numerical boundaries can affect its interpretation.
+The app can add a term $-\kappa a^4$ to the generating log mean, with $\kappa=0.08$. The primary analysis still fits a quadratic. A second fit includes cubic and quartic terms, allowing for an estimated population center. Comparing the two fits shows how sensitive the result is to the assumed shape of the fitness curve. For the default quadratic data, quartic minus quadratic AIC is \AICDifference; a negative difference would favor the more flexible fit. The two fits share the measurement calibration. This approximate conditional-likelihood comparison is not a formal test of the observation model, and numerical boundaries can affect its interpretation.
 
-The fourth-order scenario demonstrates the difference between a local approximation and a fit to the complete curve. At $a=0$, the added term changes neither slope nor curvature, so the generating \emph{local quadratic share} remains $2/3$. Nevertheless, it changes variation over the population. For a centred Gaussian breeding value,
+The fourth-order scenario demonstrates a distinction that matters for the manuscript. At $a=0$, the added term changes neither slope nor curvature, so the generating \emph{local quadratic share} remains $2/3$. Nevertheless, it changes variation over the population. For a centered Gaussian breeding value,
 \begin{equation}
  \Var\{\tfrac12HA^2-\kappa A^4\}
  =\tfrac12H^2G^2-12H\kappa G^3+96\kappa^2G^4.
@@ -166,11 +166,11 @@ This follows from $\Var(A^2)=2G^2$, $\operatorname{Cov}(A^2,A^4)=12G^3$ and $\Va
  R^2_{\rm full}=\frac{b^2G}{b^2G+\tfrac12H^2G^2-12H\kappa G^3+96\kappa^2G^4}.
  \label{eq:quarticR2}
 \end{equation}
-At the stated parameters this is about 0.2424, despite the local quadratic share of 0.6667. A fitted quadratic can consequently summarise the wrong amount of variation when higher-order terms matter. Its bootstrap interval does not repair that mismatch. Nor is the local quadratic share from the quartic fit the $R^2$ of the complete quartic curve.
+At the stated parameters this is about 0.2424, despite the local quadratic share of 0.6667. A fitted quadratic can consequently summarize the wrong amount of variation when higher-order terms matter. Its bootstrap interval does not repair that mismatch. Nor is the local quadratic share from the quartic fit the $R^2$ of the complete quartic curve.
 
 \section{Using the files and app}
 
-From the repository root, run \texttt{bash run\_estimation.sh} to regenerate the default dataset, estimates, 500 bootstrap samples and three figures. Run \texttt{bash run\_shiny.sh} to open the companion app locally. If the required packages are missing, each command uses a local Python environment. The first installation requires an internet connection; later runs use the installed dependencies. No R installation or SLiM run is required.
+From the repository root, run \texttt{bash run\_estimation.sh} to regenerate the default dataset, estimates, 500 bootstrap samples and three figures. Run \texttt{bash run\_shiny.sh} to open the companion app locally. Both commands create a separate Python environment when needed. The first installation requires an internet connection; later runs use the installed dependencies. No R installation or SLiM run is required.
 
 The app follows the same sequence as this document. Its settings control population size, replication, genetic and environmental variance, slope, curvature, output at the mean and the random seed. Press \emph{Generate and estimate} after changing them. Bootstrap calculations use a separate button. Generating a new dataset clears its previous intervals. The download contains the displayed data, simulation truth, parameter settings, estimates and any completed bootstrap samples.
 

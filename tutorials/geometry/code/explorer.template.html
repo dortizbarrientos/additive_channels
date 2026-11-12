@@ -1,0 +1,69 @@
+<!doctype html><html lang="en-AU"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rotate a breeding-value cloud</title>
+<style>
+:root{--ink:#19343c;--teal:#006a72;--amber:#af4c26;--muted:#52686e;--line:#cbd9d8}*{box-sizing:border-box}body{margin:0;background:#fcfcf9;color:var(--ink);font:16px/1.48 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:22px 32px 40px}.over{color:var(--teal);font-size:.73rem;letter-spacing:.12em;font-weight:700;text-transform:uppercase}h1{font:600 clamp(1.8rem,4vw,2.65rem)/1.14 Georgia,serif;margin:10px 0}p{margin:7px 0;color:var(--muted)}.cols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,1fr);gap:24px;margin-top:18px}.plot,.side{background:white;border:1px solid var(--line);border-radius:9px;padding:14px}.plot{align-self:start}.side{padding:18px 20px}.side h2{font-size:1.04rem;margin:0 0 13px}.side h3{font-size:.89rem;margin:18px 0 4px}.control{display:flex;justify-content:space-between;align-items:center}input[type=range]{width:100%;accent-color:var(--teal);margin:5px 0 10px}output{font-weight:650;color:var(--teal)}.presets{display:flex;gap:7px;flex-wrap:wrap}button{padding:5px 10px;border:1px solid #9cb4b4;background:white;border-radius:5px;color:var(--ink);font:inherit;font-size:.9rem;cursor:pointer}button[aria-pressed=true]{background:var(--teal);color:white}button:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-offset:2px}svg{width:100%;height:auto;display:block}#scene{cursor:grab;touch-action:pan-y}#scene:active{cursor:grabbing}.legend{font-size:.83rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:5px 17px;margin:5px 3px}.legend b{color:var(--teal)}.legend span:last-child b{color:var(--amber)}.sep{border:0;border-top:1px solid var(--line);margin:15px 0}.ag{font:600 2.15rem/1.15 Georgia,serif;color:var(--teal)}.stat{display:grid;grid-template-columns:1fr auto;gap:3px 12px;align-items:baseline;font-size:.9rem}.math{font-family:Georgia,serif;font-style:italic}.small{font-size:.84rem}.check{display:block;font-size:.88rem;margin:4px 0}input[type=checkbox]{accent-color:var(--teal)}details{border-top:1px solid var(--line);padding-top:9px;margin-top:16px}summary{cursor:pointer;font-weight:650}.fit{color:var(--amber)}#reading{min-height:3.3em}h2,h3{color:var(--ink)}@media(max-width:740px){main{padding:17px 12px}.cols{grid-template-columns:1fr;gap:10px}.side{order:-1}.side h3{margin:10px 0 3px}.side{padding:12px 15px}.side .stat{max-width:400px}.over{font-size:.66rem}}
+</style><main><span class="over">Additive channels · geometry explorer</span><h1>Rotate the cloud on a fixed fitness surface</h1>
+<p>Each dot is a simulated parent. The two horizontal coordinates are its breeding values; its height is its log expected fitness. Rotate the cloud to change which breeding values occur together. Rotate the view to see the height differences.</p>
+<div class="cols"><section class="plot"><svg id="scene" viewBox="0 0 600 425" role="img" aria-label="Rotatable three-dimensional fitness surface with the breeding-value cloud, fitness peak and fitted plane"></svg>
+<div class="legend"><span><b>●</b> Parent on the surface</span><span><b>+</b> Fitness peak</span><span><b>– –</b> Fitted plane over the cloud</span></div>
+<div class="control small"><label for="camera">View from above or from the side</label><output id="elval"></output></div><input type="range" id="camera" min="5" max="90" value="28">
+<div class="control small"><label for="yaw">Turn the view</label><output id="yawval"></output></div><input type="range" id="yaw" min="-180" max="180" value="-22">
+<label class="check"><input type="checkbox" id="plane" checked> Draw the fitted plane</label><label class="check"><input type="checkbox" id="offspring"> Size dots by expected offspring instead of counting each parent once</label><p class="small">The controls above change the drawing. They do not change the population or the index.</p></section>
+<section class="side"><h2>Turn the population</h2><div class="control"><label for="turn">Angle to the uphill direction</label><output id="av"></output></div>
+<input type="range" min="0" max="90" step="1" value="0" id="turn"><div class="presets" id="presets"><button data-angle="0">Uphill · 0°</button><button data-angle="45">45°</button><button data-angle="90">Across · 90°</button></div><hr class="sep">
+<div class="small">Linear share of variance in log fitness</div><div class="ag" aria-live="polite"><i>A</i><sub>g</sub> = <span id="index"></span></div><p class="small" id="reading"></p>
+<div class="stat"><span>Variance from slope</span><b id="lin"></b><span>Variance from curvature</span><b id="quad"></b></div>
+<h3>Slice along the long axis</h3><svg id="slice" viewBox="0 0 320 142" role="img" aria-label="Log fitness on the surface and the plane along the cloud’s long axis"></svg><p class="small">Teal: log fitness on the curved surface. Dashed orange: the plane fitted using both traits. Heights are relative to log fitness at the population mean.</p>
+</section></div>
+<details><summary>How the figure is calculated</summary><p>The coordinates have been turned so the horizontal direction <i>u</i> points from the population mean towards the fitness peak and <i>v</i> runs across the slope. They are measured in the same units as the original breeding values. The fixed surface is ℓ = −0.4[(<i>u</i> − <span id="dist"></span>)² + <i>v</i>²] (peak distance rounded here). The population mean is (0,0); the variances along the long and short axes are 0.20 and 0.005. Both stay fixed.</p><p>For angle φ, the variance along the uphill direction is 0.20 cos²φ + 0.005 sin²φ. Multiply by the squared uphill slope, 0.6525, to obtain the linear variance. The curvature variance is 0.32(0.20² + 0.005²) = 0.012808 at every angle. Divide linear variance by their sum to obtain the index. These values use the full Gaussian distribution. Turning the same 225 sampled points illustrates how its orientation changes.</p><p>The fitted plane has the slope of the landscape at the mean. Its intercept is lower than the tangent plane's by 0.082 log units, because the best fit averages curvature across parents. The outline contains 90% of the Gaussian population. With expected-offspring weighting selected, dot <em>area</em> is proportional to exp(ℓ); the dots remain at the same positions. These are expected reproductive weights. No offspring counts or inheritance process are simulated.</p></details>
+</main><script>
+const draws=__DRAWS__, by=id=>document.getElementById(id), h=.8, peak=Math.hypot(.9375,.375), b=h*peak, rad=Math.PI/180, teal='#006a72',orange='#ad4d28',ink='#19343c';
+const f=(u,v)=>b*u-.4*(u*u+v*v), p=(u,v)=>b*u-.082;
+const pair=(angle,x,y)=>[x*Math.cos(angle)-y*Math.sin(angle),x*Math.sin(angle)+y*Math.cos(angle)];
+const fix=n=>n.toFixed(2);
+function render(){
+ const a=+by('turn').value,t=a*rad,cam=+by('camera').value*rad,yaw=+by('yaw').value*rad;
+ by('av').textContent=a+'°';by('elval').textContent=by('camera').value+'°';by('yawval').textContent=by('yaw').value+'°';by('dist').textContent=peak.toFixed(4);
+ document.querySelectorAll('button[data-angle]').forEach(e=>e.setAttribute('aria-pressed',+e.dataset.angle===a));
+ const L=b*b*(.20*Math.cos(t)**2+.005*Math.sin(t)**2),Q=.012808;
+ by('index').textContent=(L/(L+Q)).toFixed(3);by('lin').textContent=L.toFixed(5);by('quad').textContent=Q.toFixed(5);
+ by('reading').textContent=a===0?'Most variation lies in the uphill direction. The plane describes 91% of the variation in log fitness.':a===90?'The long axis lies across the slope. The cloud’s remaining width towards the peak keeps the index above zero.':'The further the cloud turns across the slope, the less variance lies in the uphill direction. Curvature variance stays fixed on this surface.';
+ const base=-1.03, X=304, Y=168;const P=(u,v,z)=>{const [l,d]=pair(yaw,u,v);return [X+132*l,Y+116*(d*Math.sin(cam)-z*Math.cos(cam))]};
+ const line=(ps,col,w=1,extra='')=>'<polyline fill="none" stroke="'+col+'" stroke-width="'+w+'" '+extra+' points="'+ps.map(q=>q.map(fix).join(',')).join(' ')+'"/>';
+ const cir=(q,r,col,extra='')=>'<circle cx="'+fix(q[0])+'" cy="'+fix(q[1])+'" r="'+fix(r)+'" fill="'+col+'" '+extra+'/>';
+ const label=(q,s,anchor='middle')=>'<text x="'+fix(q[0])+'" y="'+fix(q[1])+'" font-size="12" fill="'+ink+'" text-anchor="'+anchor+'">'+s+'</text>';
+ const seq=(lo,hi,n)=>Array.from({length:n},(_,i)=>lo+(hi-lo)*i/(n-1));
+ const path=(fun,n=64)=>seq(-1,1,n).map(fun);
+ let S='';
+ // Wire surfaces intentionally stay transparent so that the parent dots remain visible.
+ for(const v of seq(-1,1,15))S+=line(seq(-1.04,1.2,50).map(u=>P(u,v,f(u,v))),'#b7ccc2',1);
+ for(const u of seq(-1.04,1.2,18))S+=line(seq(-1,1,43).map(v=>P(u,v,f(u,v))),'#b7ccc2',1);
+ // Map axes drawn on a separate, flat reference level.
+ const origin=P(-1.04,.98,base);const xend=P(1.2,.98,base);const yend=P(-1.04,-1,base);
+ S+=line([xend,origin,yend],'#789491',.85);
+ const mid=(u,v)=> [(u[0]+v[0])/2,(u[1]+v[1])/2];let lx=mid(origin,xend),ly=mid(origin,yend);
+ S+=label([lx[0]+10,lx[1]+19],'towards peak (u)');S+=label([ly[0]-10,ly[1]+15],'across slope (v)','end');
+ if(Math.cos(cam)>.18){const end=P(-1.04,.98,.45);S+=line([origin,end],'#789491',.85);S+=label([end[0]-8,end[1]-8],'log fitness','end')}
+ const cloud=(x,y)=>pair(t,x*Math.sqrt(.2),y*Math.sqrt(.005)), K=Math.sqrt(-2*Math.log(.1));
+ const ring=seq(0,2*Math.PI,120).map(s=>cloud(K*Math.cos(s),K*Math.sin(s)));
+ S+=line(ring.map(([u,v])=>P(u,v,f(u,v))),teal,1.6);
+ if(by('plane').checked){
+  const poly=ring.map(([u,v])=>P(u,v,p(u,v)));S+='<polygon points="'+poly.map(q=>q.map(fix).join(',')).join(' ')+'" fill="#eabc92" fill-opacity=".20"/>'+line(poly,orange,1.7,'stroke-dasharray="6 4"');
+  for(const v0 of [-.60,0,.60]){const lim=Math.sqrt(1-v0*v0);S+=line(path(xx=>{const [u,v]=cloud(K*xx*lim,K*v0);return P(u,v,p(u,v))}),orange,.7,'stroke-dasharray="4 3"')}
+ }
+ let dots=draws.map(([x,y])=>pair(t,x,y)).map(([u,v])=>({z:f(u,v),u,v}));dots.sort((u,v)=>pair(yaw,u.u,u.v)[1]-pair(yaw,v.u,v.v)[1]);
+ for(const d of dots){const r=by('offspring').checked?2.55*Math.exp(d.z/2):2.55;S+=cir(P(d.u,d.v,d.z),r,teal,'opacity=".74"')}
+ let centre=P(0,0,0);S+=cir(centre,4.4,'white','stroke="'+ink+'" stroke-width="1.4"');
+ const pk=P(peak,0,f(peak,0));S+=line([[pk[0]-6,pk[1]],[pk[0]+6,pk[1]]],ink,2)+line([[pk[0],pk[1]-6],[pk[0],pk[1]+6]],ink,2);
+ by('scene').innerHTML=S;
+ const pr=(x,y)=>[30+137*(x+1),14+(0.82-y)*46];let ss=line([pr(-1,0),pr(1,0)],'#b2c7c4',.8)+line([pr(0,-1.28),pr(0,.82)],'#b2c7c4',.8);
+ ss+=line(path(d=>pr(d,b*Math.cos(t)*d-.4*d*d)),teal,2.7)+line(path(d=>pr(d,b*Math.cos(t)*d-.082)),orange,2,'stroke-dasharray="6 3"');
+ for(const x of [-1,0,1])ss+=label([pr(x,0)[0],120],String(x));ss+=label([166,138],'Distance along the long axis');
+ for(const yy of [-1,0,.5])ss+=label([24,pr(0,yy)[1]+3],String(yy),'end');by('slice').innerHTML=ss;
+}
+['turn','camera','yaw','plane','offspring'].forEach(id=>by(id).addEventListener('input',render));
+document.querySelectorAll('button[data-angle]').forEach(btn=>btn.addEventListener('click',()=>{by('turn').value=btn.dataset.angle;render()}));
+let drag=null;by('scene').onpointerdown=e=>{drag=[e.clientX,e.clientY,+by('yaw').value,+by('camera').value];by('scene').setPointerCapture(e.pointerId)};
+by('scene').onpointermove=e=>{if(!drag)return;by('yaw').value=(((drag[2]+(e.clientX-drag[0])*.65+540)%360)-180);by('camera').value=Math.max(5,Math.min(90,drag[3]-(e.clientY-drag[1])*.32));render()};
+by('scene').onpointerup=by('scene').onpointercancel=()=>{drag=null};render();
+</script></html>
