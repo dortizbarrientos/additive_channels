@@ -31,7 +31,7 @@ RESULTS: dict[str, dict[str, Any]] = {
             "eq:environmental_average",
         ],
         "result": (
-            "Construct W_A(a)=E[W|A=a] by averaging realized fitness at fixed "
+            "Construct W_A(a)=E[W|A=a] by averaging phenotype-dependent fitness at fixed "
             "breeding value, then construct ell_A(a)=log W_A(a)."
         ),
         "parameters": {
@@ -159,7 +159,7 @@ def _panel_label(ax: plt.Axes, label: str) -> None:
 
 
 def _save(fig: plt.Figure, stem: str) -> dict[str, Path]:
-    """Write and validate one vector figure and one review image atomically."""
+    """Write and validate one vector figure and one PNG preview atomically."""
 
     FIGURE_DIR.mkdir(parents=True, exist_ok=True)
     pdf_path = FIGURE_DIR / f"{stem}.pdf"
@@ -169,7 +169,7 @@ def _save(fig: plt.Figure, stem: str) -> dict[str, Path]:
     metadata = {
         "Title": stem,
         "Author": "Ortiz-Barrientos and Cooper",
-        "Subject": "Teaching figure linked to named GENETICS manuscript results",
+        "Subject": "Conditional fitness, variance components and selection: mathematical teaching figure",
         "Creator": Path(__file__).name,
     }
     fig.savefig(pdf_tmp, format="pdf", bbox_inches="tight", metadata=metadata)
@@ -328,8 +328,8 @@ def make_figure_1() -> dict[str, Path]:
     fixed_a = np.arange(-2.0, 5.0, 1.0)
     replicates = 28
     residuals = rng.normal(0.0, 1.0, size=(fixed_a.size, replicates))
-    realized = np.exp(-0.5 * (fixed_a[:, None] + residuals - 4.0) ** 2)
-    jitter = rng.uniform(-0.115, 0.115, size=realized.shape)
+    phenotype_fitness = np.exp(-0.5 * (fixed_a[:, None] + residuals - 4.0) ** 2)
+    jitter = rng.uniform(-0.115, 0.115, size=phenotype_fitness.shape)
 
     a_curve = np.linspace(-2.35, 4.35, 500)
     conditional = conditional_expected_fitness(a_curve)
@@ -338,12 +338,12 @@ def make_figure_1() -> dict[str, Path]:
 
     ax_raw.scatter(
         fixed_a[:, None] + jitter,
-        realized,
+        phenotype_fitness,
         s=8,
         facecolor=MID_GREY,
         edgecolor="none",
         alpha=0.30,
-        label="individual outcomes",
+        label="sampled environments",
         rasterized=True,
         zorder=1,
     )
@@ -359,7 +359,7 @@ def make_figure_1() -> dict[str, Path]:
         xlim=(-2.4, 4.4),
         ylim=(-0.03, 1.03),
         xlabel="Breeding value, $a$",
-        ylabel="Realized fitness",
+        ylabel="Phenotype-dependent fitness",
         title="1  Average at each breeding value",
     )
     ax_raw.legend(frameon=False, loc="upper left", handlelength=2.2)
