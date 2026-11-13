@@ -1,0 +1,897 @@
+\chapter{How selection and reproduction change covariance}
+\label{inheritance:chapter}
+
+Selection changes which parents contribute to reproduction. To calculate the
+genetic variation among their offspring, we also need to specify what they
+transmit. These are separate biological steps. A distribution of parental
+breeding values weighted by expected reproductive output describes the first
+step; segregation, recombination and mating determine the second.
+
+This chapter follows covariance through both steps under a stated inheritance
+model. The central question is whether variation can persist when stabilising
+selection repeatedly reduces covariance among contributing parents. We first
+identify the genetic variance that the model holds fixed, then derive the
+update. Matrix order gives a positive covariance equilibrium without requiring
+the trait axes to be independent. For one trait, a stronger argument gives a
+unique equilibrium and convergence from every nonnegative starting variance.
+The boundary with no reduction of associations after selection shows why
+these conclusions depend on reproduction.
+
+\section{What is held fixed when allelic effects are fixed?}
+\label{inheritance:genic}
+
+Let the breeding value be an $n$-component column vector. In the additive
+genetic architecture considered here, a copy of a designated allele at locus
+$j$ contributes the fixed vector $\vect\alpha_j$. If $N_j\in\{0,1,2\}$ is
+its diploid allele count, then, up to a constant vector,
+\begin{equation}
+  \vect A=\sum_{j=1}^{m}\vect\alpha_jN_j,
+  \qquad
+  \vect X=\vect A-\E[\vect A]
+     =\sum_{j=1}^{m}\vect\alpha_j(N_j-2p_j),
+  \label{inheritance:additive-map}
+\end{equation}
+where both homologous allele copies have marginal frequency $p_j$.
+The fixed-effect assumption makes this the same linear map in each
+generation. It is an extra assumption about genetic architecture: a
+population-specific regression definition of breeding value does not, by
+itself, guarantee fixed allelic coefficients across generations.
+
+Write $N_j=Z_{j1}+Z_{j2}$, where $Z_{jh}$ is a zero--one indicator for the
+allele on homologue $h$. Under random association of the two homologues,
+\begin{align}
+  \E[N_j]&=2p_j,\\
+  \Var(N_j)
+    &=\Var(Z_{j1})+\Var(Z_{j2})
+       +2\Cov(Z_{j1},Z_{j2})\\
+    &=2p_j(1-p_j).
+\end{align}
+If allele counts at different loci are also uncorrelated, the covariance
+of the sum in Equation~\eqref{inheritance:additive-map} is
+\begin{equation}
+  \mat B=2\sum_{j=1}^{m}p_j(1-p_j)
+                       \vect\alpha_j\vect\alpha_j^{\mathsf T}.
+  \label{inheritance:genic-formula}
+\end{equation}
+This is the genic covariance baseline used in the model. Each outer product
+$\vect\alpha_j\vect\alpha_j^{\mathsf T}$ describes how one allele's effects
+contribute to variances and covariances of traits; the factor
+$2p_j(1-p_j)$ describes variation in its copy number. An allele with effects
+on several traits can therefore contribute off-diagonal genic covariance
+even when different loci are independent.
+
+Actual allele counts need not have these random-association properties.
+Expanding the covariance without assuming independence gives
+\begin{align}
+  \mat G
+    &=\sum_j\Var(N_j)\vect\alpha_j\vect\alpha_j^{\mathsf T}
+      +\sum_{j<k}\Cov(N_j,N_k)
+       \bigl(\vect\alpha_j\vect\alpha_k^{\mathsf T}
+            +\vect\alpha_k\vect\alpha_j^{\mathsf T}\bigr),\\
+  \mat G&=\mat B+\mat D.
+  \label{inheritance:association-decomposition}
+\end{align}
+Here $\mat D$ is the total departure from the genic baseline. It includes
+the cross-locus terms and, if homologues are associated within loci, the
+terms $2\Cov(Z_{j1},Z_{j2})\vect\alpha_j\vect\alpha_j^{\mathsf T}$.
+Unlike a covariance matrix, $\mat D$ need not be positive semidefinite:
+associations can reduce variation in a trait combination. This distinction
+underlies the effect of selection-induced disequilibrium on quantitative
+genetic variance \citep{Bulmer1971,Bulmer1974}.
+
+\begin{example}[Fixed effects with a changing genic variance]
+  \label{inheritance:frequency-example}
+  Consider one trait and one locus with allelic effect $\alpha=1$.
+  At $p=0.5$, the genic variance is $2(0.5)(0.5)=0.50$.
+  At $p=0.8$, it is $2(0.8)(0.2)=0.32$.
+  The effect is unchanged, but its variance contribution is smaller.
+\end{example}
+
+\paragraph{Biological interpretation.}
+Holding the allelic effects fixed keeps breeding-value coordinates
+comparable across generations. Holding $\mat B$ fixed additionally removes
+changes in genic covariance caused by changing allele frequencies. The
+latter can represent an approximation over a short interval, or a formal
+infinitesimal model in which genic covariance remains constant. It is not a
+consequence of additive gene action alone. Mutation, drift, migration and
+changes in allelic effects would require further terms or a different model
+\citep{BartonTurelli1991,WalshLynch2018}.
+
+\section{From selected parents to the next generation}
+\label{inheritance:closure}
+
+At generation $t$, assume that breeding values before selection are
+Gaussian, with mean $\vect\mu_t$ and positive-definite covariance
+$\mat G_t$. Write $\vect x=\vect a-\vect\mu_t$. In this chapter the
+log conditional mean of reproductive output is exactly quadratic on the
+population's support:
+\begin{equation}
+  \ell_A(\vect\mu_t+\vect x)
+     =\ell_{0,t}+\vect b_t^{\mathsf T}\vect x
+                      -\frac12\vect x^{\mathsf T}\bGamma\vect x,
+  \qquad \bGamma\succeq\mat0.
+  \label{inheritance:quadratic-fitness}
+\end{equation}
+Thus $\bGamma=-\mat H$ is the sign-reversed Hessian and describes stabilising
+curvature. The exact assumption matters: substituting a Taylor expansion
+does not make the selected distribution exactly Gaussian.
+
+Weighting the Gaussian density by
+$W_A(\vect a)=\exp\{\ell_A(\vect a)\}$ adds the quadratic precision term
+$\bGamma$. The resulting covariance among parents, under these reproductive
+weights, is
+\begin{equation}
+  \mat G_t^{\mathrm{sel}}
+       =(\mat G_t^{-1}+\bGamma)^{-1}.
+  \label{inheritance:selected-covariance}
+\end{equation}
+The precision is positive definite because $\mat G_t^{-1}\succ\mat0$ and
+$\bGamma\succeq\mat0$. Consequently the expected-output weights have a
+finite normalising integral for every finite $\vect b_t$. Completing the
+square changes the mean, but the coefficient of the centred quadratic
+determines covariance and contains no $\vect b_t$.
+
+Equation~\eqref{inheritance:selected-covariance} has not yet described
+offspring. To do so, hold the genic covariance at $\mat B\succ\mat0$ and
+make the following assumption about the departure from this baseline:
+\begin{equation}
+  \mat D_{t+1}=\rho\mat D_t^{\mathrm{sel}},
+  \qquad
+  \mat D_t^{\mathrm{sel}}=\mat G_t^{\mathrm{sel}}-\mat B,
+  \qquad 0\leq\rho<1.
+  \label{inheritance:retention-assumption}
+\end{equation}
+The selected departure includes associations already present as well as
+their change during the current episode of selection. The assumption retains
+the same fraction $\rho$ of this whole departure after reproduction.
+Substitution into $\mat G_{t+1}=\mat B+\mat D_{t+1}$ gives
+\begin{align}
+  \mat G_{t+1}
+    &=\mat B+\rho(\mat G_t^{\mathrm{sel}}-\mat B)\\
+    &=(1-\rho)\mat B+
+                    \rho(\mat G_t^{-1}+\bGamma)^{-1}.
+  \label{inheritance:recursion}
+\end{align}
+This derivation identifies what the inheritance model contributes. The
+Gaussian selection calculation supplies $\mat G_t^{\mathrm{sel}}$;
+Equation~\eqref{inheritance:retention-assumption} specifies how reproduction
+uses it. Neither a variance share nor a fitness regression supplies that
+transmission assumption.
+
+\subsection{Why one half is a useful benchmark}
+\label{inheritance:half-retention}
+
+A moment calculation explains the familiar freely recombining,
+random-mating infinitesimal benchmark \citep{Bulmer1971}. Suppose two
+contributing parents are independent draws from the same selected
+distribution. In a model for their offspring, write
+\begin{equation}
+  \vect A_{\mathrm{o}}
+      =\frac{\vect A_1+\vect A_2}{2}+\vect M,
+  \qquad
+  \E[\vect M\mid\text{parents}]=\vect0,
+  \label{inheritance:mendelian-decomposition}
+\end{equation}
+where $\vect M$ is the Mendelian segregation deviation. The conditional
+zero mean makes its covariance with the midparent value zero. If its
+mean conditional covariance is $\mat B/2$, the law of total covariance
+gives
+\begin{align}
+  \Cov(\vect A_{\mathrm{o}})
+     &=\Cov\!\left(\frac{\vect A_1+\vect A_2}{2}\right)
+          +\E[\Cov(\vect M\mid\text{parents})]\\
+     &=\frac14\bigl(\mat G_t^{\mathrm{sel}}
+                         +\mat G_t^{\mathrm{sel}}\bigr)+\frac12\mat B\\
+     &=\frac12\mat G_t^{\mathrm{sel}}+\frac12\mat B.
+  \label{inheritance:half-reproduction}
+\end{align}
+This is Equation~\eqref{inheritance:recursion} with $\rho=1/2$.
+The two ingredients---independent parents and a specified segregation
+covariance---are part of the model. For example, at an independently
+segregating locus a heterozygous parent transmits the allele with variance
+$1/4$ in copy number. Averaging over two parents with heterozygote frequency
+$2p_j(1-p_j)$ gives $p_j(1-p_j)$, half the locus's genic copy-number
+variance. Summing the corresponding effect outer products gives
+$\mat B/2$ under independent segregation across loci and the fixed
+single-locus heterozygosities assumed by this infinitesimal closure.
+
+The more general scalar $\rho$ in Equation~\eqref{inheritance:recursion}
+summarises retention; it is not derived from a single recombination fraction.
+Different locus pairs have different recombination rates and contributions
+to covariance. Nonrandom mating can also change the covariance between
+parents and the segregation term. These mechanisms do not, in general,
+rescale every covariance departure by the same number
+\citep{Bulmer1974,BartonTurelli1991}. In particular, this model supplies no
+universal conversion from a selfing rate or an inbreeding coefficient to
+$\rho$.
+
+\paragraph{Biological interpretation.}
+When selected associations reduce variance, reproduction can restore some
+variance by reducing those associations. The term $(1-\rho)\mat B$ does not
+represent new mutations or new alleles entering the population. It expresses
+the assumed return towards the covariance that the same allele frequencies
+and effects would produce under random association. Maintaining Gaussian
+breeding-value distributions in successive generations is also part of this
+closure; a rule for covariance alone does not prove that distributional
+assumption.
+
+\section{How to compare covariance matrices}
+\label{inheritance:matrix-order}
+
+For one trait, a smaller variance has an immediate meaning. With several
+traits, comparing individual matrix entries is insufficient: a covariance
+matrix may lose variance in one trait combination and gain it in another.
+The useful ordering compares every linear combination at once; it is the
+positive-semidefinite order used in matrix and convex analysis
+\citep{BoydVandenberghe2004}.
+
+\begin{definition}[Loewner order]
+  \label{inheritance:loewner}
+  For symmetric matrices $\mat C$ and $\mat D$, write
+  $\mat C\preceq\mat D$ when $\mat D-\mat C$ is positive semidefinite,
+  that is,
+  \begin{equation}
+    \vect v^{\mathsf T}\mat C\vect v
+       \leq\vect v^{\mathsf T}\mat D\vect v
+       \quad\text{for every }\vect v\in\R^n.
+  \end{equation}
+  Strict positive definiteness is written $\mat C\prec\mat D$.
+\end{definition}
+
+Because $\Var(\vect v^{\mathsf T}\vect A)=
+\vect v^{\mathsf T}\mat G\vect v$, the order says that every specified
+linear combination of traits has at least as much variance under
+$\mat D$ as under $\mat C$. It is a partial order: two covariances need
+not be comparable. The same comparison is preserved by a change of
+coordinates. Indeed, if $\mat D-\mat C\succeq\mat0$, then
+\begin{equation}
+  \vect v^{\mathsf T}\mat R(\mat D-\mat C)\mat R^{\mathsf T}\vect v
+   =(\mat R^{\mathsf T}\vect v)^{\mathsf T}
+       (\mat D-\mat C)(\mat R^{\mathsf T}\vect v)\geq0.
+  \label{inheritance:congruence-order}
+\end{equation}
+Multiplication on the two sides in this form is called a congruence.
+It does not require the matrices to commute.
+
+\begin{lemma}[Stabilising selection reduces covariance]
+  \label{inheritance:inverse-order}
+  If $\mat G\succ\mat0$ and $\bGamma\succeq\mat0$, then
+  \begin{equation}
+    \mat0\prec (\mat G^{-1}+\bGamma)^{-1}\preceq\mat G.
+    \label{inheritance:selection-order}
+  \end{equation}
+  If $\bGamma\succ\mat0$, the upper inequality is strict.
+  Equality of the two complete covariance matrices occurs exactly when
+  $\bGamma=\mat0$.
+\end{lemma}
+
+\begin{proof}
+  A positive-definite symmetric matrix has an orthogonal eigenvector basis
+  with positive eigenvalues. Taking their positive square roots defines
+  $\mat G^{1/2}$ and its inverse $\mat G^{-1/2}$. Define
+  \begin{equation}
+    \mat K=\mat G^{1/2}\bGamma\mat G^{1/2}\succeq\mat0.
+  \end{equation}
+  Factor the precision in the order shown:
+  \begin{align}
+    \mat G^{-1}+\bGamma
+       &=\mat G^{-1/2}(\mat I+\mat K)\mat G^{-1/2},\\
+    (\mat G^{-1}+\bGamma)^{-1}
+       &=\mat G^{1/2}(\mat I+\mat K)^{-1}\mat G^{1/2}.
+    \label{inheritance:whitened-selection}
+  \end{align}
+  The eigenvalues $\kappa_i$ of $\mat K$ are nonnegative. Therefore the
+  eigenvalues of $(\mat I+\mat K)^{-1}$ are
+  $1/(1+\kappa_i)$, which lie in $(0,1]$. It follows that
+  \begin{equation}
+    \mat0\prec(\mat I+\mat K)^{-1}\preceq\mat I.
+  \end{equation}
+  Congruence by $\mat G^{1/2}$ gives
+  Equation~\eqref{inheritance:selection-order}. If $\bGamma\succ\mat0$,
+  every $\kappa_i>0$, so every eigenvalue $1/(1+\kappa_i)<1$ and the
+  reduction is positive definite. Equality of the full matrices requires
+  every $\kappa_i=0$. Since $\mat G^{1/2}$ is invertible, this is
+  equivalent to $\bGamma=\mat0$.
+\end{proof}
+
+This proof is an instance of the reversal of Loewner order by inversion:
+if $\mat P\succeq\mat Q\succ\mat0$, then
+$\mat P^{-1}\preceq\mat Q^{-1}$. To see the general statement, apply the
+same argument to
+$\mat Q^{-1/2}\mat P\mat Q^{-1/2}\succeq\mat I$ and undo the
+congruence. The proof diagonalises one symmetric matrix; it never assumes
+that $\mat G$ and $\bGamma$ share eigenvectors.
+
+\paragraph{Biological interpretation.}
+Under the Gaussian quadratic model, stabilising selection cannot increase
+variance in any trait combination among contributing parents. A reduction in one
+episode of selection does not imply a reduction from one generation to the
+next: reproduction subsequently changes the associations. Nor does zero
+curvature along one coordinate guarantee an unchanged marginal variance
+there, because that trait can covary with a trait under selection.
+
+\section{A positive matrix equilibrium exists}
+\label{inheritance:matrix-fixed-point}
+
+Define the covariance update on positive-definite matrices by
+\begin{equation}
+  F(\mat G)=(1-\rho)\mat B+
+                       \rho(\mat G^{-1}+\bGamma)^{-1}.
+  \label{inheritance:map}
+\end{equation}
+Assume throughout this section that $\mat B\succ\mat0$,
+$\bGamma\succeq\mat0$ and $0\leq\rho<1$ are fixed.
+The lower matrix
+\begin{equation}
+  \mat L=(1-\rho)\mat B
+\end{equation}
+is positive definite. Consider the set
+\begin{equation}
+  \mathcal K=\{\mat G=\mat G^{\mathsf T}:\mat L\preceq\mat G\preceq\mat B\}.
+  \label{inheritance:interval}
+\end{equation}
+The two bounds concern every trait combination, not entrywise intervals.
+
+\begin{proposition}[Existence and bounds]
+  \label{inheritance:existence}
+  The map $F$ has at least one positive-definite fixed point in
+  $\mathcal K$. Every positive-definite fixed point of $F$, whether or
+  not considered initially within $\mathcal K$, satisfies
+  \begin{equation}
+    (1-\rho)\mat B\preceq\mat G^*\preceq\mat B.
+    \label{inheritance:fixed-bounds}
+  \end{equation}
+\end{proposition}
+
+\begin{proof}
+  We first show that $F$ leaves the set $\mathcal K$ invariant. For
+  $\mat G\in\mathcal K$, the selected covariance is positive definite
+  and no larger than $\mat G$ by Lemma~\ref{inheritance:inverse-order}.
+  Hence
+  \begin{align}
+    F(\mat G)&\succeq(1-\rho)\mat B=\mat L,\\
+    F(\mat G)&\preceq(1-\rho)\mat B+\rho\mat G\\
+             &\preceq(1-\rho)\mat B+\rho\mat B=\mat B.
+    \label{inheritance:invariance}
+  \end{align}
+  Thus $F(\mathcal K)\subseteq\mathcal K$.
+
+  Next, regard real symmetric $n\times n$ matrices as a Euclidean space
+  with $n(n+1)/2$ coordinates, one for each independent matrix entry.
+  The set $\mathcal K$ is nonempty because it contains $\mat B$.
+  It is convex: for $\mat G_1,\mat G_2\in\mathcal K$ and
+  $0\leq\theta\leq1$, each of
+  \begin{align}
+    \theta\mat G_1+(1-\theta)\mat G_2-\mat L
+      &=\theta(\mat G_1-\mat L)+(1-\theta)(\mat G_2-\mat L),\\
+    \mat B-\theta\mat G_1-(1-\theta)\mat G_2
+      &=\theta(\mat B-\mat G_1)+(1-\theta)(\mat B-\mat G_2)
+  \end{align}
+  is a sum of positive-semidefinite matrices.
+
+  It is also closed: a limit of matrices satisfying each quadratic-form
+  inequality in Equation~\eqref{inheritance:interval} still satisfies it.
+  It is bounded because $\mat0\preceq\mat G\preceq\mat B$ implies
+  $\lambda_{\max}(\mat G)\leq\lambda_{\max}(\mat B)$ and therefore
+  \begin{equation}
+    \norm{\mat G}_{\mathrm F}^2
+       =\sum_{i=1}^{n}\lambda_i(\mat G)^2
+       \leq n\lambda_{\max}(\mat B)^2.
+  \end{equation}
+  Closed and bounded subsets of a finite-dimensional Euclidean space
+  are compact. In this setting, compactness means that any sequence in
+  the set has a convergent subsequence whose limit stays in the set.
+
+  Finally, matrix inversion is continuous wherever the determinant is
+  nonzero. Throughout $\mathcal K$,
+  \begin{equation}
+    \lambda_{\min}(\mat G)
+       \geq(1-\rho)\lambda_{\min}(\mat B)>0,
+  \end{equation}
+  so the first inversion in $F$ is well-defined. The second is also
+  well-defined because $\mat G^{-1}+\bGamma\succ\mat0$.
+  Matrix sums and scalar multiplication are continuous, so $F$ is
+  continuous on $\mathcal K$.
+
+  Brouwer's fixed-point theorem states that a continuous map from a
+  nonempty compact convex subset of a finite-dimensional Euclidean
+  space into itself has a fixed point \citep{GranasDugundji2003}.
+  All its hypotheses have now been checked. The resulting
+  $\mat G^*\in\mathcal K$ is positive
+  definite because it is no smaller than $\mat L\succ\mat0$.
+
+  To bound any other positive-definite fixed point, no assumption
+  about its starting position is needed. The equation
+  $\mat G^*=F(\mat G^*)$ immediately gives
+  $\mat G^*\succeq(1-\rho)\mat B$. Applying
+  Equation~\eqref{inheritance:selection-order} at $\mat G^*$ gives
+  \begin{align}
+    \mat G^*&\preceq(1-\rho)\mat B+\rho\mat G^*,\\
+    (1-\rho)\mat G^*&\preceq(1-\rho)\mat B,\\
+    \mat G^*&\preceq\mat B.
+  \end{align}
+  Division by $1-\rho$ preserves the inequality because this scalar
+  is strictly positive. This proves both bounds for every positive
+  fixed point.
+\end{proof}
+
+\paragraph{Biological interpretation.}
+For any trait combination $\vect v^{\mathsf T}\vect A$, an equilibrium
+variance lies between $(1-\rho)\vect v^{\mathsf T}\mat B\vect v$ and
+$\vect v^{\mathsf T}\mat B\vect v$. Thus fixed positive genic covariance
+and incomplete retention prevent a covariance equilibrium from losing all
+variation in a genetic direction. If $\rho>0$, its lower bound is strict
+because the selected covariance is positive definite. If $\rho=0$, the
+next covariance is exactly $\mat B$. With $\rho>0$, the full matrix
+$\mat G^*=\mat B$ is possible exactly when $\bGamma=\mat0$.
+
+The argument proves existence and bounds. Brouwer's theorem does not say
+that the fixed point is unique or that repeated updates converge to it.
+Invariance says that a trajectory starting in $\mathcal K$ stays there;
+it does not say that every other starting covariance enters that interval
+after one update. We make no general matrix uniqueness or convergence
+claim here. The scalar case permits a separate, stronger proof.
+
+\section{One trait: the fixed point and every trajectory}
+\label{inheritance:scalar}
+
+Let $g$ be a breeding-value variance, $B>0$ the genic variance, and
+$\gamma\geq0$ the stabilising curvature. The scalar map is
+\begin{equation}
+  F(g)=(1-\rho)B+\rho\frac{g}{1+\gamma g},
+  \qquad g\geq0,\quad0\leq\rho<1.
+  \label{inheritance:scalar-map}
+\end{equation}
+It also describes an isotropic model with
+$\mat G=g\mat I$, $\mat B=B\mat I$ and
+$\bGamma=\gamma\mat I$ in fixed trait coordinates.
+The product $\gamma g$ is dimensionless: $g$ and $B$ have units of
+trait squared, while $\gamma$ has inverse squared-trait units.
+Although the precision calculation used $g>0$, the fraction in
+Equation~\eqref{inheritance:scalar-map} has the continuous value zero
+at $g=0$. The scalar recursion therefore includes the zero starting
+variance, followed by $F(0)=(1-\rho)B>0$.
+
+\subsection{Solving the fixed-point equation}
+\label{inheritance:scalar-root}
+
+Set $g^*=F(g^*)$ and first take $\gamma>0$. Since
+$1+\gamma g^*>0$, multiplying by the denominator preserves the equation:
+\begin{align}
+  g^*&=(1-\rho)B+\rho\frac{g^*}{1+\gamma g^*},\\
+  g^*+\gamma(g^*)^2
+     &=(1-\rho)B+(1-\rho)\gamma B g^*+\rho g^*,\\
+  \gamma(g^*)^2+(1-\rho)(1-\gamma B)g^*-(1-\rho)B&=0.
+  \label{inheritance:scalar-quadratic}
+\end{align}
+The leading coefficient is positive and the constant term is negative.
+Thus the product of the two roots is negative, so exactly one root is
+positive. Write $c=(1-\rho)(1-\gamma B)$ and
+$d=(1-\rho)B>0$. The positive root is
+\begin{equation}
+  g^*=\frac{-c+\sqrt{c^2+4\gamma d}}{2\gamma}.
+  \label{inheritance:positive-root}
+\end{equation}
+When $c\geq0$, subtracting two nearly equal positive numbers in this
+formula can lose floating-point precision. Multiplying numerator and
+denominator by $\sqrt{c^2+4\gamma d}+c$ gives the equivalent form
+\begin{equation}
+  g^*=\frac{2d}{\sqrt{c^2+4\gamma d}+c}.
+  \label{inheritance:rationalised-root}
+\end{equation}
+Use the rationalised form when $c\geq0$ and the first form when $c<0$
+to avoid that subtraction. This is an arithmetic choice, not a different
+equilibrium. As $\gamma$ tends to zero with $\rho<1$ fixed, the
+rationalised expression tends to $B$, agreeing with the direct
+zero-curvature calculation below.
+
+\subsection{Why the scalar iteration converges}
+\label{inheritance:contraction}
+
+An equilibrium equation alone does not tell us where a trajectory goes.
+To answer that question, compare two possible current variances $g,h\geq0$:
+\begin{align}
+  F(g)-F(h)
+    &=\rho\left(\frac{g}{1+\gamma g}
+                      -\frac{h}{1+\gamma h}\right)\\
+    &=\rho\frac{g(1+\gamma h)-h(1+\gamma g)}
+                    {(1+\gamma g)(1+\gamma h)}\\
+    &=\frac{\rho(g-h)}{(1+\gamma g)(1+\gamma h)}.
+\end{align}
+The two mixed terms cancel. Since each denominator factor is at least
+one,
+\begin{equation}
+  |F(g)-F(h)|\leq\rho|g-h|.
+  \label{inheritance:contraction-bound}
+\end{equation}
+A map that reduces every distance by at most a constant strictly below
+one is a contraction.
+
+\begin{proposition}[Global scalar convergence]
+  \label{inheritance:scalar-convergence}
+  For $B>0$, $\gamma\geq0$ and $0\leq\rho<1$, the map in
+  Equation~\eqref{inheritance:scalar-map} has a unique fixed point on
+  $[0,\infty)$. Every nonnegative starting variance converges to it,
+  with error bound
+  \begin{equation}
+    |g_t-g^*|\leq\rho^t|g_0-g^*|,\qquad t\geq1.
+    \label{inheritance:scalar-error-bound}
+  \end{equation}
+\end{proposition}
+
+\begin{proof}
+  The map takes $[0,\infty)$ into itself. This set is complete in
+  the usual distance $|g-h|$: a Cauchy sequence of nonnegative real
+  numbers has a nonnegative real limit. These properties and
+  Equation~\eqref{inheritance:contraction-bound} are the hypotheses
+  of the Banach contraction theorem \citep{Banach1922,GranasDugundji2003}.
+  Its argument can be seen directly in the iterates.
+
+  For $0<\rho<1$, repeated use of the bound gives
+  \begin{equation}
+    |g_{k+1}-g_k|\leq\rho^k|g_1-g_0|.
+  \end{equation}
+  For integers $p\geq1$, the triangle inequality then gives
+  \begin{align}
+    |g_{t+p}-g_t|
+       &\leq\sum_{k=t}^{t+p-1}|g_{k+1}-g_k|\\
+       &\leq|g_1-g_0|\sum_{k=t}^{t+p-1}\rho^k\\
+       &\leq\frac{\rho^t}{1-\rho}|g_1-g_0|.
+  \end{align}
+  The final quantity tends to zero as $t\to\infty$, independently
+  of $p$. The iterates are therefore Cauchy and converge to a value
+  $g^*\geq0$. Continuity gives
+  $F(g^*)=\lim_tF(g_t)=\lim_tg_{t+1}=g^*$.
+
+  If two fixed points $g^*$ and $h^*$ existed, then
+  \begin{equation}
+    |g^*-h^*|=|F(g^*)-F(h^*)|\leq\rho|g^*-h^*|.
+  \end{equation}
+  As $1-\rho>0$, their distance must be zero. Finally, compare each
+  iterate with this fixed point in
+  Equation~\eqref{inheritance:contraction-bound} and apply the
+  inequality $t$ times to obtain
+  Equation~\eqref{inheritance:scalar-error-bound}. If $\rho=0$,
+  $F(g)=B$ for every $g$, so all conclusions follow after one update.
+\end{proof}
+
+The convergence proof needs neither a positive starting variance nor
+a starting point inside $[(1-\rho)B,B]$. It also explains the direction
+of change. For $0<\rho<1$, the exact difference formula gives
+\begin{equation}
+  F(g)-g^*
+     =\frac{\rho(g-g^*)}{(1+\gamma g)(1+\gamma g^*)}.
+  \label{inheritance:no-overshoot}
+\end{equation}
+The sign of the deviation from equilibrium is preserved and its magnitude
+strictly decreases unless it is already zero. Thus a start below $g^*$
+increases monotonically towards it; a start above $g^*$ decreases
+monotonically towards it. Neither trajectory crosses the fixed point.
+At $\rho=0$, it reaches the fixed point immediately.
+
+\paragraph{Biological interpretation.}
+Stabilising selection never increases the selected-parent variance in this
+model, but reproduction need not leave the next generation below its
+preselection value. With $B=1$, $\gamma=0.3$, $\rho=0.9$ and
+$g_t=0.1$, selection gives $0.1/1.03$, and reproduction gives
+\begin{equation}
+  g_{t+1}=0.1+0.9\frac{0.1}{1.03}
+           =0.1873786408.
+  \label{inheritance:increase-example}
+\end{equation}
+The starting variance is below the equilibrium. Convergence describes
+both increasing and decreasing trajectories; it does not imply that
+covariance must fall in every population.
+
+\subsection{Boundary cases and the worked iteration}
+\label{inheritance:scalar-boundaries}
+
+With no retention, $\rho=0$, reproduction returns the variance to $B$
+after one step. With no curvature, $\gamma=0$ and $\rho<1$,
+\begin{align}
+  g_{t+1}&=(1-\rho)B+\rho g_t,\\
+  g_{t+1}-B&=\rho(g_t-B),\\
+  g_t&=B+\rho^t(g_0-B).
+  \label{inheritance:zero-curvature}
+\end{align}
+Therefore $B$ is the unique fixed point, even if the original population
+contains covariance departures that reproduction gradually removes.
+The matrix version of this particular boundary is equally direct:
+$\mat G_t=\mat B+\rho^t(\mat G_0-\mat B)$ when
+$\bGamma=\mat0$. This explicit boundary calculation is separate from
+any general matrix convergence claim.
+
+For the worked example in the mathematics guide, $B=1$,
+$\gamma=0.5$, $\rho=0.5$ and $g_0=1$. The first selected variance is
+$2/3$, so the first offspring variance is
+$g_1=1/2+(1/2)(2/3)=5/6$. Further substitutions give
+\begin{center}
+\begin{tabular}{ccc}
+  \toprule
+  Generation & Exact variance & Decimal variance\\
+  \midrule
+  0 & $1$ & $1.000000$\\
+  1 & $5/6$ & $0.833333$\\
+  2 & $27/34$ & $0.794118$\\
+  3 & $149/190$ & $0.784211$\\
+  4 & $827/1058$ & $0.781664$\\
+  \bottomrule
+\end{tabular}
+\end{center}
+The fixed-point polynomial reduces to
+$2(g^*)^2+g^*-2=0$, giving
+\begin{equation}
+  g^*=\frac{\sqrt{17}-1}{4}=0.7807764064.
+  \label{inheritance:guide-fixed-point}
+\end{equation}
+These iterates remain between $0.5$ and $1$ because that interval is
+invariant and contains the starting value. The numerical sequence
+illustrates the proven convergence; it is not its proof.
+
+\section{Retaining every covariance departure}
+\label{inheritance:rho-one}
+
+The boundary $\rho=1$ removes the baseline term entirely. It must be
+analysed separately: the positive lower bound $(1-\rho)\mat B$ and the
+strict scalar contraction constant used above are then lost. Assume
+$\mat G_0\succ\mat0$ and fixed $\bGamma\succeq\mat0$. The update becomes
+\begin{equation}
+  \mat G_{t+1}=(\mat G_t^{-1}+\bGamma)^{-1}.
+\end{equation}
+Inverting both sides gives the simple precision recursion
+\begin{equation}
+  \mat G_{t+1}^{-1}=\mat G_t^{-1}+\bGamma.
+\end{equation}
+The initial case is $\mat G_0^{-1}=\mat G_0^{-1}+0\bGamma$.
+If $\mat G_t^{-1}=\mat G_0^{-1}+t\bGamma$, one further update gives
+$\mat G_{t+1}^{-1}=\mat G_0^{-1}+(t+1)\bGamma$.
+Induction therefore proves
+\begin{equation}
+  \mat G_t=(\mat G_0^{-1}+t\bGamma)^{-1}.
+  \label{inheritance:precision-iteration}
+\end{equation}
+No simultaneous diagonalisation of $\mat G_0$ and $\bGamma$ was used.
+
+If $\bGamma\succ\mat0$, then for $t>0$
+\begin{equation}
+  \mat0\prec\mat G_t\preceq(t\bGamma)^{-1}
+                     =\frac1t\bGamma^{-1}.
+  \label{inheritance:positive-curvature-limit}
+\end{equation}
+The right-hand side tends to zero, so covariance disappears in every
+direction. If $\bGamma=\mat0$, every covariance stays at its starting
+value. In one trait with $\gamma>0$,
+$g_t=g_0/(1+t\gamma g_0)$ for a positive start. The example
+$g_0=1$, $\gamma=0.5$ gives $g_4=1/3$. At this boundary the continuous
+scalar map also leaves $g_0=0$ at zero.
+
+\subsection{Singular curvature: what variation actually remains?}
+\label{inheritance:singular-limit}
+
+Suppose $\bGamma$ has rank $r$ with $0<r<n$. Let the columns of
+$\mat U$ be orthonormal eigenvectors with positive curvature, and
+let the columns of $\mat V$ be an orthonormal basis for its null space.
+Then $\mat Q=[\mat U\;\mat V]$ is orthogonal and
+\begin{equation}
+  \bGamma=\mat U\mat\Lambda\mat U^{\mathsf T},
+  \qquad \mat\Lambda\succ\mat0,
+  \qquad
+  \mat Q^{\mathsf T}\mat G_0\mat Q
+     =\begin{pmatrix}\mat C&\mat J\\\mat J^{\mathsf T}&\mat D\end{pmatrix}.
+  \label{inheritance:curvature-blocks}
+\end{equation}
+Here $\mat C$ is the initial covariance of the coordinates with positive
+curvature, $\mat D$ that of the zero-curvature coordinates, and $\mat J$
+their cross-covariance. The block letters in this subsection are local
+matrix names; $\mat D$ here is not the association departure used earlier.
+
+\begin{proposition}[The exact retained covariance]
+  \label{inheritance:schur-limit}
+  Under these assumptions,
+  \begin{equation}
+    \lim_{t\to\infty}\mat G_t
+       =\mat V\bigl(\mat D-\mat J^{\mathsf T}\mat C^{-1}\mat J\bigr)
+                        \mat V^{\mathsf T}.
+    \label{inheritance:null-limit}
+  \end{equation}
+  The matrix in parentheses is positive definite on the null-space
+  coordinates. It equals their initial Gaussian conditional covariance
+  given the positive-curvature coordinates, rather than their marginal
+  covariance $\mat D$ in general.
+\end{proposition}
+
+\begin{proof}
+  For $t>0$ define
+  \begin{equation}
+    \mat M_t=t^{-1}\mat\Lambda^{-1}+\mat U^{\mathsf T}\mat G_0\mat U
+            =t^{-1}\mat\Lambda^{-1}+\mat C.
+  \end{equation}
+  Both terms are positive definite, so this matrix can be inverted.
+  We will use the identity
+  \begin{equation}
+    (\mat G_0^{-1}+t\mat U\mat\Lambda\mat U^{\mathsf T})^{-1}
+       =\mat G_0-\mat G_0\mat U\mat M_t^{-1}\mat U^{\mathsf T}\mat G_0.
+    \label{inheritance:inverse-update}
+  \end{equation}
+  This is a form of the matrix inverse update identity, often called
+  the Woodbury identity. Here it can be verified without invoking a
+  general formula. Multiplying its right-hand side on the left by
+  $\mat G_0^{-1}+t\mat U\mat\Lambda\mat U^{\mathsf T}$ gives
+  \begin{equation}
+    \mat I+\mat U
+       \bigl[t\mat\Lambda-\mat M_t^{-1}
+                   -t\mat\Lambda\mat C\mat M_t^{-1}\bigr]
+         \mat U^{\mathsf T}\mat G_0.
+  \end{equation}
+  The bracket vanishes because
+  \begin{equation}
+    t\mat\Lambda\mat M_t=\mat I+t\mat\Lambda\mat C,
+    \qquad
+    (\mat I+t\mat\Lambda\mat C)\mat M_t^{-1}=t\mat\Lambda.
+  \end{equation}
+  This establishes Equation~\eqref{inheritance:inverse-update}, with
+  matrix products in their stated order.
+
+  As $t\to\infty$, $\mat M_t\to\mat C\succ\mat0$, so
+  $\mat M_t^{-1}\to\mat C^{-1}$. Expressing the limiting identity
+  in the $\mat Q$ coordinates gives
+  \begin{align}
+    \lim_{t\to\infty}\mat Q^{\mathsf T}\mat G_t\mat Q
+       &=\begin{pmatrix}\mat C&\mat J\\\mat J^{\mathsf T}&\mat D\end{pmatrix}
+         -\begin{pmatrix}\mat C\\\mat J^{\mathsf T}\end{pmatrix}
+             \mat C^{-1}\begin{pmatrix}\mat C&\mat J\end{pmatrix}\\
+       &=\begin{pmatrix}
+            \mat0&\mat0\\
+            \mat0&\mat D-\mat J^{\mathsf T}\mat C^{-1}\mat J
+          \end{pmatrix}.
+  \end{align}
+  Transforming back gives Equation~\eqref{inheritance:null-limit}.
+
+  The matrix $\mat S=\mat D-\mat J^{\mathsf T}\mat C^{-1}\mat J$
+  is the Schur complement of $\mat C$. For a nonzero null-coordinate
+  vector $\vect z$, use the positive definiteness of the full initial
+  covariance to obtain
+  \begin{equation}
+    \vect z^{\mathsf T}\mat S\vect z
+      =\begin{pmatrix}-\mat C^{-1}\mat J\vect z\\\vect z\end{pmatrix}^{\mathsf T}
+        \begin{pmatrix}\mat C&\mat J\\\mat J^{\mathsf T}&\mat D\end{pmatrix}
+        \begin{pmatrix}-\mat C^{-1}\mat J\vect z\\\vect z\end{pmatrix}>0.
+  \end{equation}
+  Finally, write $\vect X_{\mathrm{curved}}=\mat U^{\mathsf T}\vect X_0$
+  and $\vect X_{\mathrm{null}}=\mat V^{\mathsf T}\vect X_0$ for the
+  centred initial coordinates. In a joint Gaussian distribution,
+  subtracting the conditional linear mean of the null coordinates leaves residual
+  $\vect X_{\mathrm{null}}-\mat J^{\mathsf T}\mat C^{-1}
+     \vect X_{\mathrm{curved}}$.
+  Its covariance is $\mat S$, and its covariance with
+  $\vect X_{\mathrm{curved}}$ is zero. Joint Gaussianity then makes the
+  residual independent of those coordinates, proving the conditional
+  covariance interpretation.
+\end{proof}
+
+\begin{example}[A trait with no curvature can still lose variance]
+  \label{inheritance:singular-example}
+  Let
+  \begin{equation}
+    \mat G_0=\begin{pmatrix}1&0.4\\0.4&2\end{pmatrix},
+    \qquad
+    \bGamma=\begin{pmatrix}0.5&0\\0&0\end{pmatrix}.
+  \end{equation}
+  The second trait has zero curvature but initially covaries with the
+  first. Its retained variance is
+  $2-0.4^2/1=1.84$, so
+  \begin{equation}
+    \lim_{t\to\infty}\mat G_t
+          =\begin{pmatrix}0&0\\0&1.84\end{pmatrix}.
+  \end{equation}
+  Keeping the original marginal variance $2$ would ignore the initial
+  association with the trait whose variation is removed. When
+  $\mat J=\mat0$, marginal and conditional covariance do coincide.
+\end{example}
+
+\paragraph{Biological interpretation.}
+With no restoration, persistent covariance is confined to trait
+combinations with zero curvature. Its amount depends on the original
+associations with combinations under stabilising selection. This is a
+covariance limit under the specified model, not a statement that allele
+frequencies, mean traits or reproductive output reach a joint equilibrium.
+If the initial covariance is singular, first restrict the calculation to
+its positive-variance support. At $\rho=1$ no baseline term adds variation
+outside that support; use the curvature restricted to the same coordinates
+before taking inverses.
+
+\section{A covariance trajectory does not determine the fitness gradient}
+\label{inheritance:gradient-and-share}
+
+The recursion contains $\mat G_t$, $\mat B$, $\bGamma$ and $\rho$, but no
+directional gradient $\vect b_t$. This independence follows from the
+exact Gaussian and quadratic selection calculation in
+Equation~\eqref{inheritance:selected-covariance}. It is not a general
+property of selection on non-Gaussian populations or nonquadratic fitness
+functions.
+
+The first-order variance share still depends on the gradient. In the
+isotropic case with $n$ traits,
+\begin{align}
+  \Vlin(t)&=g_t\norm{\vect b_t}^{2},\\
+  \Vquad(t)&=\frac12 n\gamma^2g_t^2,\\
+  \Ag(t)&=\frac{\norm{\vect b_t}^{2}}
+                   {\norm{\vect b_t}^{2}+\tfrac12n\gamma^2g_t},
+                   \qquad g_t>0,
+  \label{inheritance:isotropic-share}
+\end{align}
+where the denominator must be positive. If $\vect b_t=\vect0$ but
+$\gamma>0$, the share is zero. If both terms vanish, the variance share
+is undefined. Under fixed nonzero gradient and positive curvature, a
+decrease in $g_t$ increases the share even though both component variances
+decrease. A start below the scalar equilibrium instead produces increasing
+$g_t$ and a decreasing share under that same fixed gradient.
+
+Figure 4 of the paper chooses $n=4$, $g_0=4$, $B=1$,
+$\gamma=0.30$ and $\rho=0.90$. The scalar equilibrium is
+$g^*=0.4723532349$. To calculate the share, it separately specifies
+\begin{equation}
+  \norm{\vect b_t}=
+  \begin{cases}
+    1,&t\leq40,\\
+    \exp[-0.06(t-40)],&t>40.
+  \end{cases}
+  \label{inheritance:figure-gradient-history}
+\end{equation}
+While the gradient is maintained, the share rises from $0.581395$ to
+$0.921639$ by generation 40. It subsequently falls as the imposed
+gradient decreases, reaching approximately $0.00870449$ at generation
+100. The figure combines a derived covariance trajectory with a supplied
+gradient history. That history is not an output of the covariance recursion.
+
+A changing local gradient need not mean that the fitness surface changes.
+For a fixed quadratic function
+$\ell_A(\vect a)=c+\vect d^{\mathsf T}\vect a
+-\tfrac12\vect a^{\mathsf T}\bGamma\vect a$, differentiation gives
+\begin{equation}
+  \vect b_t=\vect d-\bGamma\vect\mu_t.
+  \label{inheritance:gradient-at-mean}
+\end{equation}
+Movement of the population mean changes the local gradient on the same
+surface. Predicting that movement would require its own transmission
+assumptions and mean recursion. The covariance equilibrium proved here
+does not provide them.
+
+\section{Checks and the scope of the conclusions}
+\label{inheritance:checks}
+
+The repository script
+\codepath{code/reproduce_result_checks.py} records the group
+\codepath{inheritance_matrix_and_limits}. It checks the
+single-locus variances $0.50$ and $0.32$, twelve matrix interval cases with
+noncommuting baseline and curvature, one numerical fixed point and its
+bounds, scalar contractions and several starting values, and the correlated
+singular-curvature limit $1.84$. The chosen matrices are
+\begin{equation}
+  \mat B=\begin{pmatrix}1&0.25\\0.25&0.6\end{pmatrix},
+  \qquad
+  \bGamma=\begin{pmatrix}0.6&-0.15\\-0.15&0.3\end{pmatrix},
+  \qquad \rho=0.65.
+\end{equation}
+They are positive definite and do not commute. Thus their numerical check
+does not rely on independent trait directions. It complements the proof
+for all matrices satisfying the assumptions; a finite list of checked
+cases could not establish that general result.
+
+The source \codepath{code/figures.py} generates the main
+trajectory, while \codepath{code/guide_figures.py} generates
+the scalar worked iteration. The main reproduction script also checks
+archived forward-time population simulations. Those simulations compare
+a current-population Gaussian variance formula with empirical moments.
+Their agreement does not independently validate the fixed-$\mat B$
+inheritance closure derived here.
+
+The covariance results therefore answer a conditional biological question:
+what happens when a fixed genic baseline, stabilising curvature and a
+specified retention rule act on Gaussian breeding-value distributions?
+Within that model, incomplete retention allows a positive covariance
+equilibrium, and the scalar trajectory converges to it from either side.
+To ask about changing allele frequencies, linkage architecture or mating
+systems, those mechanisms must enter the model explicitly. The derivations
+identify the assumptions that connect selection among parents to variation
+in the next generation.

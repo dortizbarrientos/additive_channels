@@ -13,6 +13,8 @@ jobs:
           python-version: '3.12'
       - name: Install numerical and app dependencies
         run: python -m pip install -r requirements-app.txt -c requirements-tested.txt
+      - name: Check derivation coverage and navigation
+        run: python tutorials/derivations/check_coverage.py
       - name: Reproduce the figures, simulation summary and bootstrap estimates
         run: bash run_all.sh
       - name: Rebuild the visual explanations and offline explorers

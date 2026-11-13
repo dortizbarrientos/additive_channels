@@ -1,0 +1,1494 @@
+{
+  "schema_version": 1,
+  "title": "Equation-by-equation derivation map",
+  "audit_date": "2026-11-13",
+  "scope": "Every explicit eq: label in the four specified current source files. Source-qualified labels are used because eq:Ag occurs in two documents. No manuscript prose or equation bodies are reproduced.",
+  "sources": [
+    {
+      "id": "main",
+      "display_name": "Main text and mathematical appendices",
+      "basename": "manuscript_body.tex",
+      "sha256": "316db758371dc5e28aca0af6df0557eb6bf97b3b6430fd0825b4f46dd4972715"
+    },
+    {
+      "id": "s7",
+      "display_name": "Appendix S7: visual walkthrough",
+      "basename": "visual_walkthrough.tex",
+      "sha256": "6dbddb4283e74186ea3c96d85060df81e5dd113f34d1b7bfa9f5ea605d19505f"
+    },
+    {
+      "id": "sf1",
+      "display_name": "Supplementary File 1: mathematics guide",
+      "basename": "Supplementary_File_1_Mathematics_Guide.tex",
+      "sha256": "e164c77a9e27c1e6cd31408106fb00231648f51b949449ae951e8b723999e86c"
+    },
+    {
+      "id": "sf3",
+      "display_name": "Supplementary File 3: worked estimation",
+      "basename": "Supplementary_File_3_Worked_Estimation.tex",
+      "sha256": "a63dbcb19f84da2554c64159239101b1d44589ba216003fa3df283aa45806b62"
+    }
+  ],
+  "rows": [
+    {
+      "source_id": "main",
+      "equation_label": "eq:target",
+      "concept": "Conditional expected reproduction and its logarithm",
+      "treatment": "definition",
+      "companion_labels": [
+        "conditioning:target",
+        "conditioning:log_target"
+      ],
+      "note": "The conditional mean is defined before its logarithm; log target requires a positive finite mean."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:selection_weight",
+      "concept": "Normalised reproductive weighting of parental frequencies",
+      "treatment": "proof + definition",
+      "companion_labels": [
+        "conditioning:selection_weight",
+        "conditioning:selected_density"
+      ],
+      "note": "Derived from conditional expectation; this is a distribution of parental contributions."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:log_ratio",
+      "concept": "Log differences as proportional changes in conditional mean output",
+      "treatment": "proof",
+      "companion_labels": [
+        "conditioning:log_ratio"
+      ],
+      "note": "Both conditional means must be positive and finite."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:jensen",
+      "concept": "Noncommutation of averaging and taking logarithms",
+      "treatment": "proof",
+      "companion_labels": [
+        "conditioning:jensen",
+        "conditioning:jensen_inequality"
+      ],
+      "note": "The distinction is general, not a claim of strict inequality in the conditionally constant case; equality and zero-output cases are explained."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:taylor",
+      "concept": "Local quadratic expansion of log conditional expected output",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "gaussian:quadratic_definition",
+        "gaussian:taylor_derivation"
+      ],
+      "note": "The local remainder is retained in the derivation; exact quadratic calculations concern the defined quadratic target."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:centered_terms",
+      "concept": "Mean-centred quadratic component",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "gaussian:terms",
+        "gaussian:quadratic_mean"
+      ],
+      "note": "Centring subtracts the population mean of the quadratic term."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:vlin",
+      "concept": "Variance of the linear component",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:linear_variance"
+      ],
+      "note": "Finite second moments suffice for this identity."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:vquad",
+      "concept": "Gaussian variance of the quadratic component",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:four_index_variance",
+        "gaussian:quadratic_variance"
+      ],
+      "note": "Uses Gaussian fourth moments; the non-Gaussian correction is supplied separately."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:Ag",
+      "concept": "First-order share of quadratic log-target variance",
+      "treatment": "definition",
+      "companion_labels": [
+        "gaussian:share",
+        "gaussian:variance_partition"
+      ],
+      "note": "The share is undefined when the total target variance vanishes."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:affine_projection",
+      "concept": "Population affine projection and curvature-adjusted intercept",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:affine_projection",
+        "gaussian:fitted_affine"
+      ],
+      "note": "The population fit includes an intercept; it generally differs from the tangent plane."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:r2_identity",
+      "concept": "Regression and squared-correlation interpretations of the share",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:regression_share",
+        "gaussian:correlation_identity"
+      ],
+      "note": "The correlation form requires positive linear variance; the regression form can have a constant fit."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:nested_r2",
+      "concept": "Ratio of nested fit statistics and the complementary fraction",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:nested_r2",
+        "gaussian:nested_ratio"
+      ],
+      "note": "Both fits use the same observation model; the complementary fraction follows by subtraction from one."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:scaling",
+      "concept": "Linear and quadratic components under proportional covariance scaling",
+      "treatment": "proof",
+      "companion_labels": [
+        "geometry:scaling_proposition",
+        "geometry:component_scaling"
+      ],
+      "note": "Mean, gradient and Hessian are held fixed; the multiplier acts on variance."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:whitening",
+      "concept": "Gradient and Hessian in population-standardised coordinates",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "geometry:whitened_coefficients",
+        "geometry:spectral_components"
+      ],
+      "note": "Whitening uses the positive-variance support if covariance is singular."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:log_quadratic_weight",
+      "concept": "Exact quadratic reproductive-weight model",
+      "treatment": "definition",
+      "companion_labels": [
+        "selection:model",
+        "selection:log_quadratic_weight"
+      ],
+      "note": "An exact model assumption, stronger than a local Taylor approximation; integrability is checked separately."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:selected_mean",
+      "concept": "Exact selected-parent mean displacement",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:selected_moments",
+        "selection:moment_formulas"
+      ],
+      "note": "Requires positive combined precision and the exact Gaussian/log-quadratic model."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:selected_covariance",
+      "concept": "Exact covariance under parental reproductive weights",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:selected_moments",
+        "selection:moment_formulas"
+      ],
+      "note": "This covariance precedes any model of offspring transmission."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:counterexample",
+      "concept": "Large variance share with a one-half displacement overestimate",
+      "treatment": "calculation",
+      "companion_labels": [
+        "selection:97_50_example",
+        "worked:guide"
+      ],
+      "note": "The named scalar example is evaluated exactly, then rounded for presentation."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:T",
+      "concept": "Population-scaled stabilising curvature",
+      "treatment": "definition",
+      "companion_labels": [
+        "selection:T",
+        "selection:precision_factorisation"
+      ],
+      "note": "The symmetric scaled matrix is used in integrability and displacement bounds."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:response_bound",
+      "concept": "Covariance-scaled relative displacement-error bound",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:relative_bound",
+        "selection:full_bound"
+      ],
+      "note": "Requires a nonzero displacement on the varying support; the relative error is undefined when both shifts vanish."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:fixedB_recursion",
+      "concept": "Covariance update under fixed genic baseline and association retention",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "inheritance:retention-assumption",
+        "inheritance:recursion"
+      ],
+      "note": "Derived from the explicitly added transmission closure, not from the variance share."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:genic_baseline",
+      "concept": "Genic covariance from allele frequencies and fixed allelic effects",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:genic-formula",
+        "inheritance:association-decomposition"
+      ],
+      "note": "Fixed effects do not themselves hold allele frequencies or the genic baseline fixed."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:loewner_interval",
+      "concept": "Invariant order interval for the covariance map",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "inheritance:interval",
+        "inheritance:invariance"
+      ],
+      "note": "Positive baseline and retention below one give a positive-definite lower endpoint."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:fixedpoint_bounds",
+      "concept": "Bounds on every positive covariance fixed point",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:existence",
+        "inheritance:fixed-bounds"
+      ],
+      "note": "The proof establishes matrix existence and bounds, not general uniqueness or convergence."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:scalar_recursion",
+      "concept": "One-trait or isotropic covariance update",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "inheritance:scalar-map",
+        "inheritance:scalar"
+      ],
+      "note": "The fraction has a continuous extension at zero starting variance."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:scalar_root",
+      "concept": "Unique positive scalar covariance fixed point",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:scalar-quadratic",
+        "inheritance:positive-root"
+      ],
+      "note": "The displayed root uses positive curvature; zero curvature is treated separately."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:rho_one",
+      "concept": "Precision accumulation with complete association retention",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:precision-iteration",
+        "inheritance:rho-one"
+      ],
+      "note": "The no-restoration boundary is treated separately, including singular-curvature limits."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:log_error_model",
+      "concept": "Observation model with a constant conditional log gap",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "conditioning:constant_gap",
+        "gaussian:noise_model"
+      ],
+      "note": "A conditional mean-zero error and finite residual variance are additional observation assumptions."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:ebv_inflation",
+      "concept": "Share after substituting shrunken prediction covariance",
+      "treatment": "proof",
+      "companion_labels": [
+        "estimation:shrinkage_formula",
+        "estimation:shrinkage_share"
+      ],
+      "note": "Slope and curvature stay on the true breeding-value scale; this is not the general naive-refitting result."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:LA_regression",
+      "concept": "Raw relative-fitness phenotype regression and quadratic convention",
+      "treatment": "definition",
+      "companion_labels": [
+        "conversion:regression_model",
+        "conversion:coefficient_convention"
+      ],
+      "note": "A population least-squares projection, not necessarily an exact conditional mean."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:LA_conversion",
+      "concept": "Conversion of selected moments into log-quadratic parameters",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:selected_formula",
+        "conversion:conversion_formula"
+      ],
+      "note": "Moment matching becomes recovery of actual derivatives only under exact log-quadraticity."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:fitness_model",
+      "concept": "Phenotype-fitness model with independent Gaussian environment",
+      "treatment": "definition",
+      "companion_labels": [
+        "conditioning:phenotype_fitness",
+        "conditioning:environmental_average"
+      ],
+      "note": "A specified conditional-mean model; phenotype sufficiency and independence are explicit."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:environmental_average",
+      "concept": "Gaussian environmental convolution of the fitness curve",
+      "treatment": "proof",
+      "companion_labels": [
+        "conditioning:environment_formula",
+        "conditioning:environmental_average"
+      ],
+      "note": "Includes the normalising multiplier as well as the change in width."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:precision_order",
+      "concept": "Inverse-order covariance contraction under stabilising curvature",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:inverse-order",
+        "inheritance:selection-order"
+      ],
+      "note": "The congruence proof does not require covariance and curvature to commute."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:LA_moments",
+      "concept": "Phenotype-regression normalisation and selected moments",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:regression_moments",
+        "conversion:phenotype_moment_formula"
+      ],
+      "note": "Uses centred Gaussian moments and orthogonality to all fitted regressors."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:LA_selected_mean",
+      "concept": "Selected breeding-value mean from phenotype regression",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:selected_breeding_moments",
+        "conversion:selected_formula"
+      ],
+      "note": "Requires joint Gaussianity, the stated cross-covariance and selection mediation."
+    },
+    {
+      "source_id": "main",
+      "equation_label": "eq:LA_selected_cov",
+      "concept": "Selected breeding-value covariance from phenotype regression",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:selected_breeding_moments",
+        "conversion:selected_formula"
+      ],
+      "note": "Retains conditional breeding-value variance and subtracts the selected mean outer product."
+    },
+    {
+      "source_id": "s7",
+      "equation_label": "eq:visual_model",
+      "concept": "Fixed one-trait curve and Gaussian populations",
+      "treatment": "definition",
+      "companion_labels": [
+        "worked:one_trait"
+      ],
+      "note": "The worked calculation uses m and v where the source uses mu and g."
+    },
+    {
+      "source_id": "s7",
+      "equation_label": "eq:visual_variances",
+      "concept": "Variance components for the three one-trait populations",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "worked:one_trait",
+        "gaussian:variance_formulas"
+      ],
+      "note": "Substitution into the Gaussian formulas gives all three population cases."
+    },
+    {
+      "source_id": "s7",
+      "equation_label": "eq:visual_line",
+      "concept": "Population-fitted line for the one-trait walkthrough",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "worked:one_trait",
+        "gaussian:fitted_affine"
+      ],
+      "note": "The mean curvature contribution changes the fitted intercept."
+    },
+    {
+      "source_id": "s7",
+      "equation_label": "eq:visual_rotation_surface",
+      "concept": "Two-trait surface expressed along and across the gradient",
+      "treatment": "definition + calculation",
+      "companion_labels": [
+        "worked:rotation",
+        "geometry:rotation_formula"
+      ],
+      "note": "An orthonormal relabelling first expresses the same fixed surface in these axes."
+    },
+    {
+      "source_id": "s7",
+      "equation_label": "eq:visual_rotation_variances",
+      "concept": "Full-population components under physical covariance rotation",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "worked:rotation",
+        "geometry:rotation_formula"
+      ],
+      "note": "The quadratic component stays constant here because curvature is isotropic; perpendicular variance remains at 90 degrees."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-target",
+      "concept": "Conditional expected reproductive output",
+      "treatment": "definition",
+      "companion_labels": [
+        "conditioning:target"
+      ],
+      "note": "A conditional population mean rather than an individual realised count."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-log-target",
+      "concept": "Logarithm of conditional expected output",
+      "treatment": "definition",
+      "companion_labels": [
+        "conditioning:log_target"
+      ],
+      "note": "The conditional mean must be positive and finite."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-jensen",
+      "concept": "Averaging versus logging individual outputs",
+      "treatment": "proof",
+      "companion_labels": [
+        "conditioning:jensen",
+        "conditioning:jensen_inequality"
+      ],
+      "note": "Includes the equality condition and the obstruction from zero counts."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-selection-weight",
+      "concept": "Normalised reproductive weighting of breeding values",
+      "treatment": "proof + definition",
+      "companion_labels": [
+        "conditioning:selection_weight",
+        "conditioning:selected_density"
+      ],
+      "note": "The resulting distribution concerns contributing parents."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-phenotype-fitness",
+      "concept": "The guide's Gaussian phenotype-fitness example",
+      "treatment": "definition + calculation",
+      "companion_labels": [
+        "conditioning:phenotype_fitness",
+        "worked:guide"
+      ],
+      "note": "The guide fixes the optimum and width in the general phenotype model."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-environmental-average",
+      "concept": "Conditional mean for the guide's environmental parameters",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "conditioning:environment_formula",
+        "worked:guide"
+      ],
+      "note": "The general environmental integral is evaluated at the guide's settings."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-quadratic-example",
+      "concept": "Expansion of the guide's exact quadratic log mean",
+      "treatment": "calculation",
+      "companion_labels": [
+        "worked:guide",
+        "conditioning:environment_derivatives"
+      ],
+      "note": "The stated slope and curvature come from the exact averaged function."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-finite-slope",
+      "concept": "Symmetric finite-difference estimate of slope",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "worked:guide",
+        "gaussian:taylor_derivation"
+      ],
+      "note": "Exact for the worked quadratic; the Taylor expansion explains its approximation for a smooth function."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-finite-curvature",
+      "concept": "Symmetric second difference for curvature",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "worked:guide",
+        "gaussian:taylor_derivation"
+      ],
+      "note": "Exact for the worked quadratic; outside that model it is a finite-difference approximation."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-local-description",
+      "concept": "One-trait quadratic approximation",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "gaussian:quadratic_definition",
+        "gaussian:taylor_derivation"
+      ],
+      "note": "The scalar case of the multivariate Taylor derivation, with remainder qualifications."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-environmental-integral",
+      "concept": "Integral over environmental deviations in the guide example",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "conditioning:environment_integral",
+        "conditioning:environmental_average"
+      ],
+      "note": "Uses the environmental density and the conditional phenotype-fitness mean."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-general-completing-square",
+      "concept": "Completing the environmental square",
+      "treatment": "proof",
+      "companion_labels": [
+        "conditioning:environmental_average"
+      ],
+      "note": "The complete square is expanded explicitly inside the environmental-average proof."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-environmental-average-general",
+      "concept": "General Gaussian environmental convolution",
+      "treatment": "proof",
+      "companion_labels": [
+        "conditioning:environment_formula",
+        "conditioning:environmental_average"
+      ],
+      "note": "Both width and normalising multiplier are derived."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-normal-moments",
+      "concept": "Centred Gaussian moments through order four",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:mgf_derivatives",
+        "gaussian:fourth_moment"
+      ],
+      "note": "The scalar moments follow by setting all indices equal in the derived identities."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-centered-Q",
+      "concept": "Centred scalar quadratic component",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "gaussian:terms",
+        "gaussian:quadratic_mean"
+      ],
+      "note": "The scalar quadratic mean is removed before the variance partition."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-vlin-one",
+      "concept": "Scalar linear variance",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:linear_variance"
+      ],
+      "note": "The one-coordinate case of the general covariance contraction."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-vquad-one",
+      "concept": "Scalar quadratic variance",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:quadratic_variance",
+        "gaussian:fourth_moment"
+      ],
+      "note": "Uses the Gaussian fourth moment rather than only the variance."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-correlation",
+      "concept": "Squared correlation between the linear term and full quadratic target",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:correlation_identity"
+      ],
+      "note": "Positive linear variance is required for correlation to be defined."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:Ag",
+      "concept": "First-order variance share",
+      "treatment": "definition",
+      "companion_labels": [
+        "gaussian:share",
+        "gaussian:singular_support"
+      ],
+      "note": "This source-qualified label is separate from the identically named main-text label."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-projection",
+      "concept": "Population affine-regression R-squared equals the share",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:regression_share",
+        "gaussian:affine_projection"
+      ],
+      "note": "The regression includes the mean-adjusted intercept."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-one-trait-slope",
+      "concept": "Scalar least-squares slope equals the local slope under Gaussian quadratic conditions",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:normal_equations",
+        "gaussian:affine_projection"
+      ],
+      "note": "Vanishing third moments remove the covariance of the predictor with centred curvature."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-nested-r2",
+      "concept": "Ratio of noisy affine and quadratic fit statistics",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:nested_r2",
+        "gaussian:nested_ratio"
+      ],
+      "note": "The same conditional observation model and response variance are used by both fits."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-scaling",
+      "concept": "Proportional covariance scaling of the two components",
+      "treatment": "proof",
+      "companion_labels": [
+        "geometry:component_scaling",
+        "geometry:scaling_proposition"
+      ],
+      "note": "A variance multiplier is distinct from a standard-deviation multiplier."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-selected-moments",
+      "concept": "Scalar selected-parent variance and mean shift",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:scalar_moments",
+        "selection:selected_moments"
+      ],
+      "note": "Requires positive combined precision; no offspring transmission is inferred."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-response-bound-one",
+      "concept": "One-dimensional curvature bound on relative displacement error",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "selection:scalar_relative_error",
+        "selection:full_bound"
+      ],
+      "note": "In one varying dimension the spectral and Frobenius bounds coincide."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-recursion",
+      "concept": "Scalar fixed-baseline inheritance closure",
+      "treatment": "definition + proof",
+      "companion_labels": [
+        "inheritance:scalar-map",
+        "inheritance:retention-assumption"
+      ],
+      "note": "Reproduction's association-retention rule is additional to the selection calculation."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-scalar-bounds",
+      "concept": "Numerical endpoints of the scalar invariant interval",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "inheritance:fixed-bounds",
+        "inheritance:scalar-boundaries"
+      ],
+      "note": "The guide's trajectory starts inside this interval; other starts need not enter it immediately."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-general-fixedpoint-quadratic",
+      "concept": "Polynomial satisfied by the scalar equilibrium",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:scalar-quadratic"
+      ],
+      "note": "Obtained by multiplying the fixed-point equation by its positive denominator."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-scalar-root",
+      "concept": "Positive scalar equilibrium root",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:positive-root",
+        "inheritance:rationalised-root"
+      ],
+      "note": "Includes the zero-curvature limit and an equivalent numerically stable expression."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-contraction",
+      "concept": "Exact distance formula and scalar contraction inequality",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:contraction",
+        "inheritance:contraction-bound"
+      ],
+      "note": "The complete-space argument then proves uniqueness and convergence."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-rho-one",
+      "concept": "Scalar precision after repeated updates with full retention",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:precision-iteration",
+        "inheritance:rho-one"
+      ],
+      "note": "The scalar case of the matrix induction; no positive restoration term remains."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-LA",
+      "concept": "Scalar phenotype regression of relative fitness",
+      "treatment": "definition",
+      "companion_labels": [
+        "conversion:regression_model",
+        "conversion:coefficient_convention"
+      ],
+      "note": "The half-quadratic convention is stated explicitly."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-intercept",
+      "concept": "Relative-fitness intercept and its numerical value",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "conversion:phenotype_moment_formula",
+        "conversion:scalar_example"
+      ],
+      "note": "Population normalisation determines the fitted intercept."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-first-moment",
+      "concept": "First selected phenotype moment",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:regression_moments",
+        "conversion:phenotype_moment_formula"
+      ],
+      "note": "The scalar version of the Gaussian normal-equation derivation."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-second-moment",
+      "concept": "Second selected phenotype moment",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:regression_moments",
+        "conversion:phenotype_moment_formula"
+      ],
+      "note": "This is a second moment, before subtracting the selected mean squared."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-conditional-A-one",
+      "concept": "Breeding-value mean and variance conditional on phenotype",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:conditional_moments",
+        "conversion:conditional_formula"
+      ],
+      "note": "Requires the joint Gaussian and cross-covariance assumptions."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-BV-moments",
+      "concept": "Selected breeding-value moments in one trait",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:selected_formula",
+        "conversion:scalar_example"
+      ],
+      "note": "The conditional variance is retained during reproductive averaging."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-conversion-one",
+      "concept": "Scalar inversion from selected moments to log-quadratic parameters",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "conversion:conversion_formula",
+        "conversion:scalar_numbers"
+      ],
+      "note": "The matching parameters recover actual derivatives only under exact log-quadraticity."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-ebv",
+      "concept": "Share under fixed-coefficient prediction-variance substitution",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "estimation:shrinkage_share",
+        "estimation:shrinkage"
+      ],
+      "note": "Does not give a universal bias direction when slope and curvature are refitted."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-trace-reduction",
+      "concept": "Four-index reduction of quadratic variance to a trace",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:four_index_variance",
+        "gaussian:quadratic_variance"
+      ],
+      "note": "The matrix-product order is preserved throughout the index contraction."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-multi-variances",
+      "concept": "Multivariate linear variance, quadratic variance and orthogonality",
+      "treatment": "proof",
+      "companion_labels": [
+        "gaussian:variance_formulas",
+        "gaussian:orthogonality"
+      ],
+      "note": "The proof allows correlated traits and treats singular support separately."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-multi-selected",
+      "concept": "Multivariate selected-parent mean and covariance",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:selected_moments",
+        "selection:moment_formulas"
+      ],
+      "note": "Positive combined precision is necessary and sufficient for the Gaussian weight to normalise."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-whitened-full",
+      "concept": "Exact selected displacement in covariance-scaled coordinates",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:whitened_error_identity",
+        "selection:precision_factorisation"
+      ],
+      "note": "The symmetric factorisation does not assume commuting original matrices."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-whitened-error",
+      "concept": "Displacement error in covariance-scaled coordinates",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:whitened_error_identity"
+      ],
+      "note": "Follows from the inverse identity, with matrix order retained."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-multi-bound",
+      "concept": "Relative displacement bound and Frobenius upper bound",
+      "treatment": "proof",
+      "companion_labels": [
+        "selection:relative_bound",
+        "selection:full_bound"
+      ],
+      "note": "Equality and zero-gradient cases are given separately."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-genic-baseline",
+      "concept": "Multitrait genic covariance from loci",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:genic-formula",
+        "inheritance:genic"
+      ],
+      "note": "Fixed allelic effects and a fixed genic baseline are separate assumptions."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-matrix-interval-map",
+      "concept": "Invariance of the covariance order interval",
+      "treatment": "proof",
+      "companion_labels": [
+        "inheritance:invariance",
+        "inheritance:existence"
+      ],
+      "note": "The surrounding proof verifies compactness, convexity and continuity for Brouwer's theorem."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-multi-conditioning",
+      "concept": "Multivariate breeding-value conditioning on phenotype",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:conditional_moments",
+        "conversion:conditional_second"
+      ],
+      "note": "Left and right covariance factors are retained in the correct order."
+    },
+    {
+      "source_id": "sf1",
+      "equation_label": "eq:guide-multi-raw-derivatives",
+      "concept": "Derivatives of the logged phenotype-regression polynomial",
+      "treatment": "proof",
+      "companion_labels": [
+        "conversion:raw_derivatives",
+        "conversion:raw_log"
+      ],
+      "note": "These are local phenotype-polynomial derivatives, not the selected-moment conversion."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:A",
+      "concept": "Gaussian latent breeding-value population in the estimation example",
+      "treatment": "definition",
+      "companion_labels": [
+        "estimation:model",
+        "estimation:measurement_model"
+      ],
+      "note": "The companion distinguishes the population mean from centred latent deviation."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:measurement",
+      "concept": "Repeated noisy trait measurements",
+      "treatment": "definition",
+      "companion_labels": [
+        "estimation:measurement_model",
+        "estimation:model"
+      ],
+      "note": "Independent measurement environments and wholly additive trait variation are stated assumptions."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:count",
+      "concept": "Conditional Poisson reproductive-count model",
+      "treatment": "definition",
+      "companion_labels": [
+        "estimation:count_model",
+        "estimation:model"
+      ],
+      "note": "Reproduction is independent of measurement environments conditional on the latent breeding value."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:surface",
+      "concept": "Quadratic log conditional expected count",
+      "treatment": "definition",
+      "companion_labels": [
+        "estimation:count_model"
+      ],
+      "note": "The intercept specifies output at the mean breeding value, not population mean output."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:linear",
+      "concept": "Generating linear variance in the worked example",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "estimation:components",
+        "gaussian:linear_variance"
+      ],
+      "note": "The numerical value is a substitution using generating parameters."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:quadratic",
+      "concept": "Generating quadratic variance in the worked example",
+      "treatment": "calculation + proof",
+      "companion_labels": [
+        "estimation:components",
+        "gaussian:quadratic_variance"
+      ],
+      "note": "Individual Poisson variation is excluded from this log-mean target."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:share",
+      "concept": "Generating variance share in the worked example",
+      "treatment": "calculation",
+      "companion_labels": [
+        "estimation:components",
+        "worked:estimation"
+      ],
+      "note": "The theoretical generating share is distinct from a fitted finite-data estimate."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:Ehat",
+      "concept": "Unbiased within-genotype measurement-variance calibration",
+      "treatment": "proof",
+      "companion_labels": [
+        "estimation:anova_calibration",
+        "estimation:calibration_estimators"
+      ],
+      "note": "The derivation states the required sample-size and replication conditions."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:Ghat",
+      "concept": "Unbiased between-genotype variance calibration",
+      "treatment": "proof",
+      "companion_labels": [
+        "estimation:anova_calibration",
+        "estimation:calibration_estimators"
+      ],
+      "note": "Negative realised estimates are possible and are not silently truncated by the implementation."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:shrink",
+      "concept": "Calibrated prediction reliability and centred conditional mean",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "estimation:posterior",
+        "estimation:reliability_identities"
+      ],
+      "note": "Known-parameter identities are derived first; the implementation substitutes fitted calibration values."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:posterior",
+      "concept": "Normal latent distribution conditional on repeated measurements",
+      "treatment": "proof",
+      "companion_labels": [
+        "estimation:posterior_formula",
+        "estimation:posterior"
+      ],
+      "note": "The plug-in distribution does not integrate uncertainty in calibration parameters."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:likelihood",
+      "concept": "Poisson likelihood integrated over uncertain breeding value",
+      "treatment": "proof",
+      "companion_labels": [
+        "estimation:mixture_likelihood",
+        "estimation:likelihood"
+      ],
+      "note": "This averages probabilities, not individual log counts; zero counts remain valid observations."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:derivatives",
+      "concept": "Slope and curvature of the fitted quadratic log mean",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "estimation:components"
+      ],
+      "note": "The fitted quadratic is differentiated directly at the estimated population centre."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:quarticvar",
+      "concept": "Complete even-part variance with a quartic term",
+      "treatment": "proof",
+      "companion_labels": [
+        "estimation:quartic_variance",
+        "estimation:quartic_full_r2"
+      ],
+      "note": "The derivation retains the quadratic-quartic covariance term."
+    },
+    {
+      "source_id": "sf3",
+      "equation_label": "eq:quarticR2",
+      "concept": "Full-curve affine R-squared for the quartic generating function",
+      "treatment": "proof + calculation",
+      "companion_labels": [
+        "estimation:quartic_full_r2",
+        "estimation:quartic"
+      ],
+      "note": "This is a different denominator from the local quadratic variance share."
+    }
+  ],
+  "summary": {
+    "source_qualified_equation_labels": 106,
+    "distinct_bare_equation_labels": 105,
+    "counts_by_source": {
+      "main": 37,
+      "s7": 5,
+      "sf1": 49,
+      "sf3": 15
+    },
+    "covered": 106,
+    "unmapped": 0,
+    "invalid_companion_targets": 0,
+    "actual_gaps": []
+  },
+  "status_legend": {
+    "definition": "A definition, coefficient convention or explicitly stated model assumption; it is not an empirical theorem.",
+    "proof": "An analytical derivation under stated assumptions. A scalar specialisation or immediate algebraic corollary may share its parent proof.",
+    "calculation": "A stated numerical substitution, worked example, direct differentiation or fitted-model calculation. Numerical values are not substituted for proof."
+  },
+  "notation_notes": [
+    "The one-trait visual calculation uses m and v in the companion where S7 uses mu and g.",
+    "The estimation chapter distinguishes centred latent X from the population mean; SF3 uses A in its zero-mean generating model and Z for the centred fitted latent value.",
+    "Prediction reliability is R_pred in the companion; reproductive count is R_i. This separates the two meanings represented by r and W in SF3.",
+    "The inheritance scalar gamma and the phenotype-regression gamma belong to different models; their definitions are retained locally."
+  ],
+  "unlabelled_display_review": {
+    "method": "Reviewed top-level equation/align/gather/multline and display-bracket blocks without an eq: label; repeated and intermediate displays are grouped by concept below. TeX linebreaks followed by bracketed spacing are excluded.",
+    "counts_by_source": {
+      "main": 18,
+      "s7": 0,
+      "sf1": 69,
+      "sf3": 0
+    },
+    "total_blocks": 87,
+    "groups": [
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Basic variance/covariance definitions; linear and centred quadratic terms",
+        "companion_targets": [
+          {
+            "label": "gaussian:terms",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          },
+          {
+            "label": "gaussian:linear_variance",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          },
+          {
+            "label": "gaussian:product_covariance",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "Definitions are used explicitly in the component and product-covariance expansions."
+      },
+      {
+        "source_ids": [
+          "sf1"
+        ],
+        "concept": "Environmental square completion and scalar guide parameters",
+        "companion_targets": [
+          {
+            "label": "conditioning:environmental_average",
+            "source": "tutorials/derivations/chapters/01_conditioning.tex"
+          },
+          {
+            "label": "worked:guide",
+            "source": "tutorials/derivations/chapters/08_worked_results.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "Both the general integral and its scalar numerical substitutions are covered."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Gaussian product moments, odd-moment cancellation and variance addition",
+        "companion_targets": [
+          {
+            "label": "gaussian:fourth_moment",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          },
+          {
+            "label": "gaussian:product_covariance",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          },
+          {
+            "label": "gaussian:orthogonality",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "All intermediate moment identities belong to the detailed variance proof."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Affine normal equations and intercept adjustment",
+        "companion_targets": [
+          {
+            "label": "gaussian:normal_equations",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          },
+          {
+            "label": "gaussian:fitted_affine",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "The projection proof supplies the minimisation argument as well as the coefficients."
+      },
+      {
+        "source_ids": [
+          "sf1"
+        ],
+        "concept": "Noisy fit statistics and complementary explained fraction",
+        "companion_targets": [
+          {
+            "label": "gaussian:nested_ratio",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          },
+          {
+            "label": "gaussian:noisy_response",
+            "source": "tutorials/derivations/chapters/02_gaussian_projection.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "The numerical example and ratio complement follow from the shared variance denominator."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Trait-unit transformations, spectral components and Rayleigh bounds",
+        "companion_targets": [
+          {
+            "label": "geometry:coordinate_invariance",
+            "source": "tutorials/derivations/chapters/03_geometry.tex"
+          },
+          {
+            "label": "geometry:spectral_components",
+            "source": "tutorials/derivations/chapters/03_geometry.tex"
+          },
+          {
+            "label": "geometry:rayleigh_bound",
+            "source": "tutorials/derivations/chapters/03_geometry.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "Coordinate changes, physical orientation and equality conditions are distinguished."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Combined precision, square completion and selected-parent displacement",
+        "companion_targets": [
+          {
+            "label": "selection:combined_precision",
+            "source": "tutorials/derivations/chapters/04_selection.tex"
+          },
+          {
+            "label": "selection:completed_square",
+            "source": "tutorials/derivations/chapters/04_selection.tex"
+          },
+          {
+            "label": "selection:scalar_moments",
+            "source": "tutorials/derivations/chapters/04_selection.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "The exact distribution is normalised before its moments are read off."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Whitened full displacement, error vector and matrix norms",
+        "companion_targets": [
+          {
+            "label": "selection:whitened_error_identity",
+            "source": "tutorials/derivations/chapters/04_selection.tex"
+          },
+          {
+            "label": "selection:full_bound",
+            "source": "tutorials/derivations/chapters/04_selection.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "The general bound and scalar equality case are derived."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Covariance interval, every-fixed-point bounds and scalar equilibrium steps",
+        "companion_targets": [
+          {
+            "label": "inheritance:invariance",
+            "source": "tutorials/derivations/chapters/05_inheritance.tex"
+          },
+          {
+            "label": "inheritance:existence",
+            "source": "tutorials/derivations/chapters/05_inheritance.tex"
+          },
+          {
+            "label": "inheritance:scalar-quadratic",
+            "source": "tutorials/derivations/chapters/05_inheritance.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "All unlabelled intermediate algebra is expanded in the inheritance proof."
+      },
+      {
+        "source_ids": [
+          "sf1"
+        ],
+        "concept": "Scalar guide iterations and complete-retention precision updates",
+        "companion_targets": [
+          {
+            "label": "inheritance:scalar-boundaries",
+            "source": "tutorials/derivations/chapters/05_inheritance.tex"
+          },
+          {
+            "label": "inheritance:precision-iteration",
+            "source": "tutorials/derivations/chapters/05_inheritance.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "Exact rational iterates and the no-restoration boundary are included."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Regression-selected moments and inverse parameter conversion",
+        "companion_targets": [
+          {
+            "label": "conversion:phenotype_moment_formula",
+            "source": "tutorials/derivations/chapters/07_phenotype_conversion.tex"
+          },
+          {
+            "label": "conversion:selected_formula",
+            "source": "tutorials/derivations/chapters/07_phenotype_conversion.tex"
+          },
+          {
+            "label": "conversion:conversion_formula",
+            "source": "tutorials/derivations/chapters/07_phenotype_conversion.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "The conditional-variance term and matrix multiplication order are retained."
+      },
+      {
+        "source_ids": [
+          "main",
+          "sf1"
+        ],
+        "concept": "Logged raw-regression derivatives and numerical checkpoint",
+        "companion_targets": [
+          {
+            "label": "conversion:raw_derivatives",
+            "source": "tutorials/derivations/chapters/07_phenotype_conversion.tex"
+          },
+          {
+            "label": "conversion:scalar_example",
+            "source": "tutorials/derivations/chapters/07_phenotype_conversion.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "The two conversion targets are explicitly separated."
+      },
+      {
+        "source_ids": [
+          "sf1"
+        ],
+        "concept": "Multivariate component example and finite-difference checkpoint arithmetic",
+        "companion_targets": [
+          {
+            "label": "worked:main3",
+            "source": "tutorials/derivations/chapters/08_worked_results.tex"
+          },
+          {
+            "label": "worked:guide",
+            "source": "tutorials/derivations/chapters/08_worked_results.tex"
+          }
+        ],
+        "review": "covered",
+        "note": "Numerical substitutions are shown separately from the population proofs."
+      }
+    ],
+    "actual_gaps": []
+  },
+  "actual_gaps": []
+}

@@ -4,6 +4,8 @@ A linear term changes once with breeding value; a quadratic term changes with it
 
 **[Read the mathematics guide](guide.pdf).** It includes worked numerical examples, checkpoints and answers. No prior calculus or linear algebra is required for the main reading path; optional sections develop the multivariate proofs.
 
+For a fuller proof reference, use the [derivation companion](../derivations/README.md). It shows the moment contractions, normal equations, matrix factorisations, likelihood calculations and boundary cases in detail, with a map from individual results and equation identifiers to their derivations and biological interpretations.
+
 ## Follow the question through the calculations
 
 1. **What is the fitness curve describing?** Start with average reproductive output at each breeding value, then take its logarithm. Distinguish this from the individual offspring count.

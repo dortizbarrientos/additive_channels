@@ -1,0 +1,52 @@
+\chapter{Mathematical concepts, biological questions and sources}
+\label{concepts:chapter}
+
+This index connects the mathematical tools to the questions they answer in the companion. The references provide the established background. The derivations in the chapters show how those tools apply to the specified population and observation models.
+
+\section{Probability and population description}
+
+\paragraph{Conditional expectation and the tower property.}
+Conditional expectation gives mean reproductive output at each breeding value. The tower property then explains why averaging individual output within breeding-value classes preserves the expected-output weighting of parental classes. Chapter~\ref{conditioning:chapter} proves the relevant identities. The covariance form connects this calculation to the selection component of the Price identity \citep{Price1970}; it does not by itself supply a transmission term.
+
+\paragraph{Gaussian moments and the moment-generating function.}
+Gaussian symmetry removes odd moments, while the fourth moment is a sum over covariance pairings \citep{Isserlis1918}. Chapter~\ref{gaussian:chapter} derives the required identities and carries their indices through the quadratic-form variance. The same identities enter phenotype-regression conversion in Chapter~\ref{conversion:chapter}. Their use is a statement about the breeding-value or phenotype distribution, not a statement about whether gene action is additive.
+
+\paragraph{Projection and explained variance.}
+Population least squares is an orthogonal projection under the inner product defined by population frequencies. Its normal equations identify the fitted intercept and slope. Chapter~\ref{gaussian:chapter} derives those equations directly, so the reader can see why a tangent and a fitted line generally have different intercepts. Chapter~\ref{geometry:chapter} then connects squared correlation to an angle between functions. This projection angle is distinct from the physical orientation of genetic covariance.
+
+\section{Linear algebra, selection and inheritance}
+
+\paragraph{Congruence, similarity and matrix norms.}
+Congruence preserves positive semidefiniteness; similarity preserves eigenvalues and trace. These are different operations, both needed when transforming covariance and curvature. Chapters~\ref{geometry:chapter}--\ref{inheritance:chapter} explain them at the point of use. The linear algebra and convex-set background is treated in \citet{BoydVandenberghe2004}. In biological terms, these tools separate a change of measurement units from a change in the population, and distinguish absolute curvature from its fraction of fitness variation.
+
+\paragraph{Directional evolvability.}
+The Rayleigh quotient $\vect u^{\mathsf T}\mat G\vect u$ measures variance along a unit direction. The connection to directional evolvability is developed by \citet{HansenHoule2008}. Chapter~\ref{geometry:chapter} shows exactly which norm is held fixed in that comparison. This is essential because fixing the gradient's ordinary norm and fixing its whitened norm define different comparisons.
+
+\paragraph{Completing the square and change of weights.}
+Multiplying a Gaussian population density by an exponential quadratic weight changes its precision and mean. Chapter~\ref{selection:chapter} performs the factorisation and normalisation explicitly, including the condition that the integral be finite. Conditional averaging over environmental effects and Gaussian selection calculations have a quantitative-genetic precedent in \citet{Lande1979}. Their exactness in this companion depends on the stated distributions and functional form.
+
+\paragraph{Genic covariance and associations between loci.}
+The distinction between a genic baseline and association covariance is central to selection-induced changes in genetic variance \citep{Bulmer1971,Bulmer1974,BartonTurelli1991}. Chapter~\ref{inheritance:chapter} shows how the particular scalar retention assumption generates the model's recursion. These sources support the biological background; they do not make that one-parameter closure universal. Broader quantitative-genetic context is available in \citet{WalshLynch2018}.
+
+\paragraph{Existence, uniqueness and convergence.}
+Brouwer's finite-dimensional fixed-point theorem establishes existence for a continuous map from a nonempty compact convex set into itself. Chapter~\ref{inheritance:chapter} verifies every condition for the covariance order interval. A standard account is \citet{GranasDugundji2003}. The scalar contraction argument is stronger: it also yields uniqueness and convergence, following the principle associated with \citet{Banach1922}. Existence alone does not imply either conclusion for the general matrix recursion.
+
+\section{Estimation and interpretation}
+
+\paragraph{Prediction uncertainty and Gaussian conditioning.}
+Repeated measurements lead to a conditional distribution of breeding value, not a perfectly known value. Chapter~\ref{estimation:chapter} derives its mean, variance and reliability, then integrates the reproductive likelihood over that distribution. \citet{HadfieldEtAl2010} explains the inferential problems that can arise when predicted random effects are treated as observed quantities in a second analysis. The companion's fixed-coefficient shrinkage calculation identifies one specific effect; it is not a universal formula for every such analysis.
+
+\paragraph{Latent integration and Gaussian quadrature.}
+The likelihood integrates a count probability over the conditional breeding-value distribution. Its Gauss--Hermite approximation uses an explicitly stated normalisation. The general quadrature framework is documented by \citet{NISTDLMF}, and the probabilists' Hermite convention used by the code is documented by \citet{SciPyHermite}. Polynomial exactness is a property of the quadrature rule; a Poisson--Gaussian mixture integrand is not generally a polynomial of the required degree.
+
+\paragraph{Bootstrap uncertainty and model comparison.}
+Bootstrap calculations approximate the sampling distribution of an estimator by repeating its analysis under a specified generating distribution \citep{Efron1979}. Chapter~\ref{estimation:chapter} identifies that distribution and shows why the calibration must be repeated as well as the fitness fit. The AIC comparison uses the likelihood and parameter-count penalty of \citet{Akaike1974}. In this example both calculations remain conditional on the chosen observation model.
+
+\paragraph{Phenotype regressions and breeding-value parameters.}
+\citet{LandeArnold1983} provides the population-regression framework for selection on correlated phenotypes. The quadratic coefficient convention matters \citep{StinchcombeEtAl2008}. Chapter~\ref{conversion:chapter} derives the moment conversion under explicit joint-distribution and selection-mediation assumptions. It also explains why differentiating the logarithm of a fitted raw-scale polynomial is a different operation. Log-link fitness models \citep{MorrisseyGoudie2022} and the distinction between latent and observed scales \citep{deVillemereuilEtAl2016} provide related methodological context.
+
+\section{How to assess a calculation}
+
+A reader checking a result can ask four questions in sequence. First, which probability distribution supplies the expectation or covariance? Second, is the fitness relationship a local polynomial approximation or the exact model used for weighting? Third, does the calculation describe parents or require an additional transmission model? Fourth, are its inputs population quantities, estimates or realised observations? The answer to each question fixes the assumptions needed for the next step.
+
+This sequence prevents several common substitutions: a sample of predictions for the true breeding-value distribution; a high explained fraction for a small absolute error; a phenotype regression for the conditional fitness surface without a conversion argument; or a covariance fixed point for a full evolutionary trajectory. The result map in Appendix~\ref{coverage:chapter} points to the relevant derivation whenever one of these distinctions matters.

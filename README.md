@@ -73,6 +73,7 @@ bash run_shiny.sh
 | [Worksheet and solutions](tutorials/introduction/worksheet.pdf) | Working through the one-trait calculations in a class or reading group. |
 | [Lecture slides](tutorials/introduction/slides.pdf) · [editable PowerPoint](tutorials/introduction/slides.pptx) · [speaker notes](tutorials/introduction/speaker_notes.md) | Teaching the biological questions and calculations in sequence. |
 | [Mathematics guide](tutorials/mathematics/guide.pdf) | Step-by-step derivations, from one trait to Gaussian moments, selection, inheritance and several traits. |
+| [Complete derivation companion](tutorials/derivations/derivations.pdf) · [result and equation maps](tutorials/derivations/README.md) | Following each result through its assumptions, mathematical concepts, intermediate algebra and biological interpretation. |
 | [Geometry PowerPoint](tutorials/geometry/figures/geometry_of_additive_channels.pptx) · [parental-weighting PowerPoint](tutorials/parental_weighting/figures/parental_weighting.pptx) | Adapting the visual explanations for talks. |
 
 The [teaching index](tutorials/README.md) gives a reading order and the source files needed to rebuild these resources.

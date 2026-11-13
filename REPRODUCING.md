@@ -46,7 +46,7 @@ The launcher checks the regenerated values against the supplied records. These l
 
 [reference/figures.json](reference/figures.json) supplies the main figure comparisons. The estimation reference records are in [examples/estimating_variance_share/results/](examples/estimating_variance_share/results/). The checks compare individual bootstrap draws as well as final percentiles, allowing small floating-point differences.
 
-Numerical agreement checks a calculation for the stated cases. The general proofs and their assumptions are developed in the [mathematics guide](tutorials/mathematics/guide.pdf); the [result catalog](RESULTS.md) identifies both derivations and numerical checks. PDF bytes are not used as a scientific comparison, because font rendering and metadata can change without changing a result.
+Numerical agreement checks a calculation for the stated cases. The general proofs and their assumptions are developed in the [mathematics guide](tutorials/mathematics/guide.pdf) and the fuller [derivation companion](tutorials/derivations/README.md); the [result catalog](RESULTS.md) identifies both derivations and numerical checks. PDF bytes are not used as a scientific comparison, because font rendering and metadata can change without changing a result.
 
 ## 3. Rebuild the visual explanations
 
@@ -90,6 +90,14 @@ bash run_all.sh --tutorials
 ```
 
 That optional build requires TeX Live or MacTeX with pdfLaTeX, latexmk, BibTeX, the extra/science packages and recommended fonts; Node.js with npm; and LibreOffice (`soffice`). See the [teaching index](tutorials/README.md). Rebuilding the optional PowerPoint versions of the geometry and parental-weighting figures uses the export dependencies listed in their module guides.
+
+To rebuild only the detailed derivation companion, use:
+
+```bash
+bash tutorials/derivations/build.sh
+```
+
+This needs Python 3 and the TeX dependencies, but not the slide-building tools. The [companion guide](tutorials/derivations/README.md) explains its chapter sources and result/equation maps. `python3 tutorials/derivations/check_coverage.py` checks their coverage and navigation without TeX; it is also run by continuous integration.
 
 ## 5. Run new forward-time simulations
 

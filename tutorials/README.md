@@ -13,6 +13,7 @@ Two populations can share the same relationship between breeding value and expec
 | **Does a close fit predict who contributes to reproduction?** | [Follow individual parents](parental_weighting/README.md): switch from frequency weights to reproductive weights. | Compare the two weighted parental means; neither is an offspring mean. |
 | **Can the share be estimated from observations?** | [Worked example and Shiny app](../examples/estimating_variance_share/README.md): use repeated height measurements and offspring counts. | Compare measurement uncertainty with failure of the quadratic assumption. |
 | **Why do the formulas work?** | [Mathematics guide](mathematics/README.md): derive the one-trait result, then extend it to several traits and inheritance. | Use the checkpoints and worked answers before moving to the next calculation. |
+| **Where can I follow every proof step?** | [Derivation companion](derivations/README.md): trace the analytical results, estimation procedures and worked calculations. | Follow the equation map to the assumptions, mathematical concepts and biological interpretation of a particular result. |
 
 The examples use specified mathematical populations or simulated data. Their generating values are available so you can check a calculation against a known answer. For a particular figure, formula or proof, use the [result index](../RESULTS.md) to find its source, output and numerical check.
 
@@ -40,6 +41,8 @@ Use Python 3.11 or newer. The launcher installs missing Python dependencies into
 The [illustrated introduction](introduction/README.md) starts with offspring counts, derives the fitted line, and asks whether that line predicts the selected-parent mean. It includes a four-page explanation, a worksheet with solutions, slides, editable PowerPoint and speaker notes. A suggested 35-minute sequence is included.
 
 ## Rebuild the materials
+
+To rebuild only the derivation companion, run `bash tutorials/derivations/build.sh`. It requires Python 3 and TeX with pdfLaTeX, latexmk, BibTeX and the packages listed in its [build guide](derivations/README.md#build-only-this-companion).
 
 The PDFs, slides and explorers are ready to use. To regenerate the three visual modules, run this from the repository root:
 

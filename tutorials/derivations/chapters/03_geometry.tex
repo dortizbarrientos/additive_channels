@@ -1,0 +1,425 @@
+\chapter{Covariance, coordinates and the geometry of the linear share}
+\label{geometry:chapter}
+
+There are two distinct ways to change a calculation involving several
+traits. We can change the population while keeping the trait coordinates
+fixed, or we can describe the same population in different coordinates.
+The first can change the variance share. The second must leave it
+unchanged if every quantity is transformed consistently. This chapter
+proves both statements and explains the orientation comparisons used in
+the visual examples.
+
+Throughout, the population is Gaussian and the target is the specified
+quadratic function $q$ from Chapter~\ref{gaussian:chapter}. A comparison
+on a fixed surface also holds the population mean, gradient and Hessian
+fixed unless a change is explicitly stated. The results are exact for
+that quadratic function; applying them to a local expansion of a wider
+surface retains the remainder qualifications in
+Section~\ref{gaussian:taylor_derivation}.
+
+\section{Proportional change in covariance}
+\label{geometry:scaling}
+
+Let $\mat G_0\succeq0$ be a reference covariance and define a family of
+Gaussian populations with the same mean and covariance
+$\mat G_s=s\mat G_0$, where $s>0$. This changes every variance and
+covariance by the same factor. A standard deviation changes by $\sqrt{s}$;
+the parameter $s$ is a variance multiplier, not a standard-deviation
+multiplier. Put
+\[
+L_0=\vect b^{\mathsf T}\mat G_0\vect b,
+\qquad
+Q_0=\frac12\tr[(\mat H\mat G_0)^2].
+\]
+
+\begin{proposition}[Proportional-covariance scaling]
+\label{geometry:scaling_proposition}
+With the mean, $\vect b$ and $\mat H$ fixed, the two components under
+$\mat G_s=s\mat G_0$ are
+\begin{equation}
+\Vlin(s)=sL_0,
+\qquad \Vquad(s)=s^2Q_0.
+\label{geometry:component_scaling}
+\end{equation}
+If $L_0+Q_0>0$, then
+\begin{equation}
+\Ag(s)=\frac{L_0}{L_0+sQ_0}.
+\label{geometry:share_scaling}
+\end{equation}
+If both $L_0$ and $Q_0$ are positive, the share decreases strictly with
+$s$, so proportional contraction increases it.
+\end{proposition}
+\begin{proof}
+The linear expression contains one copy of the covariance:
+$\vect b^{\mathsf T}(s\mat G_0)\vect b=sL_0$.
+The quadratic expression contains two:
+\[
+\frac12\tr\{\mat H(s\mat G_0)\mat H(s\mat G_0)\}
+ =s^2Q_0.
+\]
+Cancelling the common positive factor $s$ in the component ratio gives
+Equation~\eqref{geometry:share_scaling}. Differentiating yields
+\begin{equation}
+\frac{d\Ag}{ds}
+ =-\frac{L_0Q_0}{(L_0+sQ_0)^2},
+\label{geometry:share_derivative}
+\end{equation}
+which is strictly negative precisely when both components are positive.
+\end{proof}
+
+The absolute quantities and their ratio therefore change at different
+rates. For example,
+\begin{align}
+\frac{d\Vlin}{ds}&=L_0,
+&\frac{d\Vquad}{ds}&=2sQ_0,\nonumber\\
+1-\Ag(s)&=\frac{sQ_0}{L_0+sQ_0},
+&\frac{d(1-\Ag)}{ds}&=\frac{L_0Q_0}{(L_0+sQ_0)^2}.
+\label{geometry:omitted_fraction}
+\end{align}
+The omitted fraction does not scale as $s^2$, although the absolute
+quadratic variance does. For $L_0>0$, its small-$s$ behaviour is
+$1-\Ag(s)=sQ_0/L_0+O(s^2)$.
+
+If $L_0,Q_0>0$, the mathematical limits are
+\[
+\lim_{s\downarrow0}\Ag(s)=1,
+\qquad
+\lim_{s\to\infty}\Ag(s)=0.
+\]
+At $s=0$ itself, however, both variances vanish and the share is undefined.
+The first limit is not the share of a population with no variation.
+If $L_0=0<Q_0$, the share remains zero for every positive $s$; if
+$Q_0=0<L_0$, it remains one. Thus a narrow population at a stationary
+point does not acquire a linear contribution merely by becoming narrower.
+Large-$s$ limits describe the specified quadratic family, not an assurance
+that a local expansion remains accurate over arbitrarily broad populations.
+
+\paragraph{Biological interpretation.}
+For a fixed local relationship and mean, narrowing the breeding-value
+distribution can improve the fraction represented by a line while
+reducing the amount of linearly described variation. There is no
+contradiction: the numerator becomes smaller, but the curved contribution
+becomes smaller faster. An actual comparison among populations must also
+consider changes in the mean, conditional expected-fitness surface and
+population-specific average effects. Holding these inputs fixed is how
+this calculation isolates the frequency-distribution effect.
+
+\subsection{Why an arbitrary contraction is different}
+\label{geometry:anisotropic_counterexample}
+
+The condition $\mat G_1\preceq\mat G_0$ says that variance has not
+increased in any linear trait combination. It does not require all
+directions to contract by the same fraction. Consider
+\[
+\vect b=\begin{pmatrix}1\\0\end{pmatrix},\qquad
+\mat H=-\mat I_2,\qquad
+\mat G_0=\mat I_2,\qquad
+\mat G_1=\begin{pmatrix}0.1&0\\0&0.9\end{pmatrix}.
+\]
+The difference $\mat G_0-\mat G_1=\operatorname{diag}(0.9,0.1)$ is
+positive definite. The initial components are
+\[
+V_{\mathrm{lin},0}=1,\qquad
+V_{\mathrm{quad},0}=\tfrac12(1^2+1^2)=1,\qquad
+\mathcal A_{g,0}=\tfrac12.
+\]
+After the contraction,
+\[
+V_{\mathrm{lin},1}=0.1,\qquad
+V_{\mathrm{quad},1}=\tfrac12(0.1^2+0.9^2)=0.41,\qquad
+\mathcal A_{g,1}=\frac{0.1}{0.51}\simeq0.1961.
+\]
+Both absolute components decreased, yet the share decreased too. Most of
+the contraction was in the direction supplying the linear variation;
+substantial variance remained in a direction supplying only curvature.
+This example prevents extending Equation~\eqref{geometry:share_derivative}
+to every covariance change described informally as a reduction in variation.
+
+\section{An invertible change of trait coordinates}
+\label{geometry:coordinate_change}
+
+Let $\vect X'=\mat D\vect X$, where $\mat D$ is invertible. This is a
+new description of the same individuals, not a new population. The
+covariance becomes
+\begin{equation}
+\mat G'=\E[\vect X'\vect X'^{\mathsf T}]
+       =\mat D\mat G\mat D^{\mathsf T}.
+\end{equation}
+The scalar target cannot change when its argument is relabelled. Since
+$\vect X=\mat D^{-1}\vect X'$, its expression is
+\begin{align}
+q&=\ell_0+\vect b^{\mathsf T}\mat D^{-1}\vect X'
+ +\frac12(\vect X')^{\mathsf T}
+           \mat D^{-\mathsf T}\mat H\mat D^{-1}\vect X'.
+\end{align}
+Reading off its coefficients gives
+\begin{equation}
+\vect b'=\mat D^{-\mathsf T}\vect b,
+\qquad
+\mat H'=\mat D^{-\mathsf T}\mat H\mat D^{-1},
+\label{geometry:transformation_rules}
+\end{equation}
+where $\mat D^{-\mathsf T}=(\mat D^{-1})^{\mathsf T}$.
+Transforming a covariance while leaving the derivative coefficients in
+their old units would describe a different calculation.
+
+\begin{proposition}[Coordinate invariance]
+\label{geometry:coordinate_invariance}
+Under the simultaneous transformations above, the linear variance,
+quadratic variance, quadratic mean contribution and defined share are
+unchanged.
+\end{proposition}
+\begin{proof}
+For the linear variance, adjacent inverse factors cancel:
+\begin{align}
+(\vect b')^{\mathsf T}\mat G'\vect b'
+ &=\vect b^{\mathsf T}\mat D^{-1}
+     (\mat D\mat G\mat D^{\mathsf T})
+       \mat D^{-\mathsf T}\vect b\nonumber\\
+ &=\vect b^{\mathsf T}\mat G\vect b.
+\end{align}
+For the quadratic term,
+\begin{align}
+\mat H'\mat G'
+ &=\mat D^{-\mathsf T}\mat H\mat G\mat D^{\mathsf T},\nonumber\\
+(\mat H'\mat G')^2
+ &=\mat D^{-\mathsf T}\mat H\mat G
+    (\mat D^{\mathsf T}\mat D^{-\mathsf T})
+    \mat H\mat G\mat D^{\mathsf T}\nonumber\\
+ &=\mat D^{-\mathsf T}(\mat H\mat G)^2\mat D^{\mathsf T}.
+\end{align}
+For compatible matrices, the trace identity
+\[
+\tr(\mat A\mat B)=\sum_{i,j}A_{ij}B_{ji}
+                 =\tr(\mat B\mat A)
+\]
+allows a cyclic rotation of factors inside a trace. Applying it gives
+\begin{align}
+\tr[(\mat H'\mat G')^2]
+ &=\tr\{(\mat H\mat G)^2
+          \mat D^{\mathsf T}\mat D^{-\mathsf T}\}\nonumber\\
+ &=\tr[(\mat H\mat G)^2].
+\end{align}
+The same argument with one copy of $\mat H'\mat G'$ proves invariance
+of $\tr(\mat H\mat G)$. A cyclic rotation is not permission to rearrange
+factors in an arbitrary order: matrices need not commute. The unchanged
+components give an unchanged ratio whenever its denominator is positive.
+\end{proof}
+
+For a one-trait unit conversion $X'=10X$, the transformed quantities are
+$G'=100G$, $b'=b/10$ and $H'=H/100$. Taking $G=1$, $b=2$ and $H=-0.5$
+gives $G'=100$, $b'=0.2$ and $H'=-0.005$, and hence
+\[
+(0.2)^2(100)=4,\qquad
+\tfrac12(-0.005)^2(100)^2=0.125.
+\]
+The numerical coefficients change, while the variances in log expected
+output do not. The proof also applies to singular covariance matrices;
+the coordinate transformation preserves their rank and maps the occupied
+support to the same population expressed differently.
+
+\section{Whitening and the curvature spectrum}
+\label{geometry:whitening}
+
+For $\mat G\succ0$, its spectral decomposition can be written
+$\mat G=\mat U\mat\Lambda\mat U^{\mathsf T}$ with orthogonal
+$\mat U$ and positive diagonal $\mat\Lambda$. Define the symmetric
+square root and its inverse by
+\[
+\mat G^{1/2}=\mat U\mat\Lambda^{1/2}\mat U^{\mathsf T},
+\qquad
+\mat G^{-1/2}=\mat U\mat\Lambda^{-1/2}\mat U^{\mathsf T}.
+\]
+The rescaled variable $\vect Z=\mat G^{-1/2}\vect X$ has covariance
+$\mat I$. For Gaussian $\vect X$, its density is proportional to
+$\exp(-\sum_i z_i^2/2)$, a product of standard normal densities.
+Thus the coordinates of $\vect Z$ are independent standard normals.
+This covariance-removing transformation is called whitening.
+
+Substitution $\vect X=\mat G^{1/2}\vect Z$ gives
+\begin{equation}
+q=\ell_0+\vect c^{\mathsf T}\vect Z
+              +\frac12\vect Z^{\mathsf T}\mat S\vect Z,
+\qquad
+\vect c=\mat G^{1/2}\vect b,
+\qquad
+\mat S=\mat G^{1/2}\mat H\mat G^{1/2}.
+\label{geometry:whitened_coefficients}
+\end{equation}
+The symmetric matrix $\mat S$ has real eigenvalues $\mu_i$. Write
+$\mat S=\mat O\operatorname{diag}(\mu_i)\mat O^{\mathsf T}$ and
+$\vect Y=\mat O^{\mathsf T}\vect Z$. Orthogonal rotation preserves a
+standard normal density, so the $Y_i$ are again independent standard
+normals. In these coordinates,
+\begin{equation}
+L=(\mat O^{\mathsf T}\vect c)^{\mathsf T}\vect Y,
+\qquad
+Q_c=\frac12\sum_i\mu_i(Y_i^2-1).
+\end{equation}
+Since $\Var(Y_i)=1$, $\Var(Y_i^2)=3-1=2$, and distinct squared
+coordinates are independent, these forms give
+\begin{equation}
+\Vlin=\norm{\vect c}^2,
+\qquad
+\Vquad=\frac12\sum_i\mu_i^2.
+\label{geometry:spectral_components}
+\end{equation}
+This also supplies a direct explanation of nonnegativity. Although
+$\mat H\mat G$ need not be symmetric,
+\begin{align}
+\tr[(\mat H\mat G)^2]
+ &=\tr[(\mat G^{1/2}\mat H\mat G^{1/2})^2]\nonumber\\
+ &=\tr(\mat S^2)=\sum_i\mu_i^2\geq0.
+\end{align}
+For positive-definite $\mat G$,
+$\mat H\mat G=\mat G^{-1/2}\mat S\mat G^{1/2}$, so it is similar
+to $\mat S$. For singular $\mat G$, the whitening and similarity
+statements are made on the occupied support; the trace identity itself
+still holds in the full coordinates.
+
+If $\norm{\vect c}$ and the eigenvalues $\mu_i$ are fixed, rotating
+$\vect c$ relative to the eigenvectors of $\mat S$ cannot change the
+share: neither scalar on the right of
+Equation~\eqref{geometry:spectral_components} changes. The relative
+orientation can affect selected-parent displacement, however, because
+that calculation uses an inverse matrix acting on the gradient; see
+Section~\ref{selection:eigenbasis_error}.
+
+\paragraph{Biological interpretation.}
+The number of named traits does not by itself determine how linear the
+population description is. What matters here is the gradient and
+curvature after accounting for the amount and association of variation in
+the population. Adding a trait coordinate that never varies adds no
+variance contribution. Relabelling the same varying coordinates cannot
+change the share either.
+
+\section{Physical orientation and the Rayleigh quotient}
+\label{geometry:physical_orientation}
+
+Now keep the trait axes fixed and change a biological input. For a unit
+direction $\vect u$, the variance of the breeding-value combination
+$\vect u^{\mathsf T}\vect X$ is
+$\vect u^{\mathsf T}\mat G\vect u$. It is a directional evolvability
+measure in the specified trait units \citep{HansenHoule2008}. Write a
+gradient of fixed Euclidean length as $\vect b=a\vect u$, with $a>0$.
+If $\mat G$ has eigenvectors $\vect v_i$ and eigenvalues $\lambda_i$,
+expand $\vect u=\sum_i z_i\vect v_i$, where $\sum_i z_i^2=1$.
+Then
+\begin{equation}
+\Vlin=a^2\vect u^{\mathsf T}\mat G\vect u
+      =a^2\sum_i\lambda_i z_i^2.
+\label{geometry:rayleigh_expansion}
+\end{equation}
+The weighted mean of the $\lambda_i$ lies between their minimum and
+maximum. Hence
+\begin{equation}
+a^2\lambda_{\min}(\mat G)
+ \leq\Vlin\leq a^2\lambda_{\max}(\mat G).
+\label{geometry:rayleigh_bound}
+\end{equation}
+The upper equality holds when the gradient lies entirely in the
+largest-eigenvalue eigenspace; if that eigenvalue is simple, this means
+the corresponding eigenvector, with either sign. The lower equality is
+analogous. This is the Rayleigh-quotient argument, including its equality
+conditions. It fixes the gradient's ordinary length, not the length of
+the whitened gradient.
+
+Curvature's orientation relative to covariance can also matter. In a
+two-trait coordinate system where $\mat G=\operatorname{diag}(g_1,g_2)$,
+matrix multiplication gives
+\begin{equation}
+\Vquad=\frac12\{H_{11}^2g_1^2
+                     +2H_{12}^2g_1g_2+H_{22}^2g_2^2\}.
+\label{geometry:two_trait_curvature}
+\end{equation}
+Rotating a fixed set of curvature eigenvalues relative to these axes
+changes the entries $H_{ij}$ and can change this variance. If instead
+$\mat H=h\mat I$, then
+$\Vquad=h^2\tr(\mat G^2)/2$, which depends only on the covariance
+eigenvalues. A rotation of $\mat G$ with those eigenvalues fixed leaves
+the quadratic variance unchanged.
+
+This last case explains the two-trait rotation figure. Choose axes along
+and perpendicular to the gradient, with gradient length $a$. Let the
+population's larger-variance eigenvector make angle $\phi$ with the
+gradient, and let its principal variances be $g_1$ and $g_2$. Resolving the
+unit gradient direction along the two covariance eigenvectors gives
+\begin{equation}
+\Vlin=a^2(g_1\cos^2\phi+g_2\sin^2\phi),
+\qquad
+\Vquad=\frac{h^2}{2}(g_1^2+g_2^2)
+\quad\text{when }\mat H=h\mat I.
+\label{geometry:rotation_formula}
+\end{equation}
+At $\phi=90^\circ$, the linear variance is $a^2g_2$, not zero unless
+the smaller principal variance is zero. A section along the long axis
+can therefore have zero slope while the complete fitted plane still
+varies in the perpendicular direction.
+
+These physical comparisons do not contradict the fixed-spectrum statement
+in Section~\ref{geometry:whitening}. Changing the relative position of
+$\mat G$, $\vect b$ and $\mat H$ in fixed trait coordinates need not
+preserve $\norm{\mat G^{1/2}\vect b}$ or the eigenvalues of
+$\mat G^{1/2}\mat H\mat G^{1/2}$. Each comparison must state what stays
+fixed before drawing an orientation conclusion.
+
+\section{The regression triangle is in a space of functions}
+\label{geometry:projection_triangle}
+
+The geometry of a population regression is different from the physical
+geometry of trait axes. For centred square-integrable functions $U$ and
+$V$ of breeding value, define an inner product and length by
+\[
+\langle U,V\rangle=\E[UV],
+\qquad \norm{U}_{L^2}=\sqrt{\E[U^2]}.
+\]
+Functions that agree almost surely are the same element for this
+calculation. The population distribution enters the inner product:
+changing its frequencies changes which differences matter to the fit.
+For the Gaussian quadratic target,
+\[
+q-\E[q]=L+Q_c,
+\qquad \langle L,Q_c\rangle=0.
+\]
+Expanding the square proves the right-triangle identity
+\begin{equation}
+\norm{q-\E[q]}_{L^2}^2
+ =\norm{L}_{L^2}^2+\norm{Q_c}_{L^2}^2
+ =\Vlin+\Vquad.
+\label{geometry:pythagorean_projection}
+\end{equation}
+When $\Vlin>0$, define the angle $\psi$ between the centred target and
+its linear projection through their normalised inner product. Then
+\begin{align}
+\cos\psi
+ &=\frac{\langle L,L+Q_c\rangle}
+         {\norm{L}_{L^2}\norm{L+Q_c}_{L^2}}\nonumber\\
+ &=\frac{\Vlin}{\sqrt{\Vlin}\sqrt{\Vlin+\Vquad}},
+\qquad \cos^2\psi=\Ag.
+\label{geometry:angle_share}
+\end{align}
+The triangle's side lengths are standard deviations, not the component
+variances themselves. It represents the relation among functions over a
+population, not an angle between two trait vectors or a direction of
+evolution. If $\Vlin=0<\Vquad$, the ordinary angle to a zero projection
+is undefined; a plotted $90^\circ$ angle is only a limiting convention.
+If both variances vanish, no such triangle is defined.
+
+\paragraph{Biological interpretation.}
+A large share states that the linear fit's mean squared residual is small
+relative to the quadratic target's population variance. Neither a small function-space
+angle nor a thin breeding-value ellipse specifies the descendants of the
+population. Selection changes the weighting of the parental distribution,
+and inheritance requires information beyond either geometric picture.
+
+\section{Connection to executable checks}
+
+\codepath{code/verify_mathematics.py} checks coordinate
+transformations, proportional scaling and the explicit anisotropic
+counterexample. The \codepath{orientation_and_absolute_scale} group in
+\codepath{code/reproduce_result_checks.py} checks fixed
+whitened norms separately from a physical-coordinate Rayleigh comparison.
+\codepath{tutorials/geometry/code/geometry.py} integrates the
+specified Gaussian populations to check the visual examples. These
+finite computations illustrate the distinctions established in the
+derivations; they do not substitute for the invariance or scaling proofs.

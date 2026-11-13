@@ -1,0 +1,1221 @@
+{
+  "schema_version": 1,
+  "title": "Derivations, mathematical concepts and biological interpretation",
+  "catalogue": "../../reference/result_catalog.json",
+  "computational_baseline": "c860f6a1373be310a59502e244effe75e0e622be",
+  "scope": "Every one of the 53 existing catalogue records; proofs, calculations, statistical procedures and resource entries are distinguished.",
+  "results": [
+    {
+      "result_id": "main_figure_1",
+      "title": "Construct conditional expected fitness before taking logs",
+      "locations": [
+        "Main Figure 1"
+      ],
+      "sections": [
+        "worked:main1",
+        "conditioning:environmental_average"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Conditional expectation",
+        "Gaussian integration",
+        "differentiation"
+      ],
+      "biological_question": "How does environmental variation change expected reproduction at a breeding value?",
+      "commands": [
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "main_figure_2",
+      "title": "Gaussian population projection identity",
+      "locations": [
+        "Main Figure 2"
+      ],
+      "sections": [
+        "gaussian:affine_projection",
+        "worked:main2"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Orthogonal projection",
+        "sample correlation",
+        "Monte Carlo sampling"
+      ],
+      "biological_question": "Does a Gaussian sample recover the population linear share?",
+      "commands": [
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "main_figure_3",
+      "title": "Proportional covariance contraction on a fixed surface",
+      "locations": [
+        "Main Figure 3"
+      ],
+      "sections": [
+        "geometry:scaling",
+        "worked:main3"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Homogeneity of linear and quadratic forms"
+      ],
+      "biological_question": "What changes when all genetic variances and covariances contract proportionally?",
+      "commands": [
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "main_figure_4",
+      "title": "Scalar covariance trajectory with a separately changing gradient",
+      "locations": [
+        "Main Figure 4"
+      ],
+      "sections": [
+        "inheritance:scalar",
+        "worked:main4"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Scalar contraction",
+        "separately specified gradient history"
+      ],
+      "biological_question": "How does the share change along this particular covariance and gradient trajectory?",
+      "commands": [
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "conditional_target",
+      "title": "Conditional mean, logarithm and reproductive weighting",
+      "locations": [
+        "Main: eq:target, eq:selection_weight, eq:log_ratio, eq:jensen",
+        "Appendix S2",
+        "SF1: Sections 2–3; checks 1–2"
+      ],
+      "sections": [
+        "conditioning:target",
+        "conditioning:selection_weight",
+        "conditioning:jensen"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Conditional expectation",
+        "tower property",
+        "Jensen inequality"
+      ],
+      "biological_question": "Which parental differences remain after averaging output at a breeding value?",
+      "commands": [
+        "result_checks",
+        "guide_figures"
+      ]
+    },
+    {
+      "result_id": "environmental_convolution",
+      "title": "Gaussian environmental averaging changes breeding-value curvature",
+      "locations": [
+        "Main Figure 1",
+        "Appendix S2: eq:fitness_model, eq:environmental_average",
+        "SF1: Sections 3 and 5; Figure 1"
+      ],
+      "sections": [
+        "conditioning:environmental_average",
+        "worked:main1"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Gaussian normalisation",
+        "completion of the square",
+        "derivatives"
+      ],
+      "biological_question": "Why can phenotype-space and breeding-value-space curvature differ?",
+      "commands": [
+        "main_figures",
+        "result_checks",
+        "guide_figures"
+      ]
+    },
+    {
+      "result_id": "local_expansion",
+      "title": "Local quadratic approximation and the full nonquadratic curve",
+      "locations": [
+        "Main: eq:taylor",
+        "SF3: eq:quarticvar, eq:quarticR2"
+      ],
+      "sections": [
+        "gaussian:taylor_derivation",
+        "estimation:quartic_centring"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Multivariate Taylor expansion",
+        "remainder conditions"
+      ],
+      "biological_question": "Which conclusions describe the local quadratic approximation rather than the full curve?",
+      "commands": [
+        "result_checks",
+        "estimation_checks"
+      ]
+    },
+    {
+      "result_id": "gaussian_variance",
+      "title": "Linear and centred-quadratic Gaussian moments",
+      "locations": [
+        "Main: eq:centered_terms, eq:vlin, eq:vquad, eq:Ag",
+        "Appendix S1",
+        "SF1: Sections 4 and 9"
+      ],
+      "sections": [
+        "gaussian:moments",
+        "gaussian:variance_derivation"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Moment-generating function",
+        "Gaussian pairings",
+        "trace contraction"
+      ],
+      "biological_question": "How much population variation comes from slope and curvature?",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "affine_projection",
+      "title": "Affine regression intercept, slope and R²",
+      "locations": [
+        "Main: eq:affine_projection, eq:r2_identity",
+        "Appendix S1",
+        "SF1: Section 4"
+      ],
+      "sections": [
+        "gaussian:projection_section"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Population least squares",
+        "normal equations",
+        "orthogonality"
+      ],
+      "biological_question": "What line or plane best describes the current population?",
+      "commands": [
+        "result_checks",
+        "intro_checks",
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "nested_noisy_R2",
+      "title": "Noise reduces both R² values but their ratio recovers the share",
+      "locations": [
+        "Main: eq:nested_r2, eq:log_error_model",
+        "Appendix S1",
+        "SF1: Section 4"
+      ],
+      "sections": [
+        "conditioning:log_gap_model",
+        "gaussian:noisy_response"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Conditional residual orthogonality",
+        "total variance",
+        "nested projections"
+      ],
+      "biological_question": "When does the ratio of two noisy regression fits recover the linear share?",
+      "commands": [
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "covariance_scaling",
+      "title": "Proportional covariance scaling and the omitted fraction",
+      "locations": [
+        "Main: eq:scaling",
+        "Main Figure 3",
+        "Appendix S6: Q11",
+        "SF1: Section 4"
+      ],
+      "sections": [
+        "geometry:scaling",
+        "worked:main3"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Homogeneity",
+        "differentiation of a ratio",
+        "boundary limits"
+      ],
+      "biological_question": "Why can narrowing increase the linear fraction while both absolute components decline?",
+      "commands": [
+        "core_mathematics",
+        "result_checks",
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "anisotropic_counterexample",
+      "title": "A smaller covariance can reduce the linear share",
+      "locations": [
+        "Main: changing the breeding-value distribution",
+        "Appendix S6: Q11"
+      ],
+      "sections": [
+        "geometry:anisotropic_counterexample"
+      ],
+      "treatment": "counterexample",
+      "mathematical_concepts": [
+        "Loewner order versus directional variance"
+      ],
+      "biological_question": "Why does a decrease in every direction not guarantee a larger linear share?",
+      "commands": [
+        "core_mathematics"
+      ]
+    },
+    {
+      "result_id": "coordinate_invariance",
+      "title": "Changing trait units leaves the component variances unchanged",
+      "locations": [
+        "Main: changing coordinates",
+        "Appendix S1",
+        "SF1: Sections 4 and 9; check 5"
+      ],
+      "sections": [
+        "geometry:coordinate_change"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Congruence",
+        "similarity",
+        "cyclicity of trace"
+      ],
+      "biological_question": "Why should changing trait units leave the conclusion unchanged?",
+      "commands": [
+        "core_mathematics",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "whitening_orientation",
+      "title": "Whitening, curvature eigenvalues and the separate Rayleigh quotient",
+      "locations": [
+        "Main: eq:whitening",
+        "Appendix S1",
+        "Appendix S6: Q9",
+        "Appendix S7: Figure A2"
+      ],
+      "sections": [
+        "geometry:whitening",
+        "geometry:physical_orientation",
+        "worked:rotation"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Spectral theorem",
+        "whitening",
+        "Rayleigh quotient"
+      ],
+      "biological_question": "Which biological orientation changes affect the linear or curved contribution?",
+      "commands": [
+        "core_mathematics",
+        "result_checks",
+        "geometry_values"
+      ]
+    },
+    {
+      "result_id": "zero_and_singular_cases",
+      "title": "Zero terms, undefined correlation and singular covariance support",
+      "locations": [
+        "Main: boundaries of the variance share",
+        "Appendix S1",
+        "Appendix S6: Q7"
+      ],
+      "sections": [
+        "gaussian:share",
+        "gaussian:singular_support"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Zero variance",
+        "support restriction",
+        "reduced-rank coordinates"
+      ],
+      "biological_question": "What can be said when a trait combination does not vary?",
+      "commands": [
+        "result_checks",
+        "intro_checks",
+        "estimation_checks"
+      ]
+    },
+    {
+      "result_id": "non_gaussian_scope",
+      "title": "Asymmetry and non-Gaussian fourth moments can change the partition",
+      "locations": [
+        "Appendix S6: Q5",
+        "Introductory tutorial"
+      ],
+      "sections": [
+        "gaussian:non_gaussian"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Third moments",
+        "fourth cumulants",
+        "non-Gaussian normal equations"
+      ],
+      "biological_question": "How do skewness and non-Gaussian fourth moments alter the partition?",
+      "commands": [
+        "result_checks",
+        "intro_checks"
+      ]
+    },
+    {
+      "result_id": "selected_gaussian",
+      "title": "Exact selected-parent mean and covariance",
+      "locations": [
+        "Main: eq:log_quadratic_weight, eq:selected_mean, eq:selected_covariance",
+        "Appendix S2",
+        "SF1: Sections 5 and 9"
+      ],
+      "sections": [
+        "selection:integrability",
+        "selection:complete_square",
+        "selection:normaliser",
+        "selection:selected_moments"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Density reweighting",
+        "positive-definite precision",
+        "normalising integrals"
+      ],
+      "biological_question": "Which parents contribute, and how does their mean and covariance change?",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "guide_figures"
+      ]
+    },
+    {
+      "result_id": "share_not_displacement_accuracy",
+      "title": "A large share does not ensure an accurate parental shift or perfect rankings",
+      "locations": [
+        "Main: eq:counterexample",
+        "Appendix S6: Q8",
+        "SF1: Section 5; check 7"
+      ],
+      "sections": [
+        "selection:linear_comparison",
+        "selection:97_50_example",
+        "worked:guide"
+      ],
+      "treatment": "counterexample",
+      "mathematical_concepts": [
+        "Exponential weighting",
+        "relative error",
+        "tail rankings"
+      ],
+      "biological_question": "Why can a close linear fit still mispredict parental contributions?",
+      "commands": [
+        "result_checks",
+        "intro_checks"
+      ]
+    },
+    {
+      "result_id": "displacement_bound",
+      "title": "Absolute covariance-weighted curvature bounds relative displacement error",
+      "locations": [
+        "Main: eq:T, eq:response_bound",
+        "Appendix S2",
+        "SF1: Section 9"
+      ],
+      "sections": [
+        "selection:error_bound_section",
+        "selection:eigenbasis_error"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Whitening",
+        "operator and Frobenius norms",
+        "eigenvectors"
+      ],
+      "biological_question": "What absolute curvature measure bounds selected-parent mean error?",
+      "commands": [
+        "result_checks",
+        "core_mathematics"
+      ]
+    },
+    {
+      "result_id": "genic_baseline",
+      "title": "Fixed allelic effects do not imply fixed genic covariance",
+      "locations": [
+        "Main: eq:genic_baseline",
+        "Appendix S6: Q10",
+        "SF1: Section 6"
+      ],
+      "sections": [
+        "inheritance:genic"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Allele-count variances",
+        "cross-locus covariance"
+      ],
+      "biological_question": "Why do fixed allelic effects not imply a fixed supply of genic variance?",
+      "commands": [
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "matrix_inheritance",
+      "title": "Fixed-baseline covariance interval and matrix fixed-point bounds",
+      "locations": [
+        "Main: eq:fixedB_recursion, eq:loewner_interval, eq:fixedpoint_bounds",
+        "Appendix S3",
+        "SF1: Sections 6 and 9"
+      ],
+      "sections": [
+        "inheritance:matrix-order",
+        "inheritance:matrix-fixed-point"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Inverse order",
+        "compact convex sets",
+        "Brouwer fixed-point theorem"
+      ],
+      "biological_question": "Under the stated closure, can genetic covariance persist and within what bounds?",
+      "commands": [
+        "result_checks",
+        "core_mathematics"
+      ]
+    },
+    {
+      "result_id": "scalar_inheritance",
+      "title": "Scalar fixed point, contraction and a transient increase",
+      "locations": [
+        "Main: eq:scalar_recursion, eq:scalar_root",
+        "Main Figure 4",
+        "Appendix S3",
+        "SF1: Section 6; checks 8–9"
+      ],
+      "sections": [
+        "inheritance:scalar",
+        "inheritance:scalar-boundaries"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Quadratic roots",
+        "contraction",
+        "completeness",
+        "monotone iteration"
+      ],
+      "biological_question": "Why does the one-trait recursion converge from any nonnegative starting variance?",
+      "commands": [
+        "core_mathematics",
+        "result_checks",
+        "main_figures",
+        "guide_figures"
+      ]
+    },
+    {
+      "result_id": "rho_one_limit",
+      "title": "No-restoration boundary and retained null-space variation",
+      "locations": [
+        "Main: eq:rho_one",
+        "Appendix S3",
+        "SF1: Section 6; check 9"
+      ],
+      "sections": [
+        "inheritance:rho-one"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Precision addition",
+        "block inversion",
+        "Schur complement"
+      ],
+      "biological_question": "What variation can remain when reproduction restores none of the association departure?",
+      "commands": [
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "prediction_shrinkage",
+      "title": "Prediction shrinkage can mimic proportional biological contraction",
+      "locations": [
+        "Main: eq:ebv_inflation",
+        "SF1: Section 8"
+      ],
+      "sections": [
+        "estimation:conditioning",
+        "estimation:shrinkage"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Gaussian conditioning",
+        "total variance",
+        "fixed-coefficient substitution"
+      ],
+      "biological_question": "How can uncertainty in predicted breeding values imitate biological narrowing?",
+      "commands": [
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "phenotype_conversion",
+      "title": "Convert compatible phenotype regression moments to breeding-value parameters",
+      "locations": [
+        "Main: eq:LA_regression, eq:LA_conversion",
+        "Appendix S5: eq:LA_moments, eq:LA_selected_mean, eq:LA_selected_cov",
+        "SF1: Sections 8–9; check 11"
+      ],
+      "sections": [
+        "conversion:regression",
+        "conversion:phenotype_moments",
+        "conversion:breeding_moments",
+        "conversion:inversion"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Least-squares moments",
+        "conditional Gaussian moments",
+        "covariance subtraction"
+      ],
+      "biological_question": "When can phenotype-selection regressions recover breeding-value fitness parameters?",
+      "commands": [
+        "result_checks",
+        "guide_figures"
+      ]
+    },
+    {
+      "result_id": "appendix_S1",
+      "title": "Gaussian moments and population projections",
+      "locations": [
+        "Appendix S1"
+      ],
+      "sections": [
+        "gaussian:chapter",
+        "geometry:chapter"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Gaussian moments",
+        "projections",
+        "invariant coordinates"
+      ],
+      "biological_question": "Which assumptions make the population variance partition exact?",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "appendix_S2",
+      "title": "Gaussian selection, environmental averaging and displacement bound",
+      "locations": [
+        "Appendix S2"
+      ],
+      "sections": [
+        "conditioning:environmental_average",
+        "selection:integrability",
+        "selection:selected_moments",
+        "selection:error_bound_section"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Gaussian integration",
+        "completed squares",
+        "norm bounds"
+      ],
+      "biological_question": "How are conditional fitness, selected moments and displacement error connected?",
+      "commands": [
+        "result_checks",
+        "core_mathematics"
+      ]
+    },
+    {
+      "result_id": "appendix_S3",
+      "title": "Fixed-baseline inheritance and its limits",
+      "locations": [
+        "Appendix S3"
+      ],
+      "sections": [
+        "inheritance:chapter"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Covariance decomposition",
+        "matrix order",
+        "fixed-point theory"
+      ],
+      "biological_question": "What does the explicit inheritance model add to parental weighting?",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "main_figures"
+      ]
+    },
+    {
+      "result_id": "appendix_S4",
+      "title": "Forward-time finite-population approximation",
+      "locations": [
+        "Appendix S4"
+      ],
+      "sections": [
+        "worked:simulation"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Sample moments",
+        "finite-population approximation",
+        "summary statistics"
+      ],
+      "biological_question": "What does the multilocus simulation assess, and what remains untested?",
+      "commands": [
+        "simulation_archive",
+        "fresh_simulation"
+      ]
+    },
+    {
+      "result_id": "appendix_S5",
+      "title": "Moment conversion from phenotype regressions",
+      "locations": [
+        "Appendix S5"
+      ],
+      "sections": [
+        "conversion:chapter"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Moment conversion",
+        "compatible regression coefficients"
+      ],
+      "biological_question": "Which phenotype results can be converted into the required breeding-value quantities?",
+      "commands": [
+        "result_checks",
+        "guide_figures"
+      ]
+    },
+    {
+      "result_id": "appendix_S6",
+      "title": "Interpretation, assumptions and boundaries",
+      "locations": [
+        "Appendix S6"
+      ],
+      "sections": [
+        "coverage:questions",
+        "concepts:chapter"
+      ],
+      "treatment": "interpretation",
+      "mathematical_concepts": [
+        "Assumption tracking",
+        "logical scope of proof and counterexample"
+      ],
+      "biological_question": "Which biological interpretations follow from each mathematical result?",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "estimation"
+      ]
+    },
+    {
+      "result_id": "appendix_S7",
+      "title": "Visual one-trait and rotation examples",
+      "locations": [
+        "Appendix S7"
+      ],
+      "sections": [
+        "worked:one_trait",
+        "worked:rotation"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Centred polynomial expansion",
+        "rotations",
+        "population projection"
+      ],
+      "biological_question": "How can population frequencies and orientation be seen in concrete examples?",
+      "commands": [
+        "one_trait",
+        "geometry_visuals"
+      ]
+    },
+    {
+      "result_id": "finite_population_check",
+      "title": "SLiM approximation check over 4,000 generation records",
+      "locations": [
+        "Appendix S4",
+        "SF1: Section 7; check 10"
+      ],
+      "sections": [
+        "worked:simulation"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Sample covariance",
+        "empirical squared correlation",
+        "medians"
+      ],
+      "biological_question": "How closely does the Gaussian formula describe these finite populations?",
+      "commands": [
+        "simulation_archive",
+        "fresh_simulation"
+      ]
+    },
+    {
+      "result_id": "appendix_figure_A1",
+      "title": "One fixed curve with broad, narrow and peak-centred populations",
+      "locations": [
+        "Appendix S7: Figure A1; eq:visual_model, eq:visual_variances, eq:visual_line"
+      ],
+      "sections": [
+        "worked:one_trait"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Gaussian variance components",
+        "population-fitted intercept"
+      ],
+      "biological_question": "What changes between a broad population, a narrower one and a population at the peak?",
+      "commands": [
+        "one_trait"
+      ]
+    },
+    {
+      "result_id": "appendix_figure_A2",
+      "title": "Rotate the same covariance eigenvalues on a fixed surface",
+      "locations": [
+        "Appendix S7: Figure A2; eq:visual_rotation_surface, eq:visual_rotation_variances"
+      ],
+      "sections": [
+        "worked:rotation"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Rotation matrices",
+        "isotropic curvature",
+        "directional variance"
+      ],
+      "biological_question": "Why does a flat long-axis slice not imply zero linear variation in the full population?",
+      "commands": [
+        "geometry_values",
+        "geometry_visuals"
+      ]
+    },
+    {
+      "result_id": "sf1_figure_1",
+      "title": "Average phenotype-dependent expected output at each breeding value",
+      "locations": [
+        "SF1: mathematics-guide Figure 1"
+      ],
+      "sections": [
+        "conditioning:environmental_average",
+        "worked:guide"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Gaussian convolution",
+        "logarithmic derivatives"
+      ],
+      "biological_question": "How is the guide's conditional mean fitness obtained?",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "sf1_figure_2",
+      "title": "Compare the linear and centred quadratic contributions",
+      "locations": [
+        "SF1: mathematics-guide Figure 2"
+      ],
+      "sections": [
+        "gaussian:variance_derivation",
+        "worked:guide"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Second and fourth moments",
+        "centred quadratic term"
+      ],
+      "biological_question": "Where do the guide's components 4 and 0.125 come from?",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "sf1_figure_3",
+      "title": "Reproductive weighting gives a selected-parent distribution",
+      "locations": [
+        "SF1: mathematics-guide Figure 3"
+      ],
+      "sections": [
+        "selection:linear_comparison",
+        "selection:97_50_example",
+        "worked:guide"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Gaussian reproductive weighting"
+      ],
+      "biological_question": "Why are the guide's selected mean and variance four-thirds and two-thirds?",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "sf1_figure_4",
+      "title": "Iterate the scalar covariance closure",
+      "locations": [
+        "SF1: mathematics-guide Figure 4"
+      ],
+      "sections": [
+        "inheritance:guide-fixed-point",
+        "worked:guide"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Rational scalar iteration",
+        "positive fixed point"
+      ],
+      "biological_question": "How does the guide's inheritance sequence approach its equilibrium?",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "sf1_figure_5",
+      "title": "From phenotype moments to log conditional-fitness parameters",
+      "locations": [
+        "SF1: mathematics-guide Figure 5"
+      ],
+      "sections": [
+        "conversion:scalar_example",
+        "worked:guide"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Relative-fitness normalisation",
+        "selected moments",
+        "inverse variances"
+      ],
+      "biological_question": "How do the example phenotype coefficients become breeding-value slope and curvature?",
+      "commands": [
+        "guide_figures",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "sf1_calculations",
+      "title": "Every numerical checkpoint and the multivariate extension",
+      "locations": [
+        "SF1: Sections 2–10; checks 1–11"
+      ],
+      "sections": [
+        "worked:guide",
+        "gaussian:chapter",
+        "selection:chapter",
+        "inheritance:chapter",
+        "conversion:chapter"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Finite differences",
+        "Gaussian moments",
+        "units",
+        "selection",
+        "recursion",
+        "conversion"
+      ],
+      "biological_question": "How is every numbered checkpoint obtained and interpreted?",
+      "commands": [
+        "result_checks",
+        "core_mathematics",
+        "guide_figures",
+        "simulation_archive"
+      ]
+    },
+    {
+      "result_id": "estimation_default",
+      "title": "Two-stage estimation from repeated measurements and offspring counts",
+      "locations": [
+        "Main: estimating the variance share",
+        "SF3: Steps 1–4 and table of estimates"
+      ],
+      "sections": [
+        "estimation:calibration",
+        "estimation:likelihood",
+        "estimation:components",
+        "worked:estimation"
+      ],
+      "treatment": "estimation",
+      "mathematical_concepts": [
+        "Variance calibration",
+        "conditional Gaussian distribution",
+        "mixture likelihood"
+      ],
+      "biological_question": "How can noisy height measurements and offspring counts estimate the share?",
+      "commands": [
+        "estimation",
+        "estimation_checks",
+        "reference_comparison"
+      ]
+    },
+    {
+      "result_id": "estimation_bootstrap",
+      "title": "Joint refitting and model-conditional uncertainty",
+      "locations": [
+        "SF3: Step 5, intervals and component figure"
+      ],
+      "sections": [
+        "estimation:bootstrap",
+        "worked:estimation"
+      ],
+      "treatment": "estimation",
+      "mathematical_concepts": [
+        "Sampling distributions",
+        "parametric bootstrap",
+        "joint recalibration"
+      ],
+      "biological_question": "What uncertainty is represented by the reported interval?",
+      "commands": [
+        "estimation",
+        "estimation_checks",
+        "reference_comparison"
+      ]
+    },
+    {
+      "result_id": "estimation_integration",
+      "title": "Latent integration, recovery and explicit numerical failures",
+      "locations": [
+        "SF3: likelihood calculation and integration checks"
+      ],
+      "sections": [
+        "estimation:quadrature",
+        "estimation:score",
+        "estimation:integration_check"
+      ],
+      "treatment": "estimation",
+      "mathematical_concepts": [
+        "Gaussian quadrature",
+        "log-sum-exp",
+        "posterior score",
+        "convergence checks"
+      ],
+      "biological_question": "How does the analysis integrate uncertainty in each breeding value?",
+      "commands": [
+        "estimation",
+        "estimation_checks"
+      ]
+    },
+    {
+      "result_id": "estimation_quartic",
+      "title": "Model shape, diagnostics and the local-versus-full distinction",
+      "locations": [
+        "SF3: Step 5; eq:quarticvar, eq:quarticR2"
+      ],
+      "sections": [
+        "estimation:aic",
+        "estimation:quartic_centring",
+        "estimation:quartic",
+        "worked:estimation"
+      ],
+      "treatment": "proof",
+      "mathematical_concepts": [
+        "Gaussian sixth and eighth moments",
+        "local derivatives",
+        "full-curve projection"
+      ],
+      "biological_question": "How can the local share stay fixed while the full-curve linear fit changes?",
+      "commands": [
+        "estimation",
+        "result_checks",
+        "estimation_checks",
+        "quartic_case"
+      ]
+    },
+    {
+      "result_id": "sf3_figure_1",
+      "title": "Observed counts and latent conditional relationship",
+      "locations": [
+        "SF3: Figure 1"
+      ],
+      "sections": [
+        "estimation:components",
+        "estimation:predictions",
+        "worked:estimation"
+      ],
+      "treatment": "estimation",
+      "mathematical_concepts": [
+        "Conditional count mean",
+        "observed-scale mixture prediction"
+      ],
+      "biological_question": "Which relationship is estimated from noisy observations?",
+      "commands": [
+        "estimation"
+      ]
+    },
+    {
+      "result_id": "sf3_figure_2",
+      "title": "Component estimates, naive comparison and conditional interval",
+      "locations": [
+        "SF3: Figure 2"
+      ],
+      "sections": [
+        "estimation:bootstrap",
+        "worked:estimation"
+      ],
+      "treatment": "estimation",
+      "mathematical_concepts": [
+        "Plug-in components",
+        "bootstrap distributions"
+      ],
+      "biological_question": "How are estimated components and their model-conditional uncertainty displayed?",
+      "commands": [
+        "estimation"
+      ]
+    },
+    {
+      "result_id": "sf3_figure_3",
+      "title": "Observable-bin predictions and zero-count checks",
+      "locations": [
+        "SF3: Figure 3"
+      ],
+      "sections": [
+        "estimation:predictions",
+        "estimation:bin_variance",
+        "estimation:quartic"
+      ],
+      "treatment": "estimation",
+      "mathematical_concepts": [
+        "Total variance",
+        "zero probabilities",
+        "bin means",
+        "conditional AIC"
+      ],
+      "biological_question": "What discrepancies can be assessed on the observable data scale?",
+      "commands": [
+        "estimation"
+      ]
+    },
+    {
+      "result_id": "sf2_reproduction_resources",
+      "title": "Runnable scientific source, reference data and result checks",
+      "locations": [
+        "SF2: reproducibility resources"
+      ],
+      "sections": [
+        "worked:commands",
+        "coverage:commands"
+      ],
+      "treatment": "resource",
+      "mathematical_concepts": [
+        "Provenance of inputs, algorithms and numerical outputs"
+      ],
+      "biological_question": "How does a reader reproduce the calculations associated with a result?",
+      "commands": [
+        "main_figures",
+        "core_mathematics",
+        "result_checks",
+        "simulation_archive",
+        "estimation",
+        "reference_comparison"
+      ]
+    },
+    {
+      "result_id": "introductory_examples",
+      "title": "Observation means, population-fitted lines and parental shift",
+      "locations": [
+        "Introductory notes, worksheet and slides"
+      ],
+      "sections": [
+        "conditioning:chapter",
+        "worked:one_trait",
+        "worked:guide"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Group means",
+        "polynomial projection",
+        "parental weighting"
+      ],
+      "biological_question": "How do the biological questions lead to the one-trait calculations?",
+      "commands": [
+        "intro_checks",
+        "intro_figures",
+        "result_checks"
+      ]
+    },
+    {
+      "result_id": "geometry_comparisons",
+      "title": "Rotate, narrow or move a Gaussian population on one fixed surface",
+      "locations": [
+        "Geometry tutorial; two-page figure and offline explorer"
+      ],
+      "sections": [
+        "geometry:chapter",
+        "worked:rotation",
+        "worked:comparison"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Physical rotation",
+        "covariance scaling",
+        "distance-dependent gradient"
+      ],
+      "biological_question": "How can different population changes produce equal or different linear shares?",
+      "commands": [
+        "geometry_values",
+        "geometry_visuals"
+      ]
+    },
+    {
+      "result_id": "parental_weighting_examples",
+      "title": "Frequency, expected-output and recorded-count weights",
+      "locations": [
+        "Parental-weighting tutorial and offline explorer"
+      ],
+      "sections": [
+        "conditioning:selection_weight",
+        "worked:parental"
+      ],
+      "treatment": "calculation",
+      "mathematical_concepts": [
+        "Normalised frequency, expected-output and realised-count weights"
+      ],
+      "biological_question": "Which parents contribute disproportionately to reproduction?",
+      "commands": [
+        "parental_weighting"
+      ]
+    },
+    {
+      "result_id": "shiny_exploration",
+      "title": "Change measurement uncertainty, sample size and model shape",
+      "locations": [
+        "SF3: companion Shiny app"
+      ],
+      "sections": [
+        "estimation:likelihood",
+        "estimation:predictions",
+        "estimation:bootstrap",
+        "worked:commands"
+      ],
+      "treatment": "resource",
+      "mathematical_concepts": [
+        "Repeated application of the same likelihood and prediction procedure"
+      ],
+      "biological_question": "What biological assumptions are changed by the app's model settings?",
+      "commands": [
+        "shiny"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+\documentclass[11pt,a4paper,oneside]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[a4paper,left=24mm,right=24mm,top=23mm,bottom=25mm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,longtable,array,enumitem,xcolor,needspace}
+\usepackage{graphicx}
+\usepackage[round,authoryear]{natbib}
+\usepackage{titlesec,fancyhdr}
+\usepackage{xurl}
+\usepackage{hyperref}
+\definecolor{inkblue}{HTML}{234F67}
+\definecolor{inkgrey}{HTML}{4B5459}
+\hypersetup{colorlinks=true,linkcolor=inkblue,citecolor=inkblue,urlcolor=inkblue,
+  pdftitle={Derivations of additive channels: mathematical foundations and biological interpretation},
+  pdfauthor={Daniel Ortiz-Barrientos and Mark Cooper},
+  pdfsubject={Detailed mathematical derivations and their biological interpretation}}
+\urlstyle{same}
+\titleformat{\chapter}[display]{\normalfont\Large\bfseries\color{inkblue}\raggedright\hyphenpenalty=10000}
+ {\large\chaptertitlename\ \thechapter}{6pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{-6pt}{18pt}
+\titleformat{\section}{\normalfont\large\bfseries\color{inkblue}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{2em}
+\setlist{topsep=4pt,itemsep=3pt,parsep=1pt,leftmargin=*}
+\allowdisplaybreaks[1]
+\numberwithin{equation}{chapter}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{inkgrey}Additive channels: derivation companion}
+\fancyhead[R]{\small\color{inkgrey}\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\bGamma}{\boldsymbol{\Gamma}}
+\newcommand{\bgamma}{\boldsymbol{\gamma}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Corr}{\operatorname{Corr}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Ag}{\mathcal A_g}
+\newcommand{\Vlin}{V_{\mathrm{lin}}}
+\newcommand{\Vquad}{V_{\mathrm{quad}}}
+\newcommand{\Gsel}{\mat G_{\mathrm{sel}}}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\R}{\mathbb R}
+\newcommand{\given}{\mid}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\codepath}[1]{{\urlstyle{tt}\nolinkurl{#1}}}
+\newcommand{\repofile}[2]{\href{https://github.com/dortizbarrientos/additive_channels/blob/main/#1}{#2}}
+\begin{document}
+\begin{titlepage}
+\vspace*{15mm}
+{\large\color{inkblue}ADDITIVE CHANNELS\par}
+\vspace{9mm}
+{\Huge\bfseries Derivations of\par additive channels\par}
+\vspace{7mm}
+{\Large Mathematical foundations and\par biological interpretation\par}
+\vspace{14mm}
+{\large Daniel Ortiz-Barrientos and Mark Cooper\par}
+\vspace{6mm}
+13 November 2026\par
+\vfill
+\begin{minipage}{0.93\textwidth}
+A derivation companion for readers who want to follow each mathematical result from its assumptions through its algebra to its biological meaning. The result map connects the proofs and worked calculations to the numerical reproduction code, figures, supplementary examples and interactive resources.
+\end{minipage}\par
+\vspace{10mm}
+\href{https://github.com/dortizbarrientos/additive_channels}{github.com/dortizbarrientos/additive\_channels}
+\end{titlepage}
+\pagenumbering{roman}
+\input{chapters/00_reading_map}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\input{chapters/01_conditioning}
+\input{chapters/02_gaussian_projection}
+\input{chapters/03_geometry}
+\input{chapters/04_selection}
+\input{chapters/05_inheritance}
+\input{chapters/06_estimation}
+\input{chapters/07_phenotype_conversion}
+\input{chapters/08_worked_results}
+\appendix
+\input{chapters/09_coverage}
+\input{chapters/10_concepts_references}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{plainnat}
+\bibliography{references,foundations}
+\end{document}
