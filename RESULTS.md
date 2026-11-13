@@ -4,6 +4,8 @@ This page maps the four main figures, mathematical results, Appendices S1–S7, 
 
 All paths and commands below start at the repository root. Follow [REPRODUCING.md](REPRODUCING.md) to prepare the numerical Python environment. The shell launchers prepare it when needed; individual `python` commands assume it is active.
 
+For the analytical steps behind a result, open the [complete derivation companion](tutorials/derivations/derivations.pdf). Its [result map](tutorials/derivations/RESULT_MAP.md) and [equation map](tutorials/derivations/EQUATION_MAP.md) connect the calculations below to explicit assumptions, mathematical concepts, proofs and biological interpretations.
+
 ```bash
 bash run_all.sh             # Figures, mathematics, archived diagnostics and 500 bootstrap refits
 bash run_all.sh --quick     # Same figure/mathematics checks, without the bootstrap analysis

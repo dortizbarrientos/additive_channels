@@ -10,4 +10,5 @@ bash tutorials/build_visuals.sh
 for src in tutorials/introduction/{notes,worksheet}.tex tutorials/mathematics/guide.tex examples/estimating_variance_share/worked_example.tex; do
   (cd "$(dirname "$src")"; base="$(basename "$src")"; latexmk -pdf -halt-on-error -interaction=nonstopmode "$base"; latexmk -c "$base")
 done
+bash tutorials/derivations/build.sh
 (cd tutorials/introduction; if ! node -e "require('pptxgenjs')" >/dev/null 2>&1; then npm install --no-audit --no-fund; fi; node build_slides.js; soffice --headless --convert-to pdf --outdir . slides.pptx)

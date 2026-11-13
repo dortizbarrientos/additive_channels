@@ -1,0 +1,688 @@
+\chapter{Converting phenotype-regression moments to breeding-value parameters}
+\label{conversion:chapter}
+
+A published selection regression usually describes relative fitness as a
+function of measured phenotype. The variance share in this project instead
+uses log expected output conditional on breeding value. Their coefficients
+cannot generally be equated. Under stated conditions, the phenotype
+regression supplies selected moments, those moments can be transferred to
+breeding-value coordinates, and a log-quadratic model can be chosen to
+reproduce them. This chapter derives each operation and identifies when that
+model also recovers the actual conditional log-fitness derivatives.
+
+The calculations use the tower property from
+Chapter~\ref{conditioning:chapter}, Gaussian fourth moments from
+Chapter~\ref{gaussian:chapter}, and the Gaussian selection formulas in
+Chapter~\ref{selection:chapter}. Matrix order matters throughout: covariance
+and curvature matrices need not commute.
+
+\section{Define the regression and its reference population}
+\label{conversion:regression}
+
+Let \(\vect Z\) be the measured phenotype, let
+\(\vect x=\vect Z-\E[\vect Z]\), and write
+\(\mat P=\Cov(\vect Z)\). Let \(W\geq0\) be output in the same population and
+selection episode, with \(0<\bar W=\E[W]<\infty\), and define relative
+fitness \(w=W/\bar W\). Thus \(\E[w]=1\).
+
+Consider the population least-squares regression
+\begin{equation}
+ w=\alpha_w+\vect\beta^{\mathsf T}\vect x
+     +\frac12\vect x^{\mathsf T}\bgamma\vect x+\varepsilon,
+ \qquad \bgamma=\bgamma^{\mathsf T}.
+ \label{conversion:regression_model}
+\end{equation}
+We use \(\alpha_w\) to distinguish this relative-fitness intercept from the
+log-mean intercept in Chapter~\ref{estimation:chapter}. This is the
+linear--quadratic phenotype regression of selection analysis
+\citep{LandeArnold1983}. Assume \(\E[w^2]<\infty\), so that the population
+least-squares problem and the Gaussian-weighted moments used below are
+well defined. The normal equations for least squares give
+\begin{equation}
+ \E[\varepsilon]=0,\qquad
+ \E[x_i\varepsilon]=0,\qquad
+ \E[x_ix_j\varepsilon]=0
+ \quad\hbox{for every }i,j.
+ \label{conversion:normal_equations}
+\end{equation}
+These equations require orthogonality to the fitted regressors. They do not
+require \(\E[\varepsilon\mid\vect x]=0\) at every phenotype. Consequently
+the moment calculations below can hold when the fitted polynomial is not the
+exact conditional mean.
+
+The factor \(1/2\) applies to the entire quadratic form. Expanding it gives
+\begin{equation}
+ \frac12\vect x^{\mathsf T}\bgamma\vect x
+ =\frac12\sum_j\gamma_{jj}x_j^2
+   +\sum_{j<k}\gamma_{jk}x_jx_k.
+ \label{conversion:coefficient_convention}
+\end{equation}
+Thus a software coefficient \(c_{jj}\) multiplying \(x_j^2\) corresponds
+to \(\gamma_{jj}=2c_{jj}\). A coefficient multiplying the single
+cross-product column \(x_jx_k\) corresponds to \(\gamma_{jk}\) itself:
+the two symmetric matrix entries have already combined. This convention
+must be checked before using published coefficients
+\citep{StinchcombeEtAl2008}. The coefficients must also use compatible trait
+units and the same population centring.
+
+\section{Recover selected phenotype moments}
+\label{conversion:phenotype_moments}
+
+Assume now that \(\vect x\sim N(\vect0,\mat P)\). For this section, the
+formulas do not require inverses, although an identifiable full quadratic
+regression is most conveniently written on the positive-variance support.
+
+\begin{proposition}[Moments supplied by the phenotype regression]
+\label{conversion:regression_moments}
+Under the regression orthogonality and Gaussian assumptions,
+\begin{align}
+ \alpha_w&=1-\frac12\tr(\bgamma\mat P),\nonumber\\
+ \E[\vect xw]&=\mat P\vect\beta,\nonumber\\
+ \E[\vect x\vect x^{\mathsf T}w]
+   &=\mat P+\mat P\bgamma\mat P.
+ \label{conversion:phenotype_moment_formula}
+\end{align}
+The selected phenotype covariance is consequently
+\begin{equation}
+ \mat P_{\rm sel}
+ =\mat P+\mat P
+       (\bgamma-\vect\beta\vect\beta^{\mathsf T})\mat P.
+ \label{conversion:selected_phenotype_covariance}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+First take expectations in
+Equation~\eqref{conversion:regression_model}. The linear term and residual
+have mean zero, while
+\[
+ \E[\vect x^{\mathsf T}\bgamma\vect x]
+ =\sum_{j,k}\gamma_{jk}\E[x_jx_k]
+ =\sum_{j,k}\gamma_{jk}P_{jk}
+ =\tr(\bgamma\mat P).
+\]
+Since \(\E[w]=1\), this proves the intercept formula. It is a normalisation of
+the fitted average over the population, not a statement that fitted relative
+fitness at the mean phenotype equals one.
+
+Next multiply the regression by \(x_i\) and average:
+\begin{align*}
+ \E[x_iw]
+ &=\alpha_w\E[x_i]
+   +\sum_j\beta_j\E[x_ix_j]
+   +\frac12\sum_{j,k}\gamma_{jk}\E[x_ix_jx_k]
+   +\E[x_i\varepsilon]\\
+ &=\sum_jP_{ij}\beta_j.
+\end{align*}
+The mean and all third centred Gaussian moments vanish, and the residual
+term vanishes by the normal equations. In vector form this is
+\(\E[\vect xw]=\mat P\vect\beta\).
+
+For the second moment, multiply by \(x_ix_l\). The linear and residual
+terms again vanish, leaving
+\[
+ \E[x_ix_lw]
+ =\alpha_wP_{il}
+   +\frac12\sum_{j,k}\gamma_{jk}\E[x_ix_lx_jx_k].
+\]
+The fourth-moment identity proved in
+Equation~\eqref{gaussian:fourth_moment} is
+\[
+ \E[x_ix_lx_jx_k]
+ =P_{il}P_{jk}+P_{ij}P_{lk}+P_{ik}P_{lj}.
+\]
+Evaluate its three contributions separately:
+\begin{align*}
+ \frac12\sum_{j,k}\gamma_{jk}P_{il}P_{jk}
+ &=\frac12P_{il}\tr(\bgamma\mat P),\\
+ \frac12\sum_{j,k}\gamma_{jk}P_{ij}P_{lk}
+ &=\frac12(\mat P\bgamma\mat P)_{il},\\
+ \frac12\sum_{j,k}\gamma_{jk}P_{ik}P_{lj}
+ &=\frac12(\mat P\bgamma^{\mathsf T}\mat P)_{il}
+  =\frac12(\mat P\bgamma\mat P)_{il}.
+\end{align*}
+Symmetry of \(\mat P\) and \(\bgamma\) is used in the last two lines.
+Thus
+\[
+ \E[x_ix_lw]
+ =\left\{\alpha_w+\frac12\tr(\bgamma\mat P)\right\}P_{il}
+   +(\mat P\bgamma\mat P)_{il}
+ =P_{il}+(\mat P\bgamma\mat P)_{il}.
+\]
+Finally, relative-fitness weighting already has normalisation one.
+Its covariance is its second moment minus the outer product of its mean:
+\begin{align*}
+ \mat P_{\rm sel}
+ &=\mat P+\mat P\bgamma\mat P
+   -(\mat P\vect\beta)(\mat P\vect\beta)^{\mathsf T}\\
+ &=\mat P+\mat P
+       (\bgamma-\vect\beta\vect\beta^{\mathsf T})\mat P.
+\end{align*}
+\end{proof}
+
+These are moments under the nonnegative observed relative-fitness weights
+\(w\). The fitted polynomial is used to calculate those moments through
+orthogonality. It need not be positive everywhere and should not be
+substituted as a probability weight over all phenotypes merely because its
+regression coefficients are available.
+
+\section{Condition breeding value on phenotype}
+\label{conversion:conditioning}
+
+Let \(\vect X=\vect A-\E[\vect A]\) be centred breeding value, with covariance
+\(\mat G\). Assume \((\vect X,\vect x)\) is jointly Gaussian in compatible
+trait coordinates, and
+\begin{equation}
+ \Cov(\vect X,\vect x)=\mat G.
+ \label{conversion:cross_covariance}
+\end{equation}
+For now take \(\mat P\) positive definite. The cross-covariance assumption is
+additional information about the trait decomposition; it does not follow
+from fitting a phenotype regression.
+
+\begin{proposition}[Conditional breeding-value moments]
+\label{conversion:conditional_moments}
+Under these assumptions,
+\begin{align}
+ \E[\vect X\mid\vect x]&=\mat G\mat P^{-1}\vect x,\nonumber\\
+ \Cov(\vect X\mid\vect x)
+ &=\mat G-\mat G\mat P^{-1}\mat G.
+ \label{conversion:conditional_formula}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Define the regression residual
+\[
+ \vect U=\vect X-\mat G\mat P^{-1}\vect x.
+\]
+Its covariance with phenotype is
+\[
+ \Cov(\vect U,\vect x)
+ =\mat G-\mat G\mat P^{-1}\mat P=\mat0.
+\]
+Because \(\vect U\) and \(\vect x\) are linear transformations of a joint
+Gaussian vector, they are jointly Gaussian. Zero cross-covariance therefore
+makes them independent. This follows, for example, by factoring the joint
+Gaussian characteristic function with a block-diagonal covariance matrix.
+Consequently \(\E[\vect U\mid\vect x]=\vect0\).
+
+Expanding its covariance, with the matrix order retained, gives
+\begin{align*}
+ \Cov(\vect U)
+ &=\mat G-\mat G\mat P^{-1}\mat G
+       -\mat G\mat P^{-1}\mat G
+       +\mat G\mat P^{-1}\mat P\mat P^{-1}\mat G\\
+ &=\mat G-\mat G\mat P^{-1}\mat G.
+\end{align*}
+Since \(\vect X=\mat G\mat P^{-1}\vect x+\vect U\), conditioning fixes the
+first term and leaves the independent residual covariance unchanged. This
+proves both statements.
+\end{proof}
+
+The matrix \(\mat G\mat P^{-1}\) need not be symmetric. Its transpose is
+\(\mat P^{-1}\mat G\), and these products must not be exchanged. For example,
+the conditional second moment is
+\begin{align}
+ \E[\vect X\vect X^{\mathsf T}\mid\vect x]
+ &=\mat S_c+\mat C\vect x\vect x^{\mathsf T}\mat C^{\mathsf T},\nonumber\\
+ \mat S_c&=\mat G-\mat G\mat P^{-1}\mat G,\qquad
+ \mat C=\mat G\mat P^{-1}.
+ \label{conversion:conditional_second}
+\end{align}
+The two outer factors in the second term are \(\mat C\) and
+\(\mat C^{\mathsf T}\), not two identical copies of \(\mat C\).
+
+\section{Transfer reproductive weights to breeding-value moments}
+\label{conversion:breeding_moments}
+
+We now need a condition that connects the phenotype regression to the
+reproduction of individuals with different breeding values. A sufficient
+condition is
+\begin{equation}
+ \E[W\mid\vect X,\vect x]=\E[W\mid\vect x].
+ \label{conversion:mediation}
+\end{equation}
+It says that, once the measured phenotype is given, breeding value supplies
+no further information about expected reproductive output. Full conditional
+independence is stronger than needed. For the following calculation, it
+would also suffice to justify directly the corresponding conditional
+first- and second-moment factorizations.
+
+\begin{proposition}[Selected breeding-value moments]
+\label{conversion:selected_breeding_moments}
+Under the regression, Gaussian, cross-covariance and selection-mediation
+conditions above, write
+\(\mat K=\bgamma-\vect\beta\vect\beta^{\mathsf T}\).
+Then
+\begin{equation}
+ \vect m=\E_{\rm sel}[\vect X]=\mat G\vect\beta,\qquad
+ \Gsel=\mat G+\mat G\mat K\mat G.
+ \label{conversion:selected_formula}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The conditional mean condition implies
+\begin{align*}
+ \E[\vect Xw\mid\vect x]
+ &=\E\{\vect X\,\E[w\mid\vect X,\vect x]\mid\vect x\}\\
+ &=\E[\vect X\mid\vect x]\,\E[w\mid\vect x].
+\end{align*}
+Average across phenotypes and substitute
+Equation~\eqref{conversion:conditional_formula}:
+\begin{align*}
+ \E_{\rm sel}[\vect X]
+ &=\E[\vect Xw]\\
+ &=\mat G\mat P^{-1}
+        \E\{\vect x\,\E[w\mid\vect x]\}\\
+ &=\mat G\mat P^{-1}\E[\vect xw]\\
+ &=\mat G\mat P^{-1}\mat P\vect\beta
+ =\mat G\vect\beta.
+\end{align*}
+The same mediation condition applies to
+\(\vect X\vect X^{\mathsf T}\). Using
+Equation~\eqref{conversion:conditional_second}, its selected second moment
+is
+\begin{align*}
+ \E_{\rm sel}[\vect X\vect X^{\mathsf T}]
+ &=\mat S_c\,\E[w]
+   +\mat C\E[\vect x\vect x^{\mathsf T}w]\mat C^{\mathsf T}\\
+ &=\mat G-\mat G\mat P^{-1}\mat G\\
+ &\quad+\mat G\mat P^{-1}
+       (\mat P+\mat P\bgamma\mat P)
+       \mat P^{-1}\mat G\\
+ &=\mat G-\mat G\mat P^{-1}\mat G
+       +\mat G\mat P^{-1}\mat G+\mat G\bgamma\mat G\\
+ &=\mat G+\mat G\bgamma\mat G.
+\end{align*}
+Subtract the outer product of the selected mean:
+\begin{align*}
+ \Gsel
+ &=\mat G+\mat G\bgamma\mat G
+      -(\mat G\vect\beta)(\mat G\vect\beta)^{\mathsf T}\\
+ &=\mat G+\mat G
+       (\bgamma-\vect\beta\vect\beta^{\mathsf T})\mat G.
+\end{align*}
+\end{proof}
+
+\paragraph{Biological interpretation.}
+Individuals with the same phenotype can have different breeding values.
+Their conditional covariance remains part of the selected second moment.
+Discarding it would treat the prediction \(\mat G\mat P^{-1}\vect x\) as an
+observed breeding value and underestimate the unresolved variation.
+Selection mediation is also substantive: if unmeasured traits, shared
+environments or genetic effects predict reproduction after the measured
+phenotype is given, the factorizations used above need not hold.
+
+\section{Invert the selected moments}
+\label{conversion:inversion}
+
+Suppose \(\mat G\) and the selected covariance \(\Gsel\) are positive
+definite. The exact Gaussian log-quadratic selection model in
+Proposition~\ref{selection:selected_moments} has
+\[
+ \Gsel=(\mat G^{-1}-\mat H)^{-1},
+ \qquad
+ \vect m=\Gsel\vect b.
+\]
+These equations can be solved without assuming that their matrices commute.
+
+\begin{proposition}[Moment-matched log-quadratic parameters]
+\label{conversion:parameter_conversion}
+Under the selected-moment conditions above and positive definiteness,
+\begin{equation}
+ \vect b=\Gsel^{-1}\mat G\vect\beta,\qquad
+ \mat H=\mat G^{-1}-\Gsel^{-1},
+ \qquad
+ \Gsel=\mat G+\mat G
+       (\bgamma-\vect\beta\vect\beta^{\mathsf T})\mat G.
+ \label{conversion:conversion_formula}
+\end{equation}
+They define an integrable Gaussian log-quadratic weight with the specified
+selected mean and covariance.
+\end{proposition}
+
+\begin{proof}
+Invert the selected-covariance identity:
+\[
+ \Gsel^{-1}=\mat G^{-1}-\mat H.
+\]
+Rearranging gives \(\mat H=\mat G^{-1}-\Gsel^{-1}\).
+Left-multiplying \(\vect m=\Gsel\vect b\) by \(\Gsel^{-1}\) gives
+\(\vect b=\Gsel^{-1}\vect m=\Gsel^{-1}\mat G\vect\beta\).
+Both inverse covariances are symmetric, so \(\mat H\) is symmetric.
+
+To verify existence of the corresponding weight, multiply the original
+normal density by \(\exp(\vect b^{\mathsf T}\vect X+
+\vect X^{\mathsf T}\mat H\vect X/2)\). Its exponent, apart from a constant,
+is
+\begin{align*}
+ -\frac12\vect X^{\mathsf T}(\mat G^{-1}-\mat H)\vect X
+       +\vect b^{\mathsf T}\vect X
+ &=-\frac12\vect X^{\mathsf T}\Gsel^{-1}\vect X
+       +\vect m^{\mathsf T}\Gsel^{-1}\vect X\\
+ &=-\frac12(\vect X-\vect m)^{\mathsf T}
+          \Gsel^{-1}(\vect X-\vect m)
+       +\frac12\vect m^{\mathsf T}\Gsel^{-1}\vect m.
+\end{align*}
+Positive definiteness of \(\Gsel\) makes this a finite Gaussian integral.
+After normalisation, the weighted distribution is \(N(\vect m,\Gsel)\).
+\end{proof}
+
+The order in the slope formula is specifically
+\(\Gsel^{-1}\mat G\vect\beta\), not
+\(\mat G\Gsel^{-1}\vect\beta\). For another way to see the order, factor
+\[
+ \Gsel=\mat G(\mat I+\mat K\mat G)
+      =(\mat I+\mat G\mat K)\mat G.
+\]
+The first factorisation gives
+\[
+ \Gsel^{-1}\mat G=(\mat I+\mat K\mat G)^{-1},
+ \qquad
+ \vect b=(\mat I+\mat K\mat G)^{-1}\vect\beta.
+\]
+Replacing \(\mat K\mat G\) by \(\mat G\mat K\) changes the expression unless
+the matrices happen to commute. Neither commutation nor simultaneous
+diagonalisation is assumed in the derivation.
+
+Positive selected covariance is sufficient for an integrable matched model.
+It does not require stabilising curvature. If \(\Gsel\preceq\mat G\), inverse
+order gives \(\Gsel^{-1}\succeq\mat G^{-1}\), so \(\mat H\preceq0\);
+other selected covariance changes can give other curvature signs.
+Relative fitness cannot recover the absolute output multiplier:
+adding a constant to the matched log mean leaves the selected moments
+unchanged.
+
+\subsection{Exact derivatives versus matched moments}
+
+If the true \(W_A\) is exactly log quadratic in the breeding-value coordinates,
+then its Gaussian selection formulas must have the same mean and covariance,
+and the inversion recovers its \(\vect b,\mat H\). If exact log-quadraticity
+fails while the moment conditions remain valid, the construction still gives
+a log-quadratic weight with matching first and second selected moments.
+Those integrated moments do not determine the local derivatives of an
+arbitrary function \(\log\E[W\mid\vect A]\).
+
+The distinction also applies to the variance share calculated from the
+converted parameters. Under exact closure it describes the stated
+log-quadratic relationship. Under moment matching it describes the chosen
+quadratic model, whose agreement in selected moments does not establish
+agreement in its complete distribution of log fitness.
+
+\section{A positive fitness model that satisfies the assumptions}
+\label{conversion:positive_model}
+
+The supplied checks include positive fitness functions, so the conversion can
+be assessed without treating a possibly negative regression polynomial as a
+fitness function. Let centred phenotype be
+\(\vect Z=\vect A+\vect E\), where
+\(\vect A\sim N(\vect0,\mat G)\) and
+\(\vect E\sim N(\vect0,\mat V_E)\) are independent. Take
+\begin{equation}
+ f_Z(\vect z)
+ =\exp\{c+\vect q^{\mathsf T}\vect z
+                  -\tfrac12\vect z^{\mathsf T}\mat C\vect z\},
+ \qquad \mat C=\mat C^{\mathsf T}\succeq0,
+ \label{conversion:positive_phenotype}
+\end{equation}
+with \(\mat V_E\) positive definite. This is a positive phenotype-dependent
+conditional mean; reproduction may have additional stochastic variation
+around it.
+
+For a fixed breeding value \(\vect a\), write
+\(\mat Q=\mat V_E^{-1}+\mat C\). In the environmental integral, collect
+the terms involving \(\vect e\):
+\begin{align*}
+ \vect q^{\mathsf T}(\vect a+\vect e)
+ -\frac12(\vect a+\vect e)^{\mathsf T}\mat C(\vect a+\vect e)
+ -\frac12\vect e^{\mathsf T}\mat V_E^{-1}\vect e
+ &=
+ \vect q^{\mathsf T}\vect a-\frac12\vect a^{\mathsf T}\mat C\vect a\\
+ &\quad-\frac12\vect e^{\mathsf T}\mat Q\vect e
+       +(\vect q-\mat C\vect a)^{\mathsf T}\vect e.
+\end{align*}
+Completing the square in \(\vect e\) and using the Gaussian normalising
+integral gives
+\begin{align}
+ \log W_A(\vect a)
+ &=c-\frac12\log\det(\mat V_E)-\frac12\log\det(\mat Q)
+     +\vect q^{\mathsf T}\vect a
+     -\frac12\vect a^{\mathsf T}\mat C\vect a\nonumber\\
+ &\quad+\frac12(\vect q-\mat C\vect a)^{\mathsf T}
+                    \mat Q^{-1}(\vect q-\mat C\vect a).
+ \label{conversion:multivariate_environment}
+\end{align}
+The positive-definite \(\mat Q\) ensures that the integral exists. Expand the
+last term before reading off the coefficients:
+\[
+ \frac12\vect q^{\mathsf T}\mat Q^{-1}\vect q
+ -\vect a^{\mathsf T}\mat C\mat Q^{-1}\vect q
+ +\frac12\vect a^{\mathsf T}\mat C\mat Q^{-1}\mat C\vect a.
+\]
+Consequently,
+\begin{equation}
+ \vect b=\vect q-\mat C\mat Q^{-1}\vect q,\qquad
+ \mat H=-\mat C+\mat C\mat Q^{-1}\mat C.
+ \label{conversion:environment_parameters}
+\end{equation}
+These formulas provide an independent environmental-averaging route to the
+same target. The reproduction code fits the phenotype regression by
+quadrature and compares its moment conversion with this conditional
+expectation in one and two traits. The finite comparison checks the
+implementation. The agreement under the stated model follows from the
+derivations, including all Gaussian and mediation assumptions.
+
+\section{Centring, units and singular support}
+\label{conversion:coordinates}
+
+\subsection{Centre at the population mean}
+
+The vanishing third moments used earlier refer to centred Gaussian
+phenotypes. If a raw polynomial is initially expressed about a different
+reference point, write its coordinate as \(\vect z=\vect x+\vect\delta\).
+Then
+\begin{align*}
+ \alpha_0+\vect\beta_0^{\mathsf T}\vect z
+       +\tfrac12\vect z^{\mathsf T}\bgamma\vect z
+ &=\alpha_0+\vect\beta_0^{\mathsf T}\vect\delta
+       +\tfrac12\vect\delta^{\mathsf T}\bgamma\vect\delta\\
+ &\quad+(\vect\beta_0+\bgamma\vect\delta)^{\mathsf T}\vect x
+       +\tfrac12\vect x^{\mathsf T}\bgamma\vect x.
+\end{align*}
+The centred linear coefficient is
+\(\vect\beta=\vect\beta_0+\bgamma\vect\delta\); it is not generally
+\(\vect\beta_0\). The regression space is unchanged by the shift when all
+constant, linear and quadratic terms are retained, but its coefficients
+change.
+
+\subsection{Use compatible trait coordinates}
+
+For an invertible coordinate transformation \(\vect x'=\mat T\vect x\),
+the same polynomial has
+\[
+ \vect\beta'=\mat T^{-\mathsf T}\vect\beta,\qquad
+ \bgamma'=\mat T^{-\mathsf T}\bgamma\mat T^{-1}.
+\]
+If breeding values are expressed in the same new coordinates,
+\[
+ \mat G'=\mat T\mat G\mat T^{\mathsf T},\qquad
+ \mat P'=\mat T\mat P\mat T^{\mathsf T}.
+\]
+Substitution into the selected-moment formula gives
+\(\vect m'=\mat T\vect m\) and
+\(\Gsel'=\mat T\Gsel\mat T^{\mathsf T}\). Inverting the latter,
+\[
+ (\Gsel')^{-1}
+ =\mat T^{-\mathsf T}\Gsel^{-1}\mat T^{-1},
+\]
+so the converted parameters transform as
+\[
+ \vect b'=\mat T^{-\mathsf T}\vect b,\qquad
+ \mat H'=\mat T^{-\mathsf T}\mat H\mat T^{-1}.
+\]
+Thus the conversion is compatible with a coordinated change of trait units.
+Using standardised regression coefficients with an untransformed
+\(\mat G\) is not such a coordinated change.
+
+\subsection{Restrict inverse operations to varying directions}
+\label{conversion:support}
+
+The moment formulas involving only multiplication remain meaningful when
+covariances are singular, but inverses must be taken on the appropriate
+support. First remove zero-variance phenotype directions. If
+\(\Var(\vect v^{\mathsf T}\vect x)=0\), the centred phenotype component is
+zero almost surely. The cross-covariance condition then gives
+\(\vect v^{\mathsf T}\mat G\vect v=0\), so breeding value has no variation
+in that same direction. An orthonormal basis for the phenotype support
+therefore retains all relevant breeding-value variation and makes the
+reduced \(\mat P\) invertible.
+
+Breeding-value covariance can still have a smaller rank. Let \(\mat U\)
+have orthonormal columns spanning the range of \(\mat G\). Then
+\(\vect X=\mat U\vect X_s\) almost surely, and
+\(\mat G_s=\mat U^{\mathsf T}\mat G\mat U\) is positive definite.
+After calculating the selected moments, restrict them as
+\[
+ \vect m_s=\mat U^{\mathsf T}\vect m,\qquad
+ \mat S_s=\mat U^{\mathsf T}\Gsel\mat U.
+\]
+If \(\mat S_s\) is positive definite, the identifiable parameters are
+\[
+ \vect b_s=\mat S_s^{-1}\vect m_s,\qquad
+ \mat H_s=\mat G_s^{-1}-\mat S_s^{-1}.
+\]
+They describe the function on the breeding-value support. Derivatives in
+directions with no breeding-value variation are not determined by these
+moments. If selected covariance is degenerate within an initially varying
+direction, the finite positive-definite inverse construction fails; it
+should not be repaired by silently substituting an arbitrary inverse.
+If breeding value has no variation at all, the variance share is undefined.
+
+\section{Work through the scalar checkpoint}
+\label{conversion:scalar_example}
+
+Take the guide's values
+\[
+ P=1.5,\qquad \beta=0.4,\qquad \gamma=-0.2,\qquad G=0.5.
+\]
+Normalisation first gives
+\[
+ \alpha_w=1-\frac12\gamma P
+ =1-\frac12(-0.2)(1.5)=1.15.
+\]
+The selected phenotype mean is \(P\beta=0.6\), its second moment is
+\[
+ P+P^2\gamma=1.5+(1.5)^2(-0.2)=1.05,
+\]
+and its variance is \(1.05-0.6^2=0.69\).
+
+For breeding value, the conditional mean coefficient is
+\(G/P=1/3\) and the conditional variance is
+\[
+ G-\frac{G^2}{P}
+ =\frac12-\frac{1/4}{3/2}
+ =\frac13.
+\]
+The selected mean and second moment are therefore
+\begin{align*}
+ m&=\frac GP(P\beta)=G\beta=0.2,\\
+ \E_{\rm sel}[X^2]
+ &=G-\frac{G^2}{P}+\frac{G^2}{P^2}(P+P^2\gamma)\\
+ &=G+G^2\gamma=0.5+0.25(-0.2)=0.45.
+\end{align*}
+Subtracting the square of the mean gives
+\[
+ G_{\rm sel}=0.45-0.2^2=0.41.
+\]
+Only now invert the selected moments:
+\begin{align}
+ b&=\frac{0.2}{0.41}=\frac{20}{41}
+     =0.487804878\ldots,\nonumber\\
+ H&=\frac1{0.5}-\frac1{0.41}
+     =-\frac{18}{41}=-0.439024390\ldots.
+ \label{conversion:scalar_numbers}
+\end{align}
+Substituting them back gives
+\[
+ (G^{-1}-H)^{-1}
+ =\left(2+\frac{18}{41}\right)^{-1}=0.41,
+ \qquad G_{\rm sel}b=0.2.
+\]
+This is an algebraic check of the inversion. The fitted polynomial
+\(1.15+0.4x-0.1x^2\) becomes negative sufficiently far into the tails.
+The checkpoint is therefore a calculation with compatible regression
+moments, not a proposal to use that polynomial as a nonnegative fitness
+function over an entire Gaussian population.
+
+\section{Why taking the logarithm of the regression is different}
+\label{conversion:raw_log}
+
+Let the fitted phenotype polynomial be
+\[
+ \widehat w(\vect x)
+ =\alpha_w+\vect\beta^{\mathsf T}\vect x
+       +\tfrac12\vect x^{\mathsf T}\bgamma\vect x.
+\]
+If \(\alpha_w>0\), continuity makes it positive in a neighbourhood of zero.
+Within that neighbourhood,
+\[
+ \nabla\log\widehat w=\frac{\nabla\widehat w}{\widehat w}.
+\]
+Differentiate this product of \(\widehat w^{-1}\) and its gradient:
+\[
+ \nabla^2\log\widehat w
+ =\frac{\nabla^2\widehat w}{\widehat w}
+  -\frac{(\nabla\widehat w)(\nabla\widehat w)^{\mathsf T}}
+         {\widehat w^2}.
+\]
+At zero, \(\widehat w=\alpha_w\),
+\(\nabla\widehat w=\vect\beta\), and
+\(\nabla^2\widehat w=\bgamma\). Thus
+\begin{equation}
+ \nabla\log\widehat w(\vect0)=\frac{\vect\beta}{\alpha_w},
+ \qquad
+ \nabla^2\log\widehat w(\vect0)
+ =\frac{\bgamma}{\alpha_w}
+   -\frac{\vect\beta\vect\beta^{\mathsf T}}{\alpha_w^2}.
+ \label{conversion:raw_derivatives}
+\end{equation}
+In the scalar checkpoint these give
+\[
+ b_{\rm raw}=\frac{0.4}{1.15}=\frac8{23}=0.347826\ldots,
+ \qquad
+ H_{\rm raw}=-\frac{156}{529}=-0.294896\ldots.
+\]
+They differ from Equation~\eqref{conversion:scalar_numbers} because they
+differentiate the fitted phenotype-space projection. They do not perform
+environmental averaging or transfer selected moments to breeding value.
+Positivity near the mean permits these local derivatives; it does not make
+the polynomial positive over the whole phenotype distribution.
+
+\section{Conditions to retain when using the result}
+
+The conversion combines assumptions that belong to different steps. Gaussian
+phenotype moments and regression orthogonality supply selected phenotype
+moments. Joint Gaussian breeding values and phenotypes, the stated
+cross-covariance, and selection mediation transfer them to breeding value.
+Compatible centring, units and the half-quadratic coefficient convention
+make the matrix operations refer to the same quantities. Positive selected
+covariance permits inversion. Exact log-quadraticity is the additional
+condition that turns matched parameters into the true local derivatives.
+
+Uncertainty in \(\vect\beta,\bgamma,\mat G\), phenotype scaling and population
+centring must be propagated together. Applying the conversion to joint
+bootstrap or model draws preserves their dependencies; transforming separate
+interval endpoints generally does not. Near-singular selected covariance can
+make inverse-based parameters sensitive to small input changes. That
+statistical uncertainty is separate from the validity of the underlying
+moment and mediation assumptions.
+
+The group \codepath{phenotype_regression_conversion} in
+\codepath{code/reproduce_result_checks.py} checks the scalar
+checkpoint and independently fitted positive-fitness examples. Its
+multivariate calculation retains off-diagonal coefficients and noncommuting
+matrix products. The calculation verifies those specified examples; the
+derivations here state the conditions required to use the same route with
+an existing selection regression.

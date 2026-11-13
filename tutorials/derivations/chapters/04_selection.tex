@@ -1,0 +1,562 @@
+\chapter{Reproductive weighting and the selected-parent distribution}
+\label{selection:chapter}
+
+A population fit asks how well a function describes individuals under
+their existing frequencies. Selection asks how those frequencies change
+when weighted by expected reproductive output. This chapter performs that
+second calculation exactly for a Gaussian population and a log-quadratic
+conditional mean. It then derives a separate error bound for ignoring
+curvature. No inheritance rule is used: the distribution obtained here
+describes parents weighted by their reproductive contributions.
+
+\section{The exact model and its integrability condition}
+\label{selection:model}
+
+Let $\vect X=\vect A-\vect\mu\sim\mathcal N(\vect0,\mat G)$ with
+$\mat G\succ0$. The singular case will be treated on the occupied
+support. Assume in this chapter that conditional expected output is
+exactly
+\begin{equation}
+W_A(\vect\mu+\vect x)
+ =\exp\!\left(\ell_0+\vect b^{\mathsf T}\vect x
+                   -\frac12\vect x^{\mathsf T}\bGamma\vect x\right),
+\qquad \bGamma=-\mat H=\bGamma^{\mathsf T}.
+\label{selection:log_quadratic_weight}
+\end{equation}
+This assumption is stronger than having a quadratic Taylor approximation
+near the mean. It allows the selection integrals to use this function
+over the whole occupied support. The matrix $\bGamma$ need not initially
+be positive semidefinite. Positive semidefiniteness will be imposed when
+deriving covariance contraction under stabilising curvature.
+
+As derived in Proposition~\ref{conditioning:selection_weight}, the
+reproductively weighted density is
+\begin{equation}
+p_{\mathrm{sel}}(\vect x)
+ =\frac{p(\vect x)W_A(\vect\mu+\vect x)}{\overline W},
+\qquad
+\overline W=\int_{\R^n}p(\vect x)W_A(\vect\mu+\vect x)\,d\vect x.
+\label{selection:density_definition}
+\end{equation}
+A probability density requires $0<\overline W<\infty$. Positivity of
+the fitness function does not by itself ensure finiteness.
+
+Multiplying the normal density by
+Equation~\eqref{selection:log_quadratic_weight} gives
+\begin{equation}
+p(\vect x)W_A(\vect\mu+\vect x)
+ =\frac{e^{\ell_0}}{(2\pi)^{n/2}\det(\mat G)^{1/2}}
+    \exp\!\left(-\frac12\vect x^{\mathsf T}\mat J\vect x
+                     +\vect b^{\mathsf T}\vect x\right),
+\qquad \mat J=\mat G^{-1}+\bGamma.
+\label{selection:combined_precision}
+\end{equation}
+The matrix $\mat J$ is the combined precision: it collects the quadratic
+coefficient from population frequency and the quadratic coefficient from
+expected output. ``Precision'' here means inverse covariance in a normal
+density. Its sign determines whether the product can be normalised.
+
+\begin{proposition}[Integrability of the Gaussian quadratic weight]
+\label{selection:integrability}
+For $\mat G\succ0$, finite $\ell_0$ and $\vect b$, and symmetric
+$\bGamma$, the normalising integral in
+Equation~\eqref{selection:density_definition} is finite if and only if
+$\mat J=\mat G^{-1}+\bGamma\succ0$.
+\end{proposition}
+\begin{proof}
+Diagonalise the symmetric matrix as
+$\mat J=\mat O\operatorname{diag}(\lambda_i)\mat O^{\mathsf T}$,
+where $\mat O$ is orthogonal. Set $\vect y=\mat O^{\mathsf T}\vect x$
+and $\vect d=\mat O^{\mathsf T}\vect b$. The Jacobian has absolute
+determinant one, and the nonconstant exponential becomes
+\[
+\prod_{i=1}^n\exp(-\lambda_i y_i^2/2+d_i y_i).
+\]
+Because it is nonnegative, integration can be performed one coordinate
+at a time. If every $\lambda_i>0$, completing each scalar square gives
+a finite Gaussian integral. If some $\lambda_i<0$, that coordinate has
+a positive quadratic exponent and its integral diverges. If
+$\lambda_i=0$, the integral is $\int_{\R}e^{d_i y_i}\,dy_i$; it
+diverges whether $d_i=0$ or not. Thus strict positivity in every occupied
+direction is necessary as well as sufficient.
+\end{proof}
+
+In particular, a zero eigenvalue at the boundary cannot be rescued by
+putting a zero gradient in that direction. The integrand would then be
+constant along an unbounded direction, which still has infinite integral.
+
+\paragraph{Biological interpretation.}
+Population frequencies can make a locally increasing expected-output
+function integrable even if the fitness curvature is not stabilising in
+every direction. Conversely, an assumed output function that increases
+too fast relative to the Gaussian frequency decline gives infinite
+population mean output. Such a model cannot define the selected group by
+the proposed normalisation.
+
+\section{Complete the square, including the normalising constant}
+\label{selection:complete_square}
+
+Assume henceforth that $\mat J\succ0$. Define
+\begin{equation}
+\mat V=\mat J^{-1},
+\qquad \vect m=\mat V\vect b.
+\end{equation}
+Since $\mat J\vect m=\vect b$, expansion gives
+\begin{align}
+(\vect x-\vect m)^{\mathsf T}\mat J(\vect x-\vect m)
+ &=\vect x^{\mathsf T}\mat J\vect x
+   -\vect x^{\mathsf T}\mat J\vect m
+   -\vect m^{\mathsf T}\mat J\vect x
+   +\vect m^{\mathsf T}\mat J\vect m\nonumber\\
+ &=\vect x^{\mathsf T}\mat J\vect x
+   -2\vect b^{\mathsf T}\vect x
+   +\vect b^{\mathsf T}\mat V\vect b.
+\end{align}
+Therefore
+\begin{equation}
+-\frac12\vect x^{\mathsf T}\mat J\vect x+\vect b^{\mathsf T}\vect x
+ =-\frac12(\vect x-\vect m)^{\mathsf T}\mat J(\vect x-\vect m)
+   +\frac12\vect b^{\mathsf T}\mat V\vect b.
+\label{selection:completed_square}
+\end{equation}
+The two cross terms combine because $\mat J$ is symmetric; no commutation
+of $\mat G$ and $\bGamma$ has been assumed.
+
+To integrate the remaining centred quadratic, diagonalise $\mat J$ as
+in the preceding proof. Translation by $\vect m$ and orthogonal rotation
+leave the integration element unchanged. The product of one-dimensional
+Gaussian integrals is
+\begin{align}
+\int_{\R^n}
+ e^{-(\vect x-\vect m)^{\mathsf T}\mat J(\vect x-\vect m)/2}
+ \,d\vect x
+ &=\prod_i\sqrt{\frac{2\pi}{\lambda_i}}\nonumber\\
+ &=(2\pi)^{n/2}\det(\mat J)^{-1/2}.
+\end{align}
+Substituting this into Equation~\eqref{selection:combined_precision}
+gives the exact population mean output:
+\begin{equation}
+\overline W
+ =e^{\ell_0}\det(\mat G)^{-1/2}\det(\mat J)^{-1/2}
+      \exp\!\left(\frac12\vect b^{\mathsf T}\mat J^{-1}\vect b\right).
+\label{selection:normaliser}
+\end{equation}
+Dividing by this constant cancels every term independent of $\vect x$.
+The selected density is
+\begin{equation}
+p_{\mathrm{sel}}(\vect x)
+ =\frac{\det(\mat J)^{1/2}}{(2\pi)^{n/2}}
+   \exp\!\left[-\frac12(\vect x-\vect m)^{\mathsf T}
+                       \mat J(\vect x-\vect m)\right].
+\label{selection:normalised_density}
+\end{equation}
+This establishes the distribution, not only its first two moments.
+
+\begin{proposition}[Selected-parent Gaussian moments]
+\label{selection:selected_moments}
+Under the exact Gaussian/log-quadratic model and positive combined
+precision,
+\begin{align}
+\Gsel&=(\mat G^{-1}+\bGamma)^{-1},\nonumber\\
+\vect\Delta_{\mathrm{full}}
+ &=\E[\vect A\given\mathrm{sel}]-\vect\mu
+   =\Gsel\vect b.
+\label{selection:moment_formulas}
+\end{align}
+The selected breeding-value distribution is
+$\mathcal N(\vect\mu+\vect\Delta_{\mathrm{full}},\Gsel)$.
+\end{proposition}
+\begin{proof}
+Equation~\eqref{selection:normalised_density} is the normal density with
+mean $\vect m$ and covariance $\mat J^{-1}$. Returning from centred
+$\vect X$ to $\vect A=\vect\mu+\vect X$ adds $\vect\mu$ to the mean
+and leaves the covariance unchanged.
+\end{proof}
+
+The covariance is independent of $\vect b$ within this exact family, while
+the selected mean is not. This does not establish slope independence of
+selected covariance for an arbitrary fitness surface or a non-Gaussian
+population. Those cases need their own weighted-moment calculation.
+
+\subsection{A second route through derivatives of the normaliser}
+\label{selection:normaliser_derivatives}
+
+With $\mat G$, $\bGamma$ and $\ell_0$ fixed, regard $\overline W$ as a
+function of the coefficient vector $\vect b$. Differentiation under the
+integral brings down a factor $X_i$, just as in the moment-generating
+function calculation. Positive combined precision keeps these polynomially
+weighted integrals finite. Hence
+\begin{align}
+\frac{\partial\log\overline W}{\partial b_i}
+ &=\frac{\E[X_iW_A]}{\E[W_A]}
+   =\E[X_i\given\mathrm{sel}],\nonumber\\
+\frac{\partial^2\log\overline W}{\partial b_i\partial b_j}
+ &=\E[X_iX_j\given\mathrm{sel}]
+    -\E[X_i\given\mathrm{sel}]\E[X_j\given\mathrm{sel}].
+\label{selection:derivative_moments}
+\end{align}
+These are derivatives with respect to a model coefficient, not spatial
+derivatives with respect to breeding value. From
+Equation~\eqref{selection:normaliser}, the only $\vect b$-dependent
+term in $\log\overline W$ is
+$\vect b^{\mathsf T}\mat J^{-1}\vect b/2$. Its gradient is
+$\mat J^{-1}\vect b$ and its Hessian is $\mat J^{-1}$, recovering
+both selected moments independently from the normalising expression.
+
+\section{Stabilising curvature, saddle curvature and occupied support}
+\label{selection:curvature_cases}
+
+Define the symmetric covariance-weighted curvature
+\begin{equation}
+\mat T=\mat G^{1/2}\bGamma\mat G^{1/2}.
+\label{selection:T}
+\end{equation}
+Multiplication shows
+\begin{align}
+\mat J
+ &=\mat G^{-1/2}(\mat I+\mat T)\mat G^{-1/2},\nonumber\\
+\Gsel
+ &=\mat G^{1/2}(\mat I+\mat T)^{-1}\mat G^{1/2}.
+\label{selection:precision_factorisation}
+\end{align}
+The inverse in the second line reverses the order of the factors in the
+first. This factorisation works even when $\mat G$ and $\bGamma$ do
+not commute. Congruence by an invertible matrix preserves positive
+definiteness, so integrability is equivalent to
+$\mat I+\mat T\succ0$. If $\tau_i$ are the eigenvalues of $\mat T$,
+the condition is $\tau_i>-1$ for every occupied direction.
+
+The normaliser can consequently also be written as
+\begin{equation}
+\overline W
+ =e^{\ell_0}\det(\mat I+\mat T)^{-1/2}
+     \exp\!\left(\frac12\vect b^{\mathsf T}\Gsel\vect b\right).
+\label{selection:whitened_normaliser}
+\end{equation}
+To see this determinant identity explicitly,
+$\det(\mat J)=\det(\mat G)^{-1}\det(\mat I+\mat T)$ in
+Equation~\eqref{selection:precision_factorisation}; its covariance
+determinant then cancels the one in
+Equation~\eqref{selection:normaliser}.
+
+\begin{corollary}[Covariance contraction under stabilising curvature]
+\label{selection:covariance_contraction}
+If $\bGamma\succeq0$, then
+$\mat0\prec\Gsel\preceq\mat G$ for $\mat G\succ0$.
+\end{corollary}
+\begin{proof}
+Positive semidefiniteness of $\bGamma$ implies $\mat T\succeq0$.
+The eigenvalues of $(\mat I+\mat T)^{-1}$ are then
+$1/(1+\tau_i)$, all positive and no greater than one. Therefore
+\[
+\mat0\prec(\mat I+\mat T)^{-1}\preceq\mat I.
+\]
+For any vector $\vect v$, premultiplication and postmultiplication by
+$\mat G^{1/2}$ preserve the corresponding nonnegative quadratic forms.
+Equation~\eqref{selection:precision_factorisation} gives the stated
+covariance order.
+\end{proof}
+This order says that variance in every fixed linear combination of traits
+does not increase. It does not require every individual covariance entry
+to decrease numerically.
+
+An indefinite $\bGamma$ can still give a valid selected Gaussian. For
+example, take $\mat G=\mat I_2$ and
+$\bGamma=\operatorname{diag}(0.4,-0.2)$. The combined precision is
+$\operatorname{diag}(1.4,0.8)\succ0$, giving selected variances $5/7$
+and $5/4$. One direction contracts and the other expands. With
+$\vect b=(0.6,-0.4)^{\mathsf T}$, the mean shift is
+$(3/7,-1/2)^{\mathsf T}$. Replacing the second curvature by $-1$ gives
+a zero precision direction and a divergent normaliser, even if that
+direction's gradient is also zero.
+
+For singular $\mat G$, use the support construction in
+Section~\ref{gaussian:singular_support}:
+$\vect X=\mat U\vect Z$, with positive-definite covariance
+$\mat\Lambda$ for $\vect Z$. Replace $\vect b$ by
+$\mat U^{\mathsf T}\vect b$ and $\bGamma$ by
+$\mat U^{\mathsf T}\bGamma\mat U$ in every integral and inverse.
+The normalising density is then $r$-dimensional, where
+$r=\operatorname{rank}(\mat G)$, and selected moments are mapped back
+by $\mat U$. A gradient or Hessian component outside the occupied
+support cannot affect this weighted distribution. Reweighting parents
+also cannot create variation outside their existing support.
+
+\paragraph{Biological interpretation.}
+The selected covariance describes variation among contributing parents.
+The stabilising-curvature result is a within-episode statement. It does
+not specify covariance after recombination, segregation, mutation or
+other processes of inheritance, and it is not a general claim that
+population covariance must decline across generations.
+
+\section{Ignoring curvature changes a different calculation}
+\label{selection:linear_comparison}
+
+If curvature is omitted, the reproductive weight is proportional to
+$\exp(\vect b^{\mathsf T}\vect x)$, and the same square-completion
+calculation with $\bGamma=\mat0$ gives
+\begin{equation}
+\vect\Delta_{\mathrm{lin}}=\mat G\vect b,
+\qquad \mat G_{\mathrm{sel,lin}}=\mat G.
+\label{selection:linear_shift}
+\end{equation}
+Using the population-fitted affine log function instead of the tangent
+adds the intercept $\tr(\mat H\mat G)/2$. Its exponential is a common
+positive factor and cancels from the selection normalisation. Thus both
+choices give the same first-order parental mean shift here, despite
+their different quality as fits on the log scale.
+
+For one trait with initial variance $g>0$, curvature $H=-\gamma$, and
+$1+\gamma g>0$, the exact formulas reduce to
+\begin{equation}
+g_{\mathrm{sel}}=\frac{g}{1+\gamma g},
+\qquad
+\Delta_{\mathrm{full}}=\frac{gb}{1+\gamma g},
+\qquad \Delta_{\mathrm{lin}}=gb.
+\label{selection:scalar_moments}
+\end{equation}
+If $b\ne0$, subtraction gives
+\begin{equation}
+\Delta_{\mathrm{lin}}-\Delta_{\mathrm{full}}
+ =\gamma g\,\Delta_{\mathrm{full}},
+\qquad
+\frac{|\Delta_{\mathrm{lin}}-\Delta_{\mathrm{full}}|}
+     {|\Delta_{\mathrm{full}}|}=|\gamma g|.
+\label{selection:scalar_relative_error}
+\end{equation}
+For positive stabilising curvature, ignoring curvature overestimates the magnitude
+of this scalar shift. For an integrable negative $\gamma$, it
+underestimates it. In several traits the two shift vectors need not be
+parallel, so a single coordinatewise percentage is not the general result.
+
+\begin{example}[A share of $32/33$ and a displacement error of $1/2$]
+\label{selection:97_50_example}
+Take $b=2$, $H=-0.5$ and $g=1$. The variance components and their share
+are
+\[
+\Vlin=4,\qquad \Vquad=\tfrac12(0.5)^2=0.125,\qquad
+\Ag=\frac{4}{4.125}=\frac{32}{33}\simeq0.9697.
+\]
+The exact selected variance is $1/(1+0.5)=2/3$, and the exact shift is
+$2/(1+0.5)=4/3$. Ignoring curvature gives a shift of $2$, so its error
+relative to the exact shift is
+\[
+\frac{2-4/3}{4/3}=\frac{2/3}{4/3}=\frac12.
+\]
+The linear fit describes about $97\%$ of variation in the quadratic log
+target, yet the resulting reproductive weighting overestimates the
+selected-parent displacement by $50\%$.
+\end{example}
+
+For the same $g=1$ and $\gamma=0.5$, raising $b$ from $2$ to $10$
+raises $\Vlin$ from $4$ to $100$ while leaving $\Vquad=0.125$.
+The share becomes $100/100.125\simeq0.9988$. The shifts are now $10$
+and $10/1.5$, but their relative discrepancy remains $1/2$. Increasing
+the slope's magnitude is therefore not an accuracy guarantee.
+
+Nor does high population $R^2$ guarantee agreement in every ranking.
+In the first example, omit the irrelevant constant and write
+$q(x)=2x-x^2/4$. At two upper-tail breeding values,
+\[
+q(4)=4>q(5)=3.75,
+\]
+whereas the fitted line $2x-1/4$ orders $5$ above $4$.
+These are tail values of the specified standard normal population; the
+example does not estimate the frequency of ranking reversals. It shows
+that a variance-explained criterion is not an all-pairs ordering condition.
+
+\paragraph{Biological interpretation.}
+The frequency-weighted residual variance assigns little aggregate weight
+to a rare part of the population. Reproductive weighting additionally
+depends on its expected output, so the same part can contribute
+differently to the selected group. The displayed example computes both
+operations exactly. It makes no claim about offspring breeding values:
+their distribution still requires a model of what parents transmit.
+
+\section{Deriving the displacement-error bound}
+\label{selection:error_bound_section}
+
+We now compare the two shifts in a norm that accounts for the population's
+covariance. Define
+\begin{equation}
+\norm{\vect v}_{\mat G^{-1}}
+ =\sqrt{\vect v^{\mathsf T}\mat G^{-1}\vect v}
+ =\norm{\mat G^{-1/2}\vect v},
+\qquad \vect c=\mat G^{1/2}\vect b.
+\label{selection:covariance_norm}
+\end{equation}
+This measures displacement after removing the covariance scale. A
+displacement along a low-variance direction is large in this norm
+relative to one of the same trait-coordinate length along a
+high-variance direction. Unlike ordinary Euclidean length in arbitrarily
+chosen trait units, the quadratic form is invariant when displacement
+and covariance undergo the same invertible coordinate transformation:
+\[
+(\mat D\vect v)^{\mathsf T}
+ (\mat D\mat G\mat D^{\mathsf T})^{-1}
+ (\mat D\vect v)=\vect v^{\mathsf T}\mat G^{-1}\vect v.
+\]
+
+Let $\mat M=(\mat I+\mat T)^{-1}$, with $\mat T$ defined in
+Equation~\eqref{selection:T}. The factorisation already proved gives
+\begin{align}
+\vect\Delta_{\mathrm{full}}
+ &=\mat G^{1/2}\mat M\mat G^{1/2}\vect b
+   =\mat G^{1/2}\mat M\vect c,\nonumber\\
+\vect\Delta_{\mathrm{lin}}&=\mat G^{1/2}\vect c.
+\end{align}
+Multiplying by $\mat G^{-1/2}$ therefore gives
+\begin{align}
+\mat G^{-1/2}\vect\Delta_{\mathrm{full}}
+ &=\mat M\vect c,\nonumber\\
+\mat G^{-1/2}
+ (\vect\Delta_{\mathrm{lin}}-\vect\Delta_{\mathrm{full}})
+ &=(\mat I-\mat M)\vect c.
+\end{align}
+From $(\mat I+\mat T)\mat M=\mat I$, subtract $\mat M$ to obtain
+$\mat I-\mat M=\mat T\mat M$. Thus the two whitened vectors are
+\begin{equation}
+\mat G^{-1/2}\vect\Delta_{\mathrm{full}}=\mat M\vect c,
+\qquad
+\mat G^{-1/2}(\vect\Delta_{\mathrm{lin}}-\vect\Delta_{\mathrm{full}})
+ =\mat T\mat M\vect c.
+\label{selection:whitened_error_identity}
+\end{equation}
+This step uses the inverse identity, not a presumed commutation of the
+original covariance and curvature matrices.
+
+\begin{theorem}[Relative selected-parent displacement bound]
+\label{selection:relative_bound}
+Assume the exact Gaussian/log-quadratic model, positive combined
+precision, and $\vect c=\mat G^{1/2}\vect b\ne\vect0$. Then
+\begin{equation}
+\frac{\norm{\vect\Delta_{\mathrm{lin}}-
+                  \vect\Delta_{\mathrm{full}}}_{\mat G^{-1}}}
+     {\norm{\vect\Delta_{\mathrm{full}}}_{\mat G^{-1}}}
+ \leq\norm{\mat T}_2
+ \leq\norm{\mat T}_{\mathrm F}
+ =\sqrt{2\Vquad}.
+\label{selection:full_bound}
+\end{equation}
+For singular covariance the theorem applies on its occupied support,
+with a nonzero gradient component there. Stabilising curvature is
+sufficient but not necessary: the bound also holds for an integrable
+indefinite curvature matrix.
+\end{theorem}
+\begin{proof}
+Since $\mat M$ is invertible and $\vect c\ne\vect0$, the vector
+$\vect y=\mat M\vect c$ is nonzero. Equation~\eqref{selection:whitened_error_identity}
+turns the left-hand side into
+\[
+\frac{\norm{\mat T\vect y}}{\norm{\vect y}}.
+\]
+The spectral norm is defined as the supremum of this ratio over all
+nonzero vectors, giving the first inequality.
+
+For a symmetric matrix, diagonalise
+$\mat T=\mat O\operatorname{diag}(\tau_i)\mat O^{\mathsf T}$.
+Its spectral norm is $\max_i|\tau_i|$, while its squared Frobenius norm
+is $\tr(\mat T^{\mathsf T}\mat T)=\sum_i\tau_i^2$. A largest squared
+term cannot exceed the sum of all the squared terms, proving the second
+inequality. Finally, trace cyclicity gives
+\begin{align}
+\norm{\mat T}_{\mathrm F}^2
+ &=\tr(\mat T^2)\nonumber\\
+ &=\tr(\mat G^{1/2}\bGamma\mat G\bGamma\mat G^{1/2})\nonumber\\
+ &=\tr(\bGamma\mat G\bGamma\mat G)
+   =\tr(\mat H\mat G\mat H\mat G)=2\Vquad,
+\end{align}
+where $\mat H=-\bGamma$ changes both curvature signs. Taking square
+roots proves the final equality. Restricting every step to the
+positive-variance support proves the singular version.
+\end{proof}
+
+If the gradient has zero component on the support, both shifts are zero.
+Their absolute discrepancy is zero, but the displayed relative error is
+$0/0$ and is undefined. It should not be assigned a finite relative
+accuracy solely by continuity from a chosen gradient direction.
+
+\subsection{Eigenbasis formula and equality conditions}
+\label{selection:eigenbasis_error}
+
+The bound can be read more closely by resolving the whitened gradient
+into curvature eigenvectors. Let $c_i$ be its coefficients in the
+orthonormal eigenbasis of $\mat T$. The exact selected displacement has
+coefficients $y_i=c_i/(1+\tau_i)$, because integrability ensures
+$1+\tau_i>0$. Therefore the squared relative error is exactly
+\begin{equation}
+\mathcal E^2
+ =\frac{\displaystyle\sum_i
+           \frac{\tau_i^2c_i^2}{(1+\tau_i)^2}}
+         {\displaystyle\sum_i
+           \frac{c_i^2}{(1+\tau_i)^2}}.
+\label{selection:eigen_error}
+\end{equation}
+It is a weighted mean of the squared curvature eigenvalues, with weights
+proportional to the squared components of the exact displacement.
+If $\vect c$ lies along a single curvature eigenvector $k$, then
+$\mathcal E=|\tau_k|$. Equality with the spectral-norm bound requires
+the displacement, and equivalently the gradient, to lie entirely in
+eigenspaces whose eigenvalues have maximum absolute value. Repeated
+eigenvalues need not select a unique direction. Equality between the
+spectral and Frobenius norms requires at most one nonzero eigenvalue.
+In one trait both norm bounds are therefore exact, recovering
+Equation~\eqref{selection:scalar_relative_error}.
+
+This makes precise why fixed share need not mean fixed displacement
+accuracy. If $\norm{\vect c}=1$ and
+$\mat T=\operatorname{diag}(0.1,0.8)$, then every gradient orientation
+has
+\[
+\Vlin=1,\qquad \Vquad=\tfrac12(0.1^2+0.8^2)=0.325,
+\qquad \Ag=\frac1{1.325}.
+\]
+Gradients along the first and second eigenvectors nevertheless give
+relative errors $0.1$ and $0.8$. The variance-share statement fixes a
+gradient length and curvature spectrum. The selected-parent calculation
+also depends on their relative orientation through the inverse factors
+in Equation~\eqref{selection:eigen_error}.
+
+\subsection{Why absolute curvature matters}
+\label{selection:absolute_scale}
+
+The upper bound involves $\sqrt{2\Vquad}$, not the fraction
+$\Vquad/(\Vlin+\Vquad)$. A small fraction may result from a large
+linear component rather than small absolute curvature. More strongly,
+consider multiplying the nonconstant natural-log expected-output
+function by $t>0$ while holding the population fixed. This replaces
+$\vect b$ and $\mat H$ by $t\vect b$ and $t\mat H$. Both variance
+components are multiplied by $t^2$, so their share is unchanged. In the
+one-trait stabilising case, however, the relative displacement error
+becomes $t\gamma g$. It can increase while the share stays exactly the
+same.
+
+This is a change in the expected-fitness relationship: up to a common
+factor, expected output is raised to the power $t$. It is not a change
+of trait units or merely a change of logarithm notation. Multiplying all
+expected outputs by a common constant instead adds a log intercept,
+leaving both the share and the normalised reproductive weights unchanged.
+
+\paragraph{Biological interpretation.}
+The share answers how much of a specified quadratic description is
+represented linearly across the population. The bound answers how much
+selected-parent displacement can change when curvature is omitted under
+the exact distributional model. Reporting the two absolute components
+alongside the share preserves the information needed for this separate
+check. Extending the calculation to descendants still requires the
+inheritance assumptions developed in the next chapter.
+
+\section{Connection to executable checks}
+
+The \codepath{selected_parent_moments} group in
+\codepath{code/reproduce_result_checks.py} starts with
+quadrature nodes from the original population and reweights them by
+expected output. It compares the resulting moments with the formulas
+above for stabilising and integrable saddle examples. The same file's
+\codepath{orientation_and_absolute_scale} group checks equal-share
+examples with different displacement errors. The scalar $32/33$ and
+$50\%$ calculation is also integrated independently in
+\codepath{tutorials/introduction/check_examples.py}.
+These numerical checks assess implementations for specified cases; the
+normalisation and bound for the whole stated model follow from the
+derivations in this chapter.

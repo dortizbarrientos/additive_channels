@@ -1,0 +1,663 @@
+\chapter{Gaussian variation and the population linear projection}
+\label{gaussian:chapter}
+
+A fitness relationship specifies an expected output at each breeding value.
+A variance calculation additionally needs to know how often those breeding
+values occur. This chapter derives the calculation for a Gaussian population,
+then shows exactly which steps change when the population is not Gaussian.
+The regression interpretation will follow from minimising a population mean
+squared error. It is not an assumption that the local tangent is the fitted
+line.
+
+\section{The function and the population are separate inputs}
+\label{gaussian:quadratic_target}
+
+Let the breeding-value vector be $\vect A\in\R^n$, with population mean
+$\vect\mu$ and covariance $\mat G$. Write
+\begin{equation}
+\vect X=\vect A-\vect\mu,
+\qquad \E[\vect X]=\vect0,
+\qquad \E[\vect X\vect X^{\mathsf T}]=\mat G.
+\end{equation}
+Breeding values use the population-specific average effects appropriate to
+the trait and reference population. The following mathematics concerns the
+distribution of those values; it does not derive the effects from a genetic
+architecture.
+
+Suppose log conditional expected reproductive output, $\ell_A$, is twice
+continuously differentiable near $\vect\mu$. Its quadratic expansion is
+\begin{align}
+\ell_A(\vect\mu+\vect x)
+ &=q(\vect x)+R(\vect x),\nonumber\\
+q(\vect x)
+ &=\ell_0+\vect b^{\mathsf T}\vect x
+       +\frac12\vect x^{\mathsf T}\mat H\vect x,
+\label{gaussian:quadratic_definition}
+\end{align}
+where $\ell_0=\ell_A(\vect\mu)$, $\vect b=\nabla\ell_A(\vect\mu)$ and
+$\mat H=\nabla^2\ell_A(\vect\mu)$. Equality of the mixed second derivatives
+makes $\mat H$ symmetric. The factor $1/2$ is the Taylor coefficient. Thus,
+in two traits, the quadratic term is
+\[
+\frac12H_{11}x_1^2+H_{12}x_1x_2+\frac12H_{22}x_2^2.
+\]
+The off-diagonal contribution appears twice in the matrix product before
+the factor $1/2$ is applied.
+
+The function $q$ is the same quadratic approximation denoted
+$\widetilde\ell_A$ elsewhere in the companion. Under the differentiability
+assumption, $R(\vect x)=o(\norm{\vect x}^2)$ as $\vect x\to\vect0$.
+This is a local statement. A Gaussian population has unbounded support, so
+a local remainder statement alone does not establish that $R(\vect X)$ is
+small in population mean square, or even that its variance is finite. The
+results below are exact for the random variable $q(\vect X)$. They describe
+the complete $\ell_A(\vect A)$ exactly only if the surface is quadratic on
+the relevant support, or approximately when an additional approximation
+argument is justified.
+
+An element $b_i$ has units of log expected output per unit of trait $i$;
+$H_{ij}$ has units per product of trait units; and $G_{ij}$ has the matching
+product of trait units. Their contractions therefore give variances in log
+expected output. Changing the common unit in which reproductive output is
+counted adds a constant to $\ell_A$ and does not change either variance.
+
+\paragraph{Biological interpretation.}
+The slope describes how conditional expected output changes near the
+population mean. Curvature describes how that slope changes. Neither is a
+variance until combined with the population distribution. A small curvature
+coefficient can contribute appreciable variation if the population occupies
+a sufficiently broad range, and a substantial coefficient can contribute
+little variation in a narrow population.
+
+\subsection{Why the multivariate Taylor formula has this form}
+\label{gaussian:taylor_derivation}
+
+Fix a displacement $\vect x$ whose line segment from $\vect\mu$ to
+$\vect\mu+\vect x$ lies in the differentiability neighbourhood. Define a
+one-variable function along that segment,
+\[
+f(t)=\ell_A(\vect\mu+t\vect x),\qquad 0\leq t\leq1.
+\]
+The chain rule supplies the multivariate information:
+\begin{align}
+f'(t)&=\sum_i\partial_i\ell_A(\vect\mu+t\vect x)x_i,
+\nonumber\\
+f''(t)&=\sum_{i,j}\partial_i\partial_j
+               \ell_A(\vect\mu+t\vect x)x_i x_j.
+\end{align}
+Integrate $f''$ once to obtain $f'(s)=f'(0)+\int_0^s f''(t)\,dt$,
+then integrate over $s$ from zero to one. Reversing the order of integration
+over the triangle $0\leq t\leq s\leq1$ gives
+\[
+f(1)=f(0)+f'(0)+\int_0^1(1-t)f''(t)\,dt.
+\]
+Writing $\mat H(\vect a)=\nabla^2\ell_A(\vect a)$ and subtracting the
+constant-Hessian part of this integral yields the exact remainder
+\begin{equation}
+R(\vect x)
+ =\int_0^1(1-t)\vect x^{\mathsf T}
+       \{\mat H(\vect\mu+t\vect x)-\mat H(\vect\mu)\}
+       \vect x\,dt.
+\label{gaussian:second_order_remainder}
+\end{equation}
+The integral of $1-t$ is $1/2$, which explains the coefficient in
+Equation~\eqref{gaussian:quadratic_definition}. Continuity of the Hessian
+at $\vect\mu$ makes its difference tend uniformly to zero along a
+shrinking segment. Multiplication by $\norm{\vect x}^2$ then gives the
+stated $o(\norm{\vect x}^2)$ remainder.
+
+If a third derivative also exists continuously, one more integration gives
+\begin{equation}
+R(\vect x)
+ =\frac12\int_0^1(1-t)^2
+  D^3\ell_A(\vect\mu+t\vect x)
+     [\vect x,\vect x,\vect x]\,dt.
+\label{gaussian:integral_remainder}
+\end{equation}
+Here $D^3\ell_A[\vect x,\vect x,\vect x]$ abbreviates
+$\sum_{i,j,k}\partial_i\partial_j\partial_k\ell_A\,x_i x_j x_k$.
+If the absolute value of this trilinear form is at most
+$M\norm{\vect x}^3$ along the segment, then
+\begin{equation}
+|R(\vect x)|\leq\frac M2\norm{\vect x}^3
+                    \int_0^1(1-t)^2\,dt
+                 =\frac M6\norm{\vect x}^3.
+\label{gaussian:remainder_bound}
+\end{equation}
+The derivative bound must hold where the segment runs. A bound established
+only in a ball of radius $a_0$ controls
+$\E[R(\vect X)^2\,\mathbf1\{\norm{\vect X}\leq a_0\}]$, but leaves
+$\E[R(\vect X)^2\,\mathbf1\{\norm{\vect X}>a_0\}]$ uncontrolled.
+Because a nondegenerate Gaussian places positive probability outside every
+finite ball, a population approximation needs an additional tail argument
+or a global derivative bound. We do not replace that requirement with the
+observation that a local quadratic fit is close near the mean.
+
+\section{Deriving the Gaussian moments}
+\label{gaussian:moments}
+
+Assume first that $\vect X\sim\mathcal N(\vect0,\mat G)$ with
+$\mat G\succ0$. Section~\ref{gaussian:singular_support} removes the
+positive-definiteness restriction by working only in directions that vary.
+We need moments through order four because squaring the quadratic term
+produces products of four breeding-value deviations.
+
+The moment-generating function is
+\[
+M(\vect t)=\E[\exp(\vect t^{\mathsf T}\vect X)].
+\]
+It is useful because differentiating the exponential with respect to $t_i$
+brings down a factor $X_i$. Completing the square in the normal density gives
+\begin{align}
+-\frac12\vect x^{\mathsf T}\mat G^{-1}\vect x
+ +\vect t^{\mathsf T}\vect x
+ &=-\frac12(\vect x-\mat G\vect t)^{\mathsf T}
+          \mat G^{-1}(\vect x-\mat G\vect t)
+   +\frac12\vect t^{\mathsf T}\mat G\vect t.
+\end{align}
+To check the equality, expand the first quadratic on the right: its two
+cross terms each contribute $\vect t^{\mathsf T}\vect x/2$, and its
+constant term cancels half of $\vect t^{\mathsf T}\mat G\vect t$.
+The integral of the shifted normal density is one. Consequently,
+\begin{equation}
+M(\vect t)=\exp\!\left(\frac12\vect t^{\mathsf T}\mat G\vect t\right).
+\label{gaussian:mgf}
+\end{equation}
+Differentiation under this Gaussian integral is legitimate: on a bounded
+neighbourhood of $\vect t$, a polynomial times
+$\exp(\vect t^{\mathsf T}\vect x)$ is dominated by an integrable Gaussian
+with a slightly smaller positive precision. In particular, all moments
+used here are finite.
+
+For the derivatives, write $u_i=(\mat G\vect t)_i$. Then
+$\partial u_i/\partial t_j=G_{ij}$, and
+\begin{align}
+\partial_i M&=u_iM,\nonumber\\
+\partial_j\partial_i M&=(G_{ij}+u_i u_j)M,\nonumber\\
+\partial_k\partial_j\partial_i M
+ &=(G_{ij}u_k+G_{ik}u_j+G_{jk}u_i+u_i u_j u_k)M.
+\label{gaussian:mgf_derivatives}
+\end{align}
+At $\vect t=\vect0$, every $u_i$ is zero and $M=1$. Therefore
+\begin{equation}
+\E[X_i]=0,
+\qquad \E[X_iX_j]=G_{ij},
+\qquad \E[X_iX_jX_k]=0.
+\end{equation}
+Differentiate the last line of Equation~\eqref{gaussian:mgf_derivatives}
+once more. At zero, the derivative of $G_{ij}u_k$ is $G_{ij}G_{kl}$;
+the next two terms give $G_{ik}G_{jl}$ and $G_{jk}G_{il}$. Terms retaining
+any $u_i$ vanish. We have proved the fourth-moment identity:
+\begin{equation}
+\E[X_iX_jX_kX_l]
+ =G_{ij}G_{kl}+G_{ik}G_{jl}+G_{il}G_{jk}.
+\label{gaussian:fourth_moment}
+\end{equation}
+The three terms correspond to the three ways to pair four positions. This
+is the order-four case of the Gaussian product-moment result associated
+with \citet{Isserlis1918}; the calculation above establishes the particular
+identity needed here rather than treating it as an unexplained rule.
+Putting all four indices equal gives $\E[X_i^4]=3G_{ii}^2$.
+
+Subtracting the product of the two second moments yields
+\begin{align}
+\Cov(X_iX_j,X_kX_l)
+ &=\E[X_iX_jX_kX_l]-\E[X_iX_j]\E[X_kX_l]\nonumber\\
+ &=G_{ik}G_{jl}+G_{il}G_{jk}.
+\label{gaussian:product_covariance}
+\end{align}
+This covariance of products is the direct input to the quadratic variance.
+It includes correlations among traits; independence of the $X_i$ is not
+required.
+
+\section{From moments to the variance partition}
+\label{gaussian:variance_derivation}
+
+Define the linear term, the uncentred quadratic term, and its centred version
+by
+\begin{equation}
+L=\vect b^{\mathsf T}\vect X,
+\qquad Q=\frac12\vect X^{\mathsf T}\mat H\vect X,
+\qquad Q_c=Q-\E[Q].
+\label{gaussian:terms}
+\end{equation}
+Since $\E[\vect X]=\vect0$, $\E[L]=0$. For the quadratic mean,
+\begin{align}
+\E[Q]
+ &=\frac12\sum_{i,j}H_{ij}\E[X_iX_j]
+   =\frac12\sum_{i,j}H_{ij}G_{ij}\nonumber\\
+ &=\frac12\sum_i(\mat H\mat G)_{ii}
+   =\frac12\tr(\mat H\mat G).
+\label{gaussian:quadratic_mean}
+\end{align}
+The penultimate equality uses $G_{ij}=G_{ji}$. Thus
+\[
+q(\vect X)=\E[q(\vect X)]+L+Q_c,
+\qquad
+\E[q(\vect X)]=\ell_0+\tfrac12\tr(\mat H\mat G).
+\]
+Centring $Q$ changes its mean but not its variance; it makes the comparison
+of the two varying components explicit.
+
+For the linear term,
+\begin{align}
+\Var(L)
+ &=\E\!\left[\left(\sum_i b_iX_i\right)
+                   \left(\sum_j b_jX_j\right)\right]\nonumber\\
+ &=\sum_{i,j}b_i b_jG_{ij}
+   =\vect b^{\mathsf T}\mat G\vect b.
+\label{gaussian:linear_variance}
+\end{align}
+For the quadratic term, covariance is bilinear, so
+\begin{align}
+\Var(Q_c)
+ &=\frac14\sum_{i,j,k,l}H_{ij}H_{kl}
+       \Cov(X_iX_j,X_kX_l)\nonumber\\
+ &=\frac14\sum_{i,j,k,l}H_{ij}H_{kl}
+       (G_{ik}G_{jl}+G_{il}G_{jk}).
+\label{gaussian:four_index_variance}
+\end{align}
+There are two sums in the final line. Interchanging the dummy indices $k$
+and $l$ in the first makes it equal to the second because $H_{kl}=H_{lk}$.
+For the second sum, regroup the scalar factors:
+\begin{align}
+\sum_{i,j,k,l}H_{ij}H_{kl}G_{il}G_{jk}
+ &=\sum_{i,k}
+     \left(\sum_jH_{ij}G_{jk}\right)
+     \left(\sum_lH_{kl}G_{li}\right)\nonumber\\
+ &=\sum_{i,k}(\mat H\mat G)_{ik}(\mat H\mat G)_{ki}\nonumber\\
+ &=\sum_i(\mat H\mat G\mat H\mat G)_{ii}
+   =\tr(\mat H\mat G\mat H\mat G).
+\end{align}
+Again $G_{il}=G_{li}$ was used. No step interchanges the order of two
+matrices. The two equal sums and the factor $1/4$ therefore give
+\begin{equation}
+\Var(Q_c)=\frac12\tr[(\mat H\mat G)^2].
+\label{gaussian:quadratic_variance}
+\end{equation}
+The square is a matrix product, not an elementwise square.
+
+Finally,
+\begin{align}
+\Cov(L,Q_c)
+ &=\E[LQ_c]
+   =\frac12\sum_{i,j,k}b_iH_{jk}\E[X_iX_jX_k]\nonumber\\
+ &=0.
+\label{gaussian:orthogonality}
+\end{align}
+The constant subtracted in $Q_c$ contributes nothing because $\E[L]=0$.
+Equivalently, the linear term is odd under $\vect X\mapsto-\vect X$ and
+the quadratic term is even, so their product integrates to zero under a
+centrally symmetric Gaussian density.
+
+\begin{proposition}[Gaussian variance partition]
+\label{gaussian:variance_partition}
+For a centred Gaussian vector with covariance $\mat G\succeq0$, a fixed
+vector $\vect b$ and a fixed symmetric matrix $\mat H$, define $q$, $L$
+and $Q_c$ by Equations~\eqref{gaussian:quadratic_definition} and
+\eqref{gaussian:terms}. Then
+\begin{align}
+\Vlin&=\Var(L)=\vect b^{\mathsf T}\mat G\vect b,\nonumber\\
+\Vquad&=\Var(Q_c)=\frac12\tr[(\mat H\mat G)^2],\nonumber\\
+\Var(q)&=\Vlin+\Vquad.
+\label{gaussian:variance_formulas}
+\end{align}
+If the total is positive, the first-order variance share is
+\begin{equation}
+\Ag=\frac{\Vlin}{\Vlin+\Vquad}.
+\label{gaussian:share}
+\end{equation}
+\end{proposition}
+\begin{proof}
+For $\mat G\succ0$, the preceding moment calculations establish each
+identity; the variance of a sum adds twice the covariance in
+Equation~\eqref{gaussian:orthogonality}, which is zero. For singular
+$\mat G$, apply the same calculation to its positive-variance coordinates,
+as justified in Section~\ref{gaussian:singular_support}.
+\end{proof}
+
+Uncorrelated terms need not be independent. For example, if $X$ is standard
+normal, $X$ and $X^2-1$ have zero covariance, yet the second is determined
+once the first is known. The decomposition above is an orthogonal
+decomposition in mean square; it does not describe two independent
+biological mechanisms.
+
+\paragraph{Biological interpretation.}
+Both components are variation among breeding values in a conditional
+expected-fitness function. They are not the additive and epistatic genetic
+variance components of the underlying trait, and they are not a partition
+of the variance of realised reproductive counts. The environmental and
+other variation averaged at each breeding value has already entered the
+definition of that conditional mean.
+
+\section{Why the population-fitted line has this share}
+\label{gaussian:projection_section}
+
+For a square-integrable response $Y$ and centred predictors $\vect X$, a
+population affine fit minimises
+\[
+J(k,\vect d)=\E[(Y-k-\vect d^{\mathsf T}\vect X)^2].
+\]
+An affine fit includes both an intercept $k$ and a slope vector $\vect d$.
+Expanding this quadratic objective, or differentiating with respect to its
+coefficients, gives
+\begin{align}
+\frac{\partial J}{\partial k}
+ &=-2\E[Y-k-\vect d^{\mathsf T}\vect X],\nonumber\\
+\nabla_{\vect d}J
+ &=-2\E[\vect X(Y-k-\vect d^{\mathsf T}\vect X)].
+\end{align}
+Setting these derivatives to zero yields the normal equations
+\begin{equation}
+k=\E[Y],
+\qquad
+\mat G\vect d=\Cov(\vect X,Y).
+\label{gaussian:normal_equations}
+\end{equation}
+The objective is a convex quadratic in the coefficients. When
+$\mat G\succ0$, these equations give its unique minimum. More directly,
+if $\widehat Y=k+\vect d^{\mathsf T}\vect X$ satisfies them, its residual
+is orthogonal to constants and to every component of $\vect X$. For any
+other affine fit $\widehat Y+h$,
+\begin{align}
+\E[(Y-\widehat Y-h)^2]
+ &=\E[(Y-\widehat Y)^2]+\E[h^2]
+       -2\E[(Y-\widehat Y)h]\nonumber\\
+ &=\E[(Y-\widehat Y)^2]+\E[h^2].
+\end{align}
+This verifies optimality without relying on a derivative test and shows why
+the normal equations are an orthogonal-projection condition.
+
+Apply the equations to $Y=q(\vect X)$. The mean was calculated above, and
+\begin{align}
+\Cov(\vect X,q)
+ &=\Cov(\vect X,\vect b^{\mathsf T}\vect X)
+   +\Cov(\vect X,Q_c)\nonumber\\
+ &=\mat G\vect b+\vect0.
+\end{align}
+The last vector is zero component by component by the same third-moment
+calculation used in Equation~\eqref{gaussian:orthogonality}. We obtain
+\begin{proposition}[Population affine projection]
+\label{gaussian:affine_projection}
+Under the assumptions of Proposition~\ref{gaussian:variance_partition}, the
+best population affine prediction of $q(\vect X)$ is
+\begin{equation}
+\widehat q_1(\vect X)
+ =\ell_0+\frac12\tr(\mat H\mat G)+\vect b^{\mathsf T}\vect X.
+\label{gaussian:fitted_affine}
+\end{equation}
+Its residual is $Q_c$. If $\Var(q)>0$, its population coefficient of
+determination is
+\begin{equation}
+R_1^2
+ =1-\frac{\E[(q-\widehat q_1)^2]}{\Var(q)}
+ =\frac{\Vlin}{\Vlin+\Vquad}
+ =\Ag.
+\label{gaussian:regression_share}
+\end{equation}
+\end{proposition}
+\begin{proof}
+The normal equations give the displayed intercept and $\vect d=\vect b$
+on the varying support. Subtracting the fit from $q$ leaves $Q_c$.
+The residual has zero mean and variance $\Vquad$, whereas
+$\Var(q)=\Vlin+\Vquad$. Substitution gives the stated $R^2$.
+\end{proof}
+
+The tangent plane at the population mean is
+$\ell_0+\vect b^{\mathsf T}\vect X$. Its slope agrees with the population
+fit under these assumptions, but its intercept omits the mean curvature
+contribution. For one trait with $H<0$, the fitted intercept is lower by
+$|H|G/2$. Comparing the curve to its tangent without this intercept
+adjustment does not give the fitted regression residual.
+
+If $\Vlin>0$, the correlation expression follows separately:
+\begin{align}
+\Corr(L,L+Q_c)^2
+ &=\frac{\Cov(L,L+Q_c)^2}
+         {\Var(L)\Var(L+Q_c)}\nonumber\\
+ &=\frac{\Vlin^2}{\Vlin(\Vlin+\Vquad)}=\Ag.
+\label{gaussian:correlation_identity}
+\end{align}
+This form requires a nonconstant $L$. The regression form still assigns
+$R_1^2=0$ to a constant fit when the target varies.
+
+\paragraph{Biological interpretation.}
+Every individual has equal weight in the population mean squared error.
+Common breeding values collectively receive more weight because more
+individuals have them. A large share therefore means that a linear
+description accounts for much of the quadratic target's variation under
+those frequencies. It neither identifies gene action nor establishes an
+accurate prediction after reproductive reweighting.
+
+\section{What happens when the response includes noise?}
+\label{gaussian:noisy_response}
+
+Suppose the observed response has the model
+\begin{equation}
+Y=q(\vect X)+\kappa+\varepsilon,
+\qquad \E[\varepsilon\given\vect X]=0,
+\qquad \E[\varepsilon^2]=\sigma_\varepsilon^2<\infty,
+\label{gaussian:noise_model}
+\end{equation}
+where $\kappa$ is constant. Conditional noise variance may depend on
+$\vect X$; constant variance and independence are stronger assumptions
+than this argument needs. If $f(\vect X)$ is any square-integrable
+function for which the product is integrable, conditioning gives
+\begin{equation}
+\E[f(\vect X)\varepsilon]
+ =\E\{f(\vect X)\E[\varepsilon\given\vect X]\}=0.
+\label{gaussian:conditional_orthogonality}
+\end{equation}
+In particular, the residual is orthogonal to the intercept, all linear
+predictors, and the complete quadratic conditional mean.
+
+The best quadratic prediction is $q+\kappa$, with residual $\varepsilon$.
+The best affine prediction is $\widehat q_1+\kappa$, with residual
+$Q_c+\varepsilon$. Hence
+\begin{align}
+\Var(Y)&=\Vlin+\Vquad+\sigma_\varepsilon^2,\nonumber\\
+\E[(Y-\widehat q_1-\kappa)^2]
+ &=\Vquad+\sigma_\varepsilon^2.
+\end{align}
+We can now derive both $R^2$ values rather than assuming they have the same
+interpretation as the noiseless share.
+\begin{proposition}[The nested-regression ratio]
+\label{gaussian:nested_r2}
+Under Gaussian predictors, the quadratic target, and
+Equation~\eqref{gaussian:noise_model}, let $R_1^2$ and $R_{1+2}^2$ denote
+the population coefficients of determination of the affine and complete
+quadratic fits. If $\Vlin+\Vquad>0$, then
+\begin{align}
+R_1^2&=\frac{\Vlin}
+ {\Vlin+\Vquad+\sigma_\varepsilon^2},\nonumber\\
+R_{1+2}^2&=\frac{\Vlin+\Vquad}
+ {\Vlin+\Vquad+\sigma_\varepsilon^2},\nonumber\\
+\frac{R_1^2}{R_{1+2}^2}&=\Ag.
+\label{gaussian:nested_ratio}
+\end{align}
+\end{proposition}
+\begin{proof}
+Subtract the appropriate mean squared residual from $\Var(Y)$ to obtain
+each explained variance. Both use the same total response variance.
+Dividing cancels that denominator, and the positive quadratic-target
+variance ensures that $R_{1+2}^2$ is not zero.
+\end{proof}
+
+For $b=2$, $H=-0.5$, $G=1$ and $\sigma_\varepsilon^2=4$, the components
+are $4$ and $0.125$. Thus
+\[
+R_1^2=\frac{4}{8.125}=\frac{32}{65},\qquad
+R_{1+2}^2=\frac{4.125}{8.125}=\frac{33}{65},\qquad
+\frac{R_1^2}{R_{1+2}^2}=\frac{32}{33}.
+\]
+Neither individual $R^2$ equals $32/33$. If the quadratic target is
+constant but the noise varies, both $R^2$ values are zero and their ratio
+is undefined. An infinite residual variance also prevents this variance
+calculation.
+
+Chapter~\ref{conditioning:chapter}, especially
+Proposition~\ref{conditioning:log_gap_model}, specifies when a logged
+individual response can have the conditional mean in
+Equation~\eqref{gaussian:noise_model}. The required gap between
+$\E[\log W\given\vect A]$ and $\log\E[W\given\vect A]$ must be
+constant in breeding value, and the log error must have a finite second
+moment. Those are additional observation-model conditions. A general
+fitness response, particularly a count with zeros, does not satisfy them
+merely because its expected value is positive.
+
+\paragraph{Biological interpretation.}
+A ratio of two fit statistics can recover the share only if both fits
+target the same conditional relationship with the stated residual model.
+The algebra does not turn variation in realised reproduction into
+breeding-value variance, and it does not justify logging individual counts.
+Directly modelling expected output remains a separate route.
+
+\section{Singular covariance and the boundary cases}
+\label{gaussian:singular_support}
+
+A covariance matrix can be singular when some recorded trait combinations
+do not vary. An inverse in all recorded coordinates would then be
+meaningless, but the variance calculation remains well defined.
+Let $r=\operatorname{rank}(\mat G)$ and choose orthonormal columns of an
+$n\times r$ matrix $\mat U$ spanning its positive-eigenvalue subspace.
+Then
+\begin{equation}
+\mat G=\mat U\mat\Lambda\mat U^{\mathsf T},
+\qquad \mat U^{\mathsf T}\mat U=\mat I_r,
+\qquad \mat\Lambda\succ0.
+\label{gaussian:support_decomposition}
+\end{equation}
+If $\vect v$ lies in the null space of $\mat G$, then
+$\Var(\vect v^{\mathsf T}\vect X)=0$ and its mean is zero. Therefore
+$\vect v^{\mathsf T}\vect X=0$ almost surely. It follows that
+$\vect X=\mat U\vect Z$ almost surely, where
+$\vect Z=\mat U^{\mathsf T}\vect X\sim\mathcal N(\vect0,\mat\Lambda)$.
+In these occupied coordinates,
+\begin{equation}
+\vect b_r=\mat U^{\mathsf T}\vect b,
+\qquad \mat H_r=\mat U^{\mathsf T}\mat H\mat U,
+\qquad
+q=\ell_0+\vect b_r^{\mathsf T}\vect Z
+       +\tfrac12\vect Z^{\mathsf T}\mat H_r\vect Z.
+\end{equation}
+All positive-definite derivations apply to $\mat\Lambda$. Substitution and
+cyclicity of trace recover the formulas in the original coordinates.
+The normal equation only requires
+$\mat G(\vect d-\vect b)=\vect0$: slope coefficients outside the occupied
+subspace are not uniquely identified, but fitted values are unique because
+those extra directions contribute zero almost surely.
+
+The boundary distinctions are consequently precise:
+\begin{itemize}
+\item If $\Vlin=0<\Vquad$, the fitted response is constant and its $R^2$
+is zero. The correlation in Equation~\eqref{gaussian:correlation_identity}
+is undefined because its first argument has zero variance.
+\item If $\Vquad=0<\Vlin$, the quadratic target is affine on the occupied
+support and $\Ag=1$.
+\item If both components are zero, the target is constant almost surely;
+the share and target-regression $R^2$ are undefined, not zero.
+\end{itemize}
+In particular, $\Vlin=0$ means that the gradient has no component in a
+varying direction. It need not mean that every component of the gradient
+in an enlarged, partly unoccupied trait space is zero.
+
+\section{What changes outside a Gaussian population?}
+\label{gaussian:non_gaussian}
+
+The conditioning and reproductive-weighting definitions do not require
+Gaussian breeding values. The moment formulas do. It is useful to derive
+the corrections explicitly so that a departure from normality has a
+mathematical meaning rather than serving as a general caveat.
+
+Let $\vect X$ now be any centred vector with finite fourth moments. Retain
+$\mat G=\E[\vect X\vect X^{\mathsf T}]$, and define the third central
+moment tensor and fourth cumulant tensor by
+\begin{align}
+M_{ijk}&=\E[X_iX_jX_k],\nonumber\\
+K_{ijkl}&=\E[X_iX_jX_kX_l]
+ -G_{ij}G_{kl}-G_{ik}G_{jl}-G_{il}G_{jk}.
+\label{gaussian:cumulants}
+\end{align}
+The tensor $K$ records the part of the fourth moment that the Gaussian
+pairings do not explain. The linear variance and quadratic mean still use
+only second moments, so their previous formulas remain valid. Repeating
+the covariance calculation, however, gives
+\begin{align}
+\Cov(L,Q_c)
+ &=\frac12\sum_{i,j,k}b_iH_{jk}M_{ijk},\nonumber\\
+\Var(Q_c)
+ &=\frac12\tr[(\mat H\mat G)^2]
+   +\frac14\sum_{i,j,k,l}H_{ij}H_{kl}K_{ijkl}.
+\label{gaussian:non_gaussian_corrections}
+\end{align}
+These are exact identities under the stated finite-moment assumption.
+The total variance includes twice the first line in addition to the
+linear and actual quadratic variances. Central symmetry makes $M_{ijk}=0$
+but need not make $K_{ijkl}=0$.
+
+The slope of the best affine fit can also change. Set
+\begin{equation}
+u_i=\Cov(X_i,Q_c)=\frac12\sum_{j,k}H_{jk}M_{ijk}.
+\end{equation}
+On a positive-definite occupied support,
+\begin{align}
+\Cov(\vect X,q)&=\mat G\vect b+\vect u,\nonumber\\
+\vect d&=\vect b+\mat G^{-1}\vect u,\nonumber\\
+\Var(\vect d^{\mathsf T}\vect X)
+ &=\vect b^{\mathsf T}\mat G\vect b
+   +2\vect b^{\mathsf T}\vect u
+   +\vect u^{\mathsf T}\mat G^{-1}\vect u.
+\label{gaussian:non_gaussian_projection}
+\end{align}
+Thus the variance of the local linear term and the variance explained by
+the best affine fit are different quantities in general. One can still
+calculate the actual population regression using the observed
+distribution; one cannot infer that its $R^2$ equals the Gaussian
+expression simply by substituting an observed covariance.
+
+\begin{example}[Symmetry preserves orthogonality but not the fourth moment]
+Let $X=-1$ or $1$ with equal probabilities, $b=1$ and $H=-1$. Then
+$G=1$, $\E[X^3]=0$ and $\E[X^4]=1$, so the fourth cumulant is
+$1-3=-2$. Since $X^2=1$ always, $Q_c=-(X^2-1)/2=0$. The quadratic
+variance is exactly zero. Equation~\eqref{gaussian:non_gaussian_corrections}
+gives the same answer, $1/2+(-2)/4=0$. The response is perfectly affine
+on these two points, with $R^2=1$, whereas substituting $G=1$ into the
+Gaussian formula would give $1/(1+1/2)=2/3$.
+\end{example}
+
+\begin{example}[Asymmetry changes the fitted slope]
+Let $X=-1$ with probability $2/3$ and $X=2$ with probability $1/3$.
+Then $\E[X]=0$, $G=2$, $\E[X^3]=2$, and $\E[X^4]=6$.
+Choose $b=1$ and $H=-1/2$, so $q=X-X^2/4$. The centred quadratic term
+is $Q_c=-(X^2-2)/4$. Direct averaging gives
+\[
+\Var(L)=2,\qquad \Var(Q_c)=\frac18,\qquad
+\Cov(L,Q_c)=-\frac12.
+\]
+Consequently $\Var(q)=2+1/8-1=9/8$. Here
+$u=H\E[X^3]/2=-1/2$, and the fitted slope is
+$d=1+(-1/2)/2=3/4$. The intercept is $\E[q]=-1/2$.
+The fitted line $-1/2+3X/4$ equals $q$ at both support points, so its
+$R^2$ is one. The Gaussian expression instead uses quadratic variance
+$H^2G^2/2=1/2$ and would report $2/(2+1/2)=0.8$.
+\end{example}
+
+\paragraph{Biological interpretation.}
+Changes in breeding-value frequencies can affect third and fourth moments
+as well as covariance. The Gaussian formulas isolate a tractable case,
+not a property of all populations with the same covariance. A finite
+multilocus simulation can assess the approximation in its specified
+design; it cannot prove Gaussianity or make higher moments irrelevant.
+
+\section{Connection to executable checks}
+
+The groups \codepath{gaussian_projection},
+\codepath{noisy_regression_ratio}, and
+\codepath{boundaries_and_non_gaussian_cases} in
+\codepath{code/reproduce_result_checks.py} independently
+integrate or fit small specified populations. They check the displayed
+values and implementations. The general results above follow from their
+proofs, not from passing a finite set of examples. Sample correlations
+from a finite Gaussian sample can differ from the population identity
+because the sample's third and fourth moments are not exactly their
+population values.

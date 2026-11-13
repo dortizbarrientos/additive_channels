@@ -1,0 +1,962 @@
+\chapter{Estimating the share from repeated measurements and counts}
+\label{estimation:chapter}
+
+The theoretical share requires a breeding-value distribution and a conditional
+fitness relationship. Neither is directly observed in the worked example.
+Instead, each genotype has repeated trait measurements and one offspring
+count. This chapter derives the estimator from that observation model. It
+then derives predictions on the observed-data scale, the specified shrinkage
+comparison, and the quartic calculation that separates a local approximation
+from variation in a complete curve.
+
+The probability calculations are exact under the stated model. Parameter
+estimates are obtained by numerical optimisation, and bootstrap intervals
+describe a fitted sampling model. Deriving a likelihood does not prove that its
+assumptions hold in a biological dataset, that a numerical optimiser finds a
+global optimum, or that a particular interval has its nominal coverage.
+
+\section{Specify the observations and the latent quantity}
+\label{estimation:model}
+
+Let \(A_i\) be the breeding value of genotype \(i\), let \(\mu\) be the
+population mean, and write \(X_i=A_i-\mu\). There are \(n\) unrelated genotypes
+and \(m\) independent trait measurements per genotype. The teaching model is
+\begin{align}
+ X_i&\sim N(0,G),\nonumber\\
+ Y_{ij}&=\mu+X_i+e_{ij},
+ & e_{ij}&\sim N(0,V_E),\qquad j=1,\ldots,m.
+ \label{estimation:measurement_model}
+\end{align}
+The \(X_i\) are independent across genotypes, and all measurement errors are
+independent of them and of one another. Here \(V_E\) is measurement-environment
+variance. In this example it is not an additional environmental variance to be
+integrated into an underlying phenotype-fitness function.
+
+Let \(R_i\) denote the offspring count, with observed value \(r_i\). It is the
+instance of reproductive output \(W\) in this observation model. A separate
+assay gives
+\begin{align}
+ R_i\mid X_i=x&\sim\operatorname{Poisson}\{\lambda(x)\},\nonumber\\
+ \lambda(x)&=W_A(\mu+x)
+ =\exp\{\alpha+bx+\tfrac12Hx^2\}.
+ \label{estimation:count_model}
+\end{align}
+Conditional on \(X_i\), reproduction is independent of the environments in the
+trait measurements. The parameter \(\alpha=\ell_A(\mu)\) is log expected output
+at the population mean. Thus \(e^\alpha\) is not generally the population mean
+output \(\E[\lambda(X)]\).
+
+The generating example has \(n=800\), \(m=3\), \(G=V_E=1\),
+\(\mu=0\), \(\alpha=\log4\), \(b=0.7\), and \(H=-0.7\). The trait has centimetre
+units, \(G,V_E\) have \({\rm cm}^2\) units, \(b\) has \({\rm cm}^{-1}\) units,
+and \(H\) has \({\rm cm}^{-2}\) units. The true breeding values are saved
+separately and are not supplied to the estimator.
+
+\paragraph{Biological interpretation.}
+Repeated measurements distinguish variation within genotypes from variation
+between them. Calling the latter additive genetic variance requires the
+additional assumption that the genetic contribution to this trait is wholly
+additive. Permanent environmental differences, dominance, epistasis or a
+shared environment with the reproductive assay would change the model.
+Clonal replication alone does not eliminate those possibilities. The example
+isolates the estimation problem under explicit assumptions; it is not a
+general identification argument for clonal data.
+
+\section{Calibrate the measurement model}
+\label{estimation:calibration}
+
+Define the genotype mean and the mean across genotypes by
+\[
+ \bar Y_i=\frac1m\sum_{j=1}^mY_{ij},
+ \qquad
+ \bar Y=\frac1n\sum_{i=1}^n\bar Y_i.
+\]
+Because \(\bar Y_i=\mu+X_i+\bar e_i\), independence gives
+\begin{equation}
+ \E[\bar Y_i]=\mu,\qquad
+ \Var(\bar Y_i)=G+\frac{V_E}{m}.
+ \label{estimation:mean_measurement_variance}
+\end{equation}
+The factor \(1/m\) follows from
+\(\Var(m^{-1}\sum_j e_{ij})=m^{-2}\sum_jV_E=V_E/m\).
+It is not obtained if the repeated environments share an unmodelled effect.
+
+\begin{proposition}[Balanced variance calibration]
+\label{estimation:anova_calibration}
+Under Equation~\eqref{estimation:measurement_model}, with \(n\geq2\) and
+\(m\geq2\), the estimators
+\begin{align}
+ \widehat V_E
+ &=\frac{\sum_{i=1}^n\sum_{j=1}^m(Y_{ij}-\bar Y_i)^2}{n(m-1)},\nonumber\\
+ \widehat G
+ &=\frac{\sum_{i=1}^n(\bar Y_i-\bar Y)^2}{n-1}
+   -\frac{\widehat V_E}{m},
+ \qquad
+ \widehat\mu=\bar Y
+ \label{estimation:calibration_estimators}
+\end{align}
+are unbiased for \(V_E,G,\mu\), respectively.
+\end{proposition}
+
+\begin{proof}
+Within a genotype, subtracting its mean removes both \(\mu\) and \(X_i\):
+\[
+ Y_{ij}-\bar Y_i=e_{ij}-\bar e_i.
+\]
+Expanding the residual sum of squares gives
+\begin{align*}
+ \sum_{j=1}^m(e_{ij}-\bar e_i)^2
+ &=\sum_j e_{ij}^2-2\bar e_i\sum_j e_{ij}+m\bar e_i^2\\
+ &=\sum_j e_{ij}^2-m\bar e_i^2.
+\end{align*}
+Its expectation is \(mV_E-m(V_E/m)=(m-1)V_E\). Summing over \(n\)
+genotypes and dividing by \(n(m-1)\) proves the first claim.
+
+For the between-genotype term, put \(T=G+V_E/m\). The identity
+\[
+ \sum_i(\bar Y_i-\bar Y)^2
+ =\sum_i(\bar Y_i-\mu)^2-n(\bar Y-\mu)^2
+\]
+has expectation \(nT-n(T/n)=(n-1)T\), because the genotype means are
+independent and \(\Var(\bar Y)=T/n\). Consequently their sample variance
+estimates \(G+V_E/m\) without bias. Subtracting \(\widehat V_E/m\) gives
+\[
+ \E[\widehat G]
+ =G+\frac{V_E}{m}-\frac{\E[\widehat V_E]}{m}=G.
+\]
+This expectation argument does not require the two estimated terms to be
+independent. Finally, averaging the genotype means gives
+\(\E[\widehat\mu]=\mu\).
+\end{proof}
+
+Unbiasedness does not ensure that every realised estimate of \(G\) is positive.
+When within-genotype noise is large relative to the between-genotype variation,
+the subtraction can be zero or negative. The supplied implementation rejects
+calibrations with \(\widehat G\leq10^{-8}\); it does not replace them with a
+small positive variance. This is a stated numerical admissibility rule,
+not a proof that smaller true variances cannot occur.
+
+\section{Derive the distribution of an uncertain breeding value}
+\label{estimation:conditioning}
+
+For the moment, regard \(\mu,G,V_E\) as known, with \(G,V_E>0\). Write
+\(d_i=\bar y_i-\mu\) for the centred mean of the observed measurements.
+The normal prior density for \(X_i=x\) is proportional to
+\(\exp(-x^2/(2G))\). The conditional measurement density is proportional to
+\[
+ \exp\!\left\{-\frac{1}{2V_E}
+ \sum_j(y_{ij}-\mu-x)^2\right\}.
+\]
+Separate the within-genotype variation from its mean:
+\begin{align}
+ \sum_j(y_{ij}-\mu-x)^2
+ &=\sum_j\{(y_{ij}-\bar y_i)+(d_i-x)\}^2\nonumber\\
+ &=\sum_j(y_{ij}-\bar y_i)^2+m(d_i-x)^2.
+ \label{estimation:measurement_factorisation}
+\end{align}
+The cross term vanishes because
+\(\sum_j(y_{ij}-\bar y_i)=0\). The first term does not depend on \(x\).
+Thus the genotype mean contains all the information about \(X_i\) supplied
+by these balanced measurements when the variance parameters are fixed.
+
+\begin{proposition}[Normal posterior and prediction reliability]
+\label{estimation:posterior}
+Define
+\[
+ R_{\rm pred}=\frac{G}{G+V_E/m},\qquad
+ M_i=R_{\rm pred}(\bar y_i-\mu),\qquad
+ v=G(1-R_{\rm pred}).
+\]
+Then
+\begin{equation}
+ X_i\mid Y_{i1}=y_{i1},\ldots,Y_{im}=y_{im}
+ \sim N(M_i,v).
+ \label{estimation:posterior_formula}
+\end{equation}
+Across populations generated by the model,
+\begin{equation}
+ \Var(M)=R_{\rm pred}G,\qquad
+ \Cov(X,M)=R_{\rm pred}G,\qquad
+ \Corr(X,M)^2=R_{\rm pred}.
+ \label{estimation:reliability_identities}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Multiplying prior and measurement densities gives a kernel with exponent
+\[
+ -\frac12\left\{\frac{x^2}{G}
+      +\frac{(x-d_i)^2}{V_E/m}\right\}.
+\]
+Write \(T_E=V_E/m\). Expanding and completing the square gives
+\begin{align*}
+ \frac{x^2}{G}+\frac{(x-d_i)^2}{T_E}
+ &=\left(\frac1G+\frac1{T_E}\right)x^2
+   -\frac{2d_i}{T_E}x+\frac{d_i^2}{T_E}\\
+ &=\frac{(x-M_i)^2}{v}
+   +\frac{d_i^2}{T_E}-\frac{M_i^2}{v},
+\end{align*}
+where
+\[
+ v=\left(\frac1G+\frac1{T_E}\right)^{-1}
+   =\frac{GT_E}{G+T_E},
+ \qquad
+ M_i=v\frac{d_i}{T_E}
+   =\frac{G}{G+T_E}d_i.
+\]
+The terms not involving \(x\) are absorbed into the normalising constant.
+The remaining density is normal with the stated mean and variance.
+
+For the prediction identities, \(M=R_{\rm pred}(X+\bar e)\), with
+\(\Var(X+\bar e)=G+T_E\). Therefore
+\[
+ \Var(M)=R_{\rm pred}^2(G+T_E)=R_{\rm pred}G.
+\]
+Independence of \(X\) and \(\bar e\) gives
+\[
+ \Cov(X,M)=R_{\rm pred}\Cov(X,X+\bar e)=R_{\rm pred}G.
+\]
+Squaring the correlation and substituting both variances gives
+\[
+ \Corr(X,M)^2
+ =\frac{(R_{\rm pred}G)^2}{G(R_{\rm pred}G)}
+ =R_{\rm pred}.
+\]
+These identities require positive variance for the correlation to be defined.
+\end{proof}
+
+The law of total variance makes the meaning of shrinkage explicit:
+\begin{align}
+ G=\Var(X)
+ &=\Var\{\E[X\mid Y_1,\ldots,Y_m]\}
+   +\E\{\Var(X\mid Y_1,\ldots,Y_m)\}\nonumber\\
+ &=R_{\rm pred}G+v.
+ \label{estimation:total_variance}
+\end{align}
+The variance among predictions is smaller than the biological variance because
+the predictions omit unresolved variation. It is not evidence that the
+population itself has contracted. As \(V_E/m\) tends to zero,
+\(R_{\rm pred}\) tends to one and \(v\) tends to zero. As measurement noise
+increases without bound, the predictions tend to zero while uncertainty tends
+to the prior variance \(G\).
+
+The implementation substitutes \(\widehat\mu,\widehat G,\widehat V_E\) into
+these expressions. The resulting normal distributions are conditional on
+calibrated parameter values. They are not full Bayesian posteriors that also
+integrate over uncertainty in those values. Repeating calibration in the
+bootstrap addresses their sampling uncertainty under the specified model.
+Using predictions as error-free covariates discards the unresolved variance,
+a concern discussed by \citet{HadfieldEtAl2010}.
+
+\section{Construct the likelihood for offspring counts}
+\label{estimation:likelihood}
+
+Write \(\theta=(\alpha,b,H)^{\mathsf T}\) and
+\[
+ \eta_\theta(x)=\alpha+bx+\tfrac12Hx^2,\qquad
+ \lambda_\theta(x)=e^{\eta_\theta(x)}.
+\]
+Given the calibrated measurements, the count probability for genotype \(i\)
+is obtained by averaging over its uncertain breeding value:
+\begin{align}
+ L_i(\theta)
+ &=P(R_i=r_i\mid y_{i1},\ldots,y_{im};\theta)\nonumber\\
+ &=\int_{-\infty}^{\infty}
+   \frac{\lambda_\theta(x)^{r_i}e^{-\lambda_\theta(x)}}{r_i!}
+   \phi(x;M_i,v)\,dx\nonumber\\
+ &=\int
+   \exp\{r_i\eta_\theta(x)-e^{\eta_\theta(x)}
+                  -\log(r_i!)\}\phi(x;M_i,v)\,dx.
+ \label{estimation:mixture_likelihood}
+\end{align}
+Here \(\phi(x;M_i,v)\) is a normal density with variance \(v\). The log likelihood
+is \(\ell(\theta)=\sum_i\log L_i(\theta)\). The logarithms are of
+probabilities; no logarithm of \(r_i\) is taken.
+
+For a zero count the Poisson factor is \(e^{-\lambda_\theta(x)}\), since
+\(0!=1\). Zero counts therefore contribute ordinary, finite probabilities.
+For \(v=0\), the conditional distribution of \(X_i\) is concentrated at
+\(M_i\), so
+\[
+ L_i(\theta)
+ =\frac{\lambda_\theta(M_i)^{r_i}
+           e^{-\lambda_\theta(M_i)}}{r_i!}.
+\]
+That is the known-covariate limit. It is not the general case when \(v>0\).
+In particular, averaging a Poisson probability is not the same operation as
+evaluating it at the posterior mean or at the average rate.
+
+This is a two-stage estimator. The measurement likelihood supplies the
+calibration; the count likelihood then estimates the fitness coefficients.
+Conditional on fixed calibration, genotypes contribute independent factors
+\(L_i\). A joint analysis would also estimate the measurement parameters using
+all components of a joint likelihood. The example does not claim equivalent
+efficiency to such an analysis.
+
+\section{From a normal integral to an evaluated likelihood}
+\label{estimation:quadrature}
+
+\subsection{The Hermite convention and normalisation}
+
+Substitute \(x=M_i+\sqrt v\,t\) into
+Equation~\eqref{estimation:mixture_likelihood}. Since
+\[
+ \phi(x;M_i,v)\,dx
+ =\frac{1}{\sqrt{2\pi}}e^{-t^2/2}\,dt,
+\]
+the integral is a standard normal expectation. Let \(t_j\) and \(u_j\),
+\(j=1,\ldots,q\), be Gaussian quadrature nodes and weights for the weight
+function \(e^{-t^2/2}\). Define \(w_j=u_j/\sqrt{2\pi}\). Then
+\begin{equation}
+ L_i(\theta)\ \simeq\
+ \sum_{j=1}^q w_j
+ \exp\{r_i\eta_\theta(x_{ij})-e^{\eta_\theta(x_{ij})}
+                     -\log(r_i!)\},
+ \quad x_{ij}=M_i+\sqrt v\,t_j.
+ \label{estimation:quadrature_likelihood}
+\end{equation}
+The weights \(w_j\) are positive and sum to one. This is the convention used
+by \codepath{roots_hermitenorm}. It differs from the convention with weight
+\(e^{-t^2}\), for which both the scaling of the nodes and the normalising
+constant differ.
+
+\begin{proposition}[Why the normal quadrature rule integrates polynomials]
+\label{estimation:hermite_rule}
+The \(q\)-node rule above integrates every polynomial of degree at most
+\(2q-1\) exactly under the standard normal distribution.
+\end{proposition}
+
+\begin{proof}
+Let \({\rm He}_q\) be the degree-\(q\) Hermite polynomial associated with the
+standard normal weight. Its defining derivative formula is
+\[
+ {\rm He}_q(t)=(-1)^q e^{t^2/2}
+             \frac{d^q}{dt^q}e^{-t^2/2}.
+\]
+If \(a\) is a polynomial of degree below \(q\), integration by parts \(q\)
+times gives \(\int a(t){\rm He}_q(t)\phi(t;0,1)\,dt=0\). The boundary
+terms vanish because a polynomial times a Gaussian density and its
+derivatives tends to zero at both endpoints; the final derivative of \(a\)
+is zero.
+
+An orthogonal degree-\(q\) polynomial has \(q\) distinct real roots. To see
+why, multiply its factors corresponding to real sign changes. If there were
+fewer than \(q\), this multiplier would have degree below \(q\), while its
+product with \({\rm He}_q\) would have one nonzero sign on the real line
+except at isolated roots. Its Gaussian integral could not be zero, in
+contradiction to orthogonality. Thus the \(q\) nodes can be chosen as those
+distinct roots.
+
+For a polynomial \(p\) of degree at most \(2q-1\), polynomial division gives
+\(p=a\,{\rm He}_q+r\), where both \(a\) and \(r\) have degree at most
+\(q-1\). Orthogonality removes the first term from the integral. At each
+node, \({\rm He}_q(t_j)=0\), so \(p(t_j)=r(t_j)\). Interpolate \(r\) using
+the Lagrange polynomials \(l_j\) through the nodes:
+\[
+ r(t)=\sum_jr(t_j)l_j(t),\qquad
+ w_j=\int l_j(t)\phi(t;0,1)\,dt.
+\]
+Integrating gives \(\int p\phi=\sum_jw_jp(t_j)\), proving exactness.
+The constant polynomial gives \(\sum_jw_j=1\). Applying exactness to
+\(l_j^2\), of degree \(2q-2\), also gives
+\[
+ w_j=\sum_kw_k l_j(t_k)^2
+     =\int l_j(t)^2\phi(t;0,1)\,dt>0.
+\]
+\end{proof}
+
+The general Gaussian quadrature construction is described in
+\citet{NISTDLMF}. Exactness for polynomials explains checks such as
+\(\sum_jw_jt_j^2=1\) and \(\sum_jw_jt_j^4=3\). The Poisson-mixture integrand
+is not a polynomial, so this theorem does not make a finite-order likelihood
+exact. Its numerical accuracy must be assessed separately.
+
+\subsection{Evaluate sums without losing numerical range}
+
+For a particular genotype, set
+\[
+ a_{ij}=\log w_j+r_i\eta_\theta(x_{ij})
+          -e^{\eta_\theta(x_{ij})}-\log(r_i!).
+\]
+Direct exponentiation can underflow when every probability is small. If
+\(c_i=\max_j a_{ij}\), the identity
+\begin{equation}
+ \log\sum_j e^{a_{ij}}
+ =c_i+\log\sum_j e^{a_{ij}-c_i}
+ \label{estimation:logsumexp}
+\end{equation}
+evaluates the same expression with all exponentials at most one. The
+implementation uses \codepath{logsumexp}, and evaluates
+\(\log(r_i!)\) as \(\log\Gamma(r_i+1)\).
+
+\subsection{Derive the score used by the optimiser}
+\label{estimation:score}
+
+Let
+\[
+ \vect d(x)=(1,x,x^2/2)^{\mathsf T},
+ \qquad
+ \eta_\theta(x)=\vect d(x)^{\mathsf T}\theta.
+\]
+The derivative of one log Poisson probability is
+\begin{align*}
+ \nabla_\theta\{r_i\eta_\theta(x)-e^{\eta_\theta(x)}
+                                -\log(r_i!)\}
+ &=r_i\vect d(x)-e^{\eta_\theta(x)}\vect d(x)\\
+ &=(r_i-\lambda_\theta(x))\vect d(x).
+\end{align*}
+For the finite quadrature sum, differentiating its logarithm therefore gives
+\begin{equation}
+ \nabla_\theta\log L_i
+ \simeq\sum_j\pi_{ij}
+        (r_i-\lambda_\theta(x_{ij}))\vect d(x_{ij}),
+ \qquad
+ \pi_{ij}=\frac{e^{a_{ij}}}{\sum_k e^{a_{ik}}}.
+ \label{estimation:mixture_score}
+\end{equation}
+The same identity holds for the exact integral with a conditional expectation
+in place of the sum when differentiation under the integral is justified.
+For the finite implemented sum the derivative is an ordinary derivative of a
+finite positive expression.
+
+There are two different conditional distributions in this calculation.
+The normal \(N(M_i,v)\) describes breeding value after observing the heights.
+The weights \(\pi_{ij}\) additionally use the count likelihood, and approximate
+the breeding-value distribution after observing both heights and reproduction.
+They sum to one, but are generally not the original normal quadrature weights.
+The implementation sums Equation~\eqref{estimation:mixture_score} over
+genotypes and minimises the negative mean log likelihood; dividing by \(n\)
+does not change its minimiser.
+
+\subsection{Numerical checks are part of the estimator}
+
+The primary model uses 41 quadrature nodes initially and constrains
+\(H\leq0\). Its numerical coefficient bounds are
+\[
+ -7\leq\alpha\leq7,\qquad -5\leq b\leq5,\qquad -6\leq H\leq0.
+\]
+These are bounds in the example's stated units. They are not universal
+biological limits. Multiple starting values reduce dependence on a particular
+initial guess, and a fit near a bound is flagged. Neither step proves global
+optimality of a marginal likelihood.
+
+The integration check refits at increasing orders, including 81, 161 and
+321. For consecutive orders, it requires both
+\begin{align}
+ \max_k\frac{|\theta_{{\rm new},k}-\theta_{{\rm old},k}|}
+                   {1+|\theta_{{\rm new},k}|}&<10^{-4},\nonumber\\
+ \frac{|\ell_{\rm new}-\ell_{\rm old}|}{n}&<10^{-6}.
+ \label{estimation:integration_check}
+\end{align}
+When the comparison passes, the lower-order fit is returned with the
+higher check order recorded. An unresolved comparison raises an error.
+For the recorded default data, comparing 41 and 81 nodes changes \(b,H,\Ag\)
+by less than \(4\times10^{-13}\). That is a reproducible numerical result for
+this dataset, not an analytic error bound for every possible observation.
+An independent adaptive integral and a closed mean formula provide additional
+checks in the supplied tests.
+
+\section{From fitted coefficients to the variance share}
+\label{estimation:components}
+
+The fitted log conditional mean is
+\[
+ \widehat\ell_A(\widehat\mu+x)
+ =\widehat\alpha+\widehat b x+\tfrac12\widehat Hx^2.
+\]
+Its derivatives are
+\[
+ \frac{d\widehat\ell_A}{dx}=\widehat b+\widehat Hx,\qquad
+ \frac{d^2\widehat\ell_A}{dx^2}=\widehat H.
+\]
+Thus the fitted coefficients give slope and curvature at the estimated
+population mean, \(x=0\). If software instead fits \(cx^2\), the second
+derivative is \(2c\), so \(H=2c\). The design in the supplied code uses
+\(x^2/2\) and requires no subsequent doubling.
+
+Under the Gaussian quadratic model, the variance partition derived in
+Proposition~\ref{gaussian:variance_partition} gives the plug-in quantities
+\begin{equation}
+ \widehat\Vlin=\widehat b^{\,2}\widehat G,\qquad
+ \widehat\Vquad=\tfrac12\widehat H^{\,2}\widehat G^{\,2},\qquad
+ \widehat\Ag=\frac{\widehat\Vlin}
+                  {\widehat\Vlin+\widehat\Vquad}.
+ \label{estimation:component_estimates}
+\end{equation}
+They describe variation in log expected output across breeding values.
+Poisson variation in individual counts is not an extra term in their
+denominator. When both components vanish, the share is undefined.
+
+For the generating parameters, the calculation is exact:
+\[
+ \Vlin=0.7^2(1)=0.49,\qquad
+ \Vquad=\tfrac12(-0.7)^2(1)^2=0.245,\qquad
+ \Ag=\frac{0.49}{0.735}=\frac23.
+\]
+The fitted default value, approximately \(0.610744\), is a result of maximising
+the likelihood for the recorded simulated observations. There is no
+closed-form algebraic argument that a finite dataset must return that value
+or the generating value. Reporting both components alongside the ratio also
+shows whether a similar share is supported by a similar amount of variation.
+
+\section{Predict quantities on the observed-data scale}
+\label{estimation:predictions}
+
+A graph of counts against observed heights asks for the count distribution
+given those measurements. It does not ask for the count distribution at an
+exact breeding value. Fix a genotype's measurement information and write
+\(X\mid Y\sim N(M,v)\). In this section parameters are treated as fixed.
+
+\begin{proposition}[Predictive moments and zero counts]
+\label{estimation:predictive_moments}
+For a Poisson mixture with conditional rate \(\lambda(X)\),
+\begin{align}
+ \mu_R(Y)&=\E[R\mid Y]=\E[\lambda(X)\mid Y],\nonumber\\
+ s_R^2(Y)&=\Var(R\mid Y)
+   =\E[\lambda(X)\mid Y]+\Var(\lambda(X)\mid Y),\nonumber\\
+ p_0(Y)&=P(R=0\mid Y)=\E[e^{-\lambda(X)}\mid Y].
+ \label{estimation:predictive_formula}
+\end{align}
+The first two identities assume the indicated moments are finite.
+\end{proposition}
+
+\begin{proof}
+Conditional on \(X\), a Poisson variable has mean and variance \(\lambda(X)\).
+Conditional independence of reproduction and the measurement environments
+therefore gives
+\[
+ \E[R\mid Y]=\E\{\E[R\mid X,Y]\mid Y\}
+           =\E[\lambda(X)\mid Y].
+\]
+The law of total variance, conditional on \(Y\), gives
+\begin{align*}
+ \Var(R\mid Y)
+ &=\E\{\Var(R\mid X,Y)\mid Y\}
+   +\Var\{\E[R\mid X,Y]\mid Y\}\\
+ &=\E[\lambda(X)\mid Y]+\Var(\lambda(X)\mid Y).
+\end{align*}
+Finally \(P(R=0\mid X,Y)=e^{-\lambda(X)}\); averaging that probability over
+\(X\mid Y\) proves the third identity.
+\end{proof}
+
+The supplied routine evaluates these as weighted normal expectations. If
+\(\lambda_j=\lambda(M+\sqrt v\,t_j)\), it returns
+\[
+ \mu_R\simeq\sum_jw_j\lambda_j,\qquad
+ s_R^2\simeq\mu_R+\sum_jw_j\lambda_j^2-\mu_R^2,\qquad
+ p_0\simeq\sum_jw_je^{-\lambda_j}.
+\]
+The second term in the variance accounts for uncertainty in the rate arising
+from uncertain breeding value. Replacing the mixture by a single Poisson
+distribution with rate \(\mu_R\) would discard that contribution.
+
+\subsection{A closed-form prediction for the quadratic log mean}
+
+For the quadratic model, the first two rate moments can also be obtained
+analytically. This provides a check independent of the likelihood
+optimisation.
+
+\begin{proposition}[Normal average of an exponential quadratic]
+\label{estimation:closed_prediction}
+Let \(X\sim N(M,v)\), with \(v>0\), and
+\(\lambda(X)=\exp(\alpha+bX+HX^2/2)\). For \(k>0\), put
+\(D_k=1-kHv\). If \(D_k>0\), then
+\begin{equation}
+ \E[\lambda(X)^k]
+ =D_k^{-1/2}
+   \exp\!\left\{
+     k\alpha+kbM+\frac{kHM^2}{2}
+     +\frac{k^2v(b+HM)^2}{2D_k}
+   \right\}.
+ \label{estimation:rate_moments}
+\end{equation}
+If \(D_k\leq0\), that moment is not finite. For \(v=0\), it is simply
+\(\lambda(M)^k\).
+\end{proposition}
+
+\begin{proof}
+Write \(X=M+\sqrt v\,T\), with \(T\sim N(0,1)\), and expand:
+\[
+ k\alpha+kbX+\frac{kH}{2}X^2
+ =k\alpha+kbM+\frac{kHM^2}{2}
+   +k\sqrt v\,(b+HM)T+\frac{kHv}{2}T^2.
+\]
+Multiplying by the standard normal density combines the last quadratic term
+with \(-T^2/2\). Let \(d=k\sqrt v\,(b+HM)\). The remaining integral is
+\[
+ \frac1{\sqrt{2\pi}}\int
+   \exp\!\left(-\frac{D_k}{2}t^2+dt\right)\,dt.
+\]
+When \(D_k>0\), complete the square:
+\[
+ -\frac{D_k}{2}t^2+dt
+ =-\frac{D_k}{2}\left(t-\frac d{D_k}\right)^2
+   +\frac{d^2}{2D_k}.
+\]
+The shifted normal integral contributes \(D_k^{-1/2}\), and the constant
+contributes \(\exp\{d^2/(2D_k)\}\). Restoring the terms taken outside the
+integral proves the formula. If \(D_k<0\), the exponent grows quadratically
+in both tails. If \(D_k=0\), a nonzero linear term grows in one tail, while a
+zero linear term leaves a constant integrand on the real line. Each case
+has an infinite integral.
+\end{proof}
+
+Taking \(k=1\) gives the fitted mean given measurement information; taking
+\(k=2\) supplies the second rate moment in
+Equation~\eqref{estimation:predictive_formula}. The primary constraint
+\(H\leq0\) makes both conditions automatic. If a broader model allowed
+positive \(H\), a finite probability integral would not by itself establish
+finite predictive moments. A Poisson probability is bounded by one, whereas
+\(\lambda(X)\) and \(\lambda(X)^2\) are not.
+
+Substituting \(M=0,v=G\) in the first-moment formula also gives population mean
+output under the generating distribution:
+\[
+ \E[\lambda(X)]
+ =\frac{e^\alpha}{\sqrt{1-HG}}
+   \exp\!\left\{\frac{Gb^2}{2(1-HG)}\right\},
+ \qquad 1-HG>0.
+\]
+This shows explicitly why the setting \(e^\alpha=4\) describes output at the
+mean breeding value rather than an average over all genotypes.
+
+\subsection{Sampling bars for observed bins}
+\label{estimation:bin_variance}
+
+The diagnostic plot sorts individuals by their observed mean measurements and
+forms ten groups. Conditional on all these measurements, group membership is
+fixed. For a group \(B\) containing \(n_B\) independent genotypes, define
+\(\bar R_B=n_B^{-1}\sum_{i\in B}R_i\). Conditional independence gives
+\begin{align}
+ \E[\bar R_B\mid Y]
+ &=\frac1{n_B}\sum_{i\in B}\mu_R(Y_i),\nonumber\\
+ \Var(\bar R_B\mid Y)
+ &=\frac1{n_B^2}\sum_{i\in B}s_R^2(Y_i).
+ \label{estimation:bin_prediction}
+\end{align}
+The second identity follows by expanding the variance of a sum; the
+cross-genotype covariance terms are zero under the model. The displayed
+half-width is
+\[
+ 1.96\,\frac{\sqrt{\sum_{i\in B}\widehat s_R^2(Y_i)}}{n_B}.
+\]
+The multiplier uses a normal approximation for a bin average. The calculation
+conditions on fitted parameters and is displayed around the observed mean.
+It is not a confidence interval for the conditional fitness curve, a
+simultaneous band, or a calculation that includes fitting uncertainty. The
+predicted zero fraction in a group is likewise the average of the individual
+mixture probabilities, \(n_B^{-1}\sum_{i\in B}\widehat p_0(Y_i)\).
+
+\paragraph{Biological interpretation.}
+An observed mean height does not identify an exact breeding value. Comparing
+its count directly with \(W_A(M_i)\) would disregard the range of breeding
+values compatible with those measurements. Integrating over that range is
+required both when fitting counts and when checking predictions against
+observable quantities. Shared environments or related genotypes would also
+introduce covariance terms omitted by the bin formula.
+
+\section{A specific effect of substituting prediction variance}
+\label{estimation:shrinkage}
+
+The reliability calculation distinguishes biological variance \(G\) from
+prediction variance. The following result isolates the consequence of
+substituting the latter while keeping slope and curvature fixed on the true
+breeding-value scale.
+
+\begin{proposition}[Fixed-coefficient shrinkage substitution]
+\label{estimation:shrinkage_formula}
+Let \(L=\Vlin>0\), \(Q=\Vquad>0\), and replace \(\mat G\) by
+\(s\mat G\), where \(0<s<1\), without changing \(\vect b\) or \(\mat H\).
+Then
+\begin{equation}
+ L_{\rm pred}=sL,\qquad Q_{\rm pred}=s^2Q,\qquad
+ \mathcal A_{g,\mathrm{pred}}=\frac{L}{L+sQ}>\frac{L}{L+Q}=\Ag.
+ \label{estimation:shrinkage_share}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The component formulas give
+\[
+ \vect b^{\mathsf T}(s\mat G)\vect b=sL,\qquad
+ \tfrac12\tr\{\mat H(s\mat G)\mat H(s\mat G)\}=s^2Q.
+\]
+Cancel the positive \(s\) in their ratio. The difference between the new
+share and the target is
+\[
+ \frac{L}{L+sQ}-\frac{L}{L+Q}
+ =\frac{LQ(1-s)}{(L+sQ)(L+Q)}>0.
+\]
+\end{proof}
+
+In the balanced scalar measurement model, \(s=R_{\rm pred}\). In the
+recurring guide example, \(L=4,Q=0.125,s=0.6\), so the substituted share is
+\[
+ \frac{4}{4+0.6(0.125)}=0.981595\ldots,
+\]
+compared with \(4/(4+0.125)=0.969697\ldots\). Both absolute components have
+decreased. If \(L=0<Q\), the share stays zero; if \(Q=0<L\), it stays one.
+If both are zero, it is undefined. At \(s=0\), both substituted components
+vanish and the ratio is undefined; the limit as positive \(s\) tends to zero
+must not be mistaken for its value at zero.
+
+The deliberately naive fit in the worked example makes a different change.
+It sets the latent conditional variance to zero, refits \(\alpha,b,H\) using
+the predictions as exact covariates, and substitutes their empirical
+variance for \(G\). The fixed-coefficient proof therefore does not establish
+the direction of its overall error. For the recorded dataset, its share
+is approximately \(0.673984\), closer to \(2/3\) than the latent-value point
+estimate, while both component estimates are smaller than their generating
+values. Agreement of one ratio in one sample does not validate that
+observation model. Heterogeneous reliabilities across traits also need not
+produce a scalar covariance multiplier.
+
+\section{What the parametric bootstrap repeats}
+\label{estimation:bootstrap}
+
+Write \(D\) for the complete observable dataset and \(T(D)\) for the complete
+estimation procedure: calibrate the measurement model, fit the count model,
+and calculate the components and share. The target sampling distribution is
+the distribution of \(T(D)\) under repeated data generated by the specified
+population model. Because its parameters are unknown, the parametric
+bootstrap substitutes their fitted values \citep{Efron1979}.
+
+For each bootstrap replicate, the supplied algorithm generates
+\begin{align}
+ X_i^*&\sim N(0,\widehat G),\nonumber\\
+ Y_{ij}^*&=\widehat\mu+X_i^*+e_{ij}^*,
+ &e_{ij}^*&\sim N(0,\widehat V_E),\nonumber\\
+ R_i^*\mid X_i^*&\sim
+ \operatorname{Poisson}\!\left[
+ \exp\{\widehat\alpha+\widehat bX_i^*
+                 +\tfrac12\widehat H(X_i^*)^2\}\right].
+ \label{estimation:bootstrap_model}
+\end{align}
+It then calculates \(T(D^*)\), including new estimates of \(\mu,G,V_E\).
+Using fixed calibrated values during these refits would omit their
+sampling variation and their association with the fitted fitness
+coefficients. The simulator centres new breeding values at zero relative to
+\(\widehat\mu\); recalibrating the new data includes the sampling variation
+in the estimated centre.
+
+For \(N_{\rm boot}\) completed replicates, let \(T_1^*,\ldots,T_{N_{\rm boot}}^*\)
+be the estimates of one quantity. Their empirical distribution is
+\[
+ \widehat F_{\rm boot}(t)
+ =\frac1{N_{\rm boot}}\sum_{j=1}^{N_{\rm boot}}
+   {\boldsymbol1}_{\{T_j^*\leq t\}}.
+\]
+The percentile interval uses its 0.025 and 0.975 quantiles. This specifies
+how the interval is constructed. It does not prove exact 95\% coverage.
+The procedure approximates a sampling distribution under the fitted model;
+bias, boundaries, nonregular estimation or misspecification can affect
+coverage.
+
+There are two separate sources of variation. With the original data held
+fixed, increasing \(N_{\rm boot}\) makes the simulated empirical distribution
+less variable. It does not make the fitted biological or count model more
+appropriate. To assess repeated-sample coverage, one would simulate many
+independent original datasets, construct an interval for each, and calculate
+the fraction containing the relevant generating quantity.
+
+The default reproduction uses 500 replicates with seed 20261006, after the
+observations generated with seed 20261005. All 500 recorded refits complete.
+That statement concerns computational success. The code records failures.
+If \(N_{\rm requested}\) fits were requested, it returns intervals only when
+at least \(\max\{2,\lfloor0.9N_{\rm requested}\rfloor\}\) have completed.
+The floor denotes rounding down to an integer. That numerical rule is not a
+statistical justification
+for ignoring failed samples: their causes and relation to the parameter
+estimates must still be examined. The successful default run does not
+establish interval coverage.
+
+\paragraph{Biological interpretation.}
+These intervals account for repeated sampling under the assumed additive
+trait, independent measurement environments and conditional Poisson
+reproduction. They do not express uncertainty that these assumptions are
+biologically correct. Adding bootstrap replicates cannot account for
+unmodelled relatedness, nonadditive variation, shared environments or a wrong
+fitness function.
+
+\section{A quartic alternative and the scope of the AIC comparison}
+\label{estimation:aic}
+
+The sensitivity fit extends the log mean to
+\begin{equation}
+ \eta_4(x)=\alpha+bx+\tfrac12Hx^2+c_3x^3+c_4x^4.
+ \label{estimation:quartic_fit}
+\end{equation}
+It keeps the measurement calibration fixed between the two fitted families.
+The quadratic family has three fitness parameters; the quartic family has
+five. Applying the AIC expression \(2k-2\ell\) to their conditional
+likelihoods gives
+\begin{align}
+ \Delta{\rm AIC}
+ &={\rm AIC}_4-{\rm AIC}_2\nonumber\\
+ &=(2\cdot5-2\ell_4)-(2\cdot3-2\ell_2)\nonumber\\
+ &=4-2(\ell_4-\ell_2).
+ \label{estimation:aic_difference}
+\end{align}
+A negative difference favours the more flexible fit under this criterion
+\citep{Akaike1974}. The reported default difference, approximately \(3.410883\),
+comes from the two numerical fitted log likelihoods.
+
+This is an approximate conditional-likelihood comparison, not a formal test of
+the whole measurement-and-reproduction model. Both fits use the same
+estimated calibration. The primary family restricts \(H\leq0\); the quartic
+family allows \(H\) up to three but constrains its highest coefficient to
+\(-1\leq c_4\leq-10^{-8}\), with \(-2\leq c_3\leq2\).
+Negative \(c_4\) makes the log mean decline in both tails and keeps
+population rate moments finite. The exactly quadratic case \(c_4=c_3=0\)
+lies on the limiting boundary of the quartic family, not in the interior of
+these numerical bounds. Ordinary unconstrained likelihood-ratio
+calibrations should not be inferred from the comparison.
+
+\subsection{Why the cubic term is needed when the centre moves}
+\label{estimation:quartic_centring}
+
+Suppose a generating curve is written in a coordinate \(x\) as
+\[
+ \ell(x)=\alpha+bx+\tfrac12Hx^2-\kappa x^4.
+\]
+Move the reference point by \(\delta\), so \(x=z+\delta\). Expanding
+\((z+\delta)^2=z^2+2\delta z+\delta^2\) and
+\[
+ (z+\delta)^4=z^4+4\delta z^3+6\delta^2z^2+4\delta^3z+\delta^4
+\]
+gives
+\begin{align}
+ \ell(z+\delta)
+ &=\alpha_\delta+b_\delta z+\tfrac12H_\delta z^2
+       -4\kappa\delta z^3-\kappa z^4,\nonumber\\
+ \alpha_\delta&=\alpha+b\delta+\tfrac12H\delta^2-\kappa\delta^4,\nonumber\\
+ b_\delta&=b+H\delta-4\kappa\delta^3,\qquad
+ H_\delta=H-12\kappa\delta^2.
+ \label{estimation:quartic_shift}
+\end{align}
+A quartic curve with no cubic term at one centre generally has a cubic term
+at another. Including both terms allows the fitted family to represent that
+change of centre. In the design used here, \(c_3\) multiplies \(z^3\) and
+\(c_4\) multiplies \(z^4\) directly; the third and fourth derivatives at zero
+are \(6c_3\) and \(24c_4\). The coefficient \(H\) still multiplies \(z^2/2\)
+and is the second derivative at zero.
+
+\section{Local quadratic variation and the complete quartic curve}
+\label{estimation:quartic}
+
+Let \(X\sim N(0,G)\), and consider the exact generating log mean
+\begin{equation}
+ \ell(X)=\alpha+bX+\tfrac12HX^2-\kappa X^4,
+ \qquad \kappa\geq0.
+ \label{estimation:quartic_truth}
+\end{equation}
+The fourth-order term has first derivative \(-4\kappa x^3\) and second
+derivative \(-12\kappa x^2\), both zero at \(x=0\). Therefore its local
+quadratic approximation at the population mean still has slope \(b\),
+curvature \(H\), and the share derived from \(b^2G\) and \(H^2G^2/2\).
+Its complete population variance requires additional moments.
+
+\begin{proposition}[Variance and affine fit of the quartic curve]
+\label{estimation:quartic_variance}
+Under Equation~\eqref{estimation:quartic_truth},
+\begin{align}
+ \Var\{\tfrac12HX^2-\kappa X^4\}
+ &=\tfrac12H^2G^2-12H\kappa G^3+96\kappa^2G^4,\nonumber\\
+ R_{\rm full}^2
+ &=\frac{b^2G}
+ {b^2G+\tfrac12H^2G^2-12H\kappa G^3+96\kappa^2G^4},
+ \label{estimation:quartic_full_r2}
+\end{align}
+provided the full-curve variance is positive. The second expression is the
+population affine-regression \(R^2\) of the complete log mean on \(X\).
+\end{proposition}
+
+\begin{proof}
+The Gaussian moment results in Chapter~\ref{gaussian:chapter} give
+\[
+ \E[X^2]=G,\qquad \E[X^4]=3G^2,\qquad
+ \E[X^6]=15G^3,\qquad \E[X^8]=105G^4.
+\]
+Consequently,
+\begin{align*}
+ \Var(X^2)
+ &=\E[X^4]-\E[X^2]^2=3G^2-G^2=2G^2,\\
+ \Cov(X^2,X^4)
+ &=\E[X^6]-\E[X^2]\E[X^4]
+   =15G^3-3G^3=12G^3,\\
+ \Var(X^4)
+ &=\E[X^8]-\E[X^4]^2
+   =105G^4-9G^4=96G^4.
+\end{align*}
+Apply the variance-of-a-sum identity, retaining the cross term:
+\begin{align*}
+ \Var\{\tfrac12HX^2-\kappa X^4\}
+ &=\frac{H^2}{4}\Var(X^2)
+   +\kappa^2\Var(X^4)
+   +2\left(\frac H2\right)(-\kappa)\Cov(X^2,X^4)\\
+ &=\tfrac12H^2G^2+96\kappa^2G^4-12H\kappa G^3.
+\end{align*}
+All centred odd Gaussian moments vanish. Therefore
+\[
+ \Cov(X,X^2)=0,\qquad \Cov(X,X^4)=0,
+\]
+and the linear term is uncorrelated with the even part.
+It follows that \(\Cov\{X,\ell(X)\}=bG\).
+For \(G>0\), the population least-squares slope is
+\(\Cov\{X,\ell(X)\}/G=b\). Its intercept is the population mean
+\[
+ \E[\ell(X)]=\alpha+\tfrac12HG-3\kappa G^2.
+\]
+The fitted component therefore has variance \(b^2G\), and the total
+variance is this component plus the even-term variance just derived.
+Dividing proves Equation~\eqref{estimation:quartic_full_r2}.
+If \(G=0\), the target is constant and its regression \(R^2\) is undefined.
+\end{proof}
+
+At \(b=0.7,H=-0.7,G=1,\kappa=0.08\), the local quadratic components remain
+\(0.49\) and \(0.245\), so their share is \(2/3\). For the complete curve,
+the two extra contributions to the even-part variance are
+\[
+ -12H\kappa G^3=0.672,\qquad
+ 96\kappa^2G^4=0.6144.
+\]
+Thus
+\[
+ R_{\rm full}^2
+ =\frac{0.49}{0.49+0.245+0.672+0.6144}
+ =0.242406253\ldots.
+\]
+The change is not a contradiction: the numerator describes the same linear
+term, while the full-curve denominator includes additional population
+variation absent from the local quadratic approximation.
+
+\paragraph{Biological interpretation.}
+Slope and curvature at the population mean do not determine how much higher
+orders contribute over all breeding values present. A fitted quadratic can
+estimate a local description accurately while describing the complete curve
+poorly. Its bootstrap interval cannot correct that difference in target.
+Even the local share extracted from a fitted quartic is not the \(R^2\) of
+the complete fitted quartic unless the higher terms contribute no additional
+relevant variation.
+
+\section{Relating the derivations to the implementation}
+
+The functions in
+\codepath{examples/estimating_variance_share/model.py}
+correspond directly to the steps above:
+\codepath{calibrate} estimates the measurement model;
+\codepath{fit_surface} evaluates and optimises the mixture likelihood;
+\codepath{checked_surface} assesses integration stability;
+\codepath{conditional_prediction} produces observable-data means, variances and
+zero probabilities; \codepath{bootstrap} repeats the two-stage analysis; and
+\codepath{truth} calculates the generating local share and complete quartic
+\(R^2\). The batch calculation and Shiny app call these same functions.
+
+The accompanying \codepath{test_model.py} checks normal moments, separation of
+observations from simulation truth, the closed mean formula, an independent
+adaptive likelihood integral, the known-value limit, repeated-seed recovery,
+bootstrap recalibration, quartic variation, and explicit numerical failures.
+Those checks establish reproducibility and agreement for the tested cases.
+The proofs in this chapter identify the assumptions under which the formulas
+hold; they do not turn those finite checks into evidence that an observation
+model is suitable for every dataset.

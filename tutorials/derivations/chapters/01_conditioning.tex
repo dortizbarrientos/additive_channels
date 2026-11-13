@@ -1,0 +1,453 @@
+\chapter{Conditional fitness, reproductive contributions and logarithms}
+\label{conditioning:chapter}
+
+An individual's breeding value does not determine its realised reproductive
+output. Individuals with the same breeding value can differ in environment,
+genetic background and unmeasured traits, and reproduction itself can be
+stochastic. We therefore begin with an average over the individuals represented
+at each breeding value. This chapter derives what that average supplies, why its
+logarithm is taken after averaging, and how environmental variation changes it.
+The variance calculations in Chapter~\ref{gaussian:chapter} then describe
+variation in this specified quantity.
+
+\section{A conditional mean defines the fitness relationship}
+
+Let \(\vect A\) denote breeding value in a specified population and let \(W\)
+denote nonnegative reproductive output during one selection episode. Assume
+\[
+ 0<\bar W=\E[W]<\infty.
+\]
+The conditional expected output is
+\begin{equation}
+ W_A(\vect a)=\E[W\mid\vect A=\vect a].
+ \label{conditioning:target}
+\end{equation}
+The notation describes an expectation under the current joint distribution of
+breeding values and reproductive output. It does not require a deterministic
+map from breeding value to offspring count. Conditioning on a continuous
+variable is understood through a conditional distribution, rather than through
+the probability of the single event \(\vect A=\vect a\).
+
+The \emph{tower property} states that an unconditional average can be obtained
+by first averaging conditionally and then averaging those conditional means.
+For example,
+\[
+ \E[W_A(\vect A)]
+ =\E\{\E[W\mid\vect A]\}
+ =\E[W]=\bar W.
+\]
+More generally, if \(f(\vect A)\) is a scalar quantity with
+\(\E[|f(\vect A)|W]<\infty\), then
+\begin{align}
+ \E[f(\vect A)W]
+ &=\E\{\E[f(\vect A)W\mid\vect A]\}\nonumber\\
+ &=\E\{f(\vect A)\E[W\mid\vect A]\}\nonumber\\
+ &=\E[f(\vect A)W_A(\vect A)].
+ \label{conditioning:tower_weight}
+\end{align}
+The second line follows because \(f(\vect A)\) is already known when
+\(\vect A\) is given. This identity is the reason conditional expected output
+can be used to calculate the distribution of parental breeding values
+represented by reproductive contributions.
+
+\begin{proposition}[Expected reproductive weighting]
+\label{conditioning:selection_weight}
+Under the assumptions above, define a probability law \(Q\) by
+\[
+ Q(C)=\frac{\E[{\boldsymbol 1}_{\{\vect A\in C\}}W]}{\bar W}
+\]
+for each set \(C\) of breeding values. Its expectation of \(f\) is
+\begin{equation}
+ \E_Q[f(\vect A)]
+ =\frac{\E[f(\vect A)W_A(\vect A)]}{\bar W}.
+ \label{conditioning:weighted_expectation}
+\end{equation}
+If the initial distribution has density \(p_A\), the weighted density is
+\begin{equation}
+ p_{\rm sel}(\vect a)
+ =\frac{W_A(\vect a)p_A(\vect a)}{\bar W}.
+ \label{conditioning:selected_density}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Nonnegative output makes \(Q(C)\) nonnegative. Taking \(C\) to be the entire
+space gives \(Q(C)=\E[W]/\bar W=1\), and countable additivity follows from
+additivity of the expectation of nonnegative indicators. Thus \(Q\) is a
+probability law. Equation~\eqref{conditioning:tower_weight} gives its
+expectation of \(f\). When a density exists, write the numerator as
+\[
+ \E[f(\vect A)W_A(\vect A)]
+ =\int f(\vect a)W_A(\vect a)p_A(\vect a)\,d\vect a.
+\]
+Dividing by \(\bar W\) identifies the density in
+Equation~\eqref{conditioning:selected_density}. Its integral is one because
+the numerator integrates to \(\E[W_A(\vect A)]=\bar W\).
+\end{proof}
+
+The construction remains valid without a density. For two classes with
+frequencies \(p_1,p_2\) and expected outputs \(w_1,w_2\), their reproductive
+fractions are \(p_jw_j/(p_1w_1+p_2w_2)\). If the outputs are one and two,
+increasing the frequency of the second class from \(1/4\) to \(3/4\) changes
+mean output from
+\[
+ \tfrac34(1)+\tfrac14(2)=\tfrac54
+ \quad\hbox{to}\quad
+ \tfrac14(1)+\tfrac34(2)=\tfrac74.
+\]
+Its reproductive fraction consequently changes from
+\[
+ \frac{(1/4)2}{5/4}=\frac25
+ \quad\hbox{to}\quad
+ \frac{(3/4)2}{7/4}=\frac67.
+\]
+The expected output at each breeding value has not changed. Its frequency has.
+
+Taking \(f(\vect A)=\vect A\) component by component also gives a general
+selected-parent displacement. If the required first moments are finite,
+\begin{align}
+ \E_Q[\vect A]-\E[\vect A]
+ &=\frac{\E[\vect A W]-\E[\vect A]\E[W]}{\bar W}\nonumber\\
+ &=\frac{\Cov(\vect A,W)}{\bar W}
+ =\frac{\Cov\{\vect A,W_A(\vect A)\}}{\bar W}.
+ \label{conditioning:covariance_displacement}
+\end{align}
+This is the covariance part of the selection accounting developed by
+\citet{Price1970}. It uses no Gaussian approximation. Gaussian selected
+moments require the additional assumptions introduced in
+Chapter~\ref{selection:chapter}.
+
+\paragraph{Biological interpretation.}
+The weights describe how parental breeding values are represented among
+expected reproductive contributions. They do not specify an offspring's
+breeding value. That requires a transmission model. Nor should a population
+expectation be confused with the random ratio
+\(\sum_i f(\vect A_i)W_i/\sum_i W_i\) in a finite realised sample: expectation
+of that ratio need not equal a ratio of expectations. The population law above
+is the target against which such finite-sample quantities can be compared.
+
+\section{What taking the logarithm changes}
+
+Where \(W_A(\vect a)>0\), define
+\begin{equation}
+ \ell_A(\vect a)=\log W_A(\vect a).
+ \label{conditioning:log_target}
+\end{equation}
+For any two breeding values with positive conditional means,
+\begin{align}
+ \ell_A(\vect a_2)-\ell_A(\vect a_1)
+ &=\log W_A(\vect a_2)-\log W_A(\vect a_1)\nonumber\\
+ &=\log\!\left\{\frac{W_A(\vect a_2)}{W_A(\vect a_1)}\right\}.
+ \label{conditioning:log_ratio}
+\end{align}
+Thus equal differences in \(\ell_A\) represent equal ratios of expected output.
+A difference of \(0.10\) corresponds to a ratio \(e^{0.10}\), approximately
+\(1.105\). The gradient of \(\ell_A\) measures a local proportional change in
+expected output per unit change in breeding value:
+\[
+ \frac{\partial\ell_A}{\partial a_j}
+ =\frac{1}{W_A}\frac{\partial W_A}{\partial a_j}.
+\]
+This is the connection to a log link for expected fitness
+\citep{MorrisseyGoudie2022}. It concerns the conditional mean, not a
+transformation of each observed count.
+
+Changing the unit of reproductive output multiplies all expected outputs by
+one positive constant \(c\). Then
+\[
+ \log\{cW_A(\vect a)\}=\log c+\ell_A(\vect a).
+\]
+The gradient, Hessian and variance of \(\ell_A\) are unchanged because the
+added term is constant. The reproductive weights are unchanged as well:
+\[
+ \frac{cW_A(\vect a)p_A(\vect a)}{c\bar W}
+ =\frac{W_A(\vect a)p_A(\vect a)}{\bar W}.
+\]
+Neither result makes variance on the log scale equal to variance on the
+original output scale. They describe different functions.
+
+\section{Why averaging and taking logarithms do not commute}
+
+\begin{proposition}[Conditional Jensen inequality]
+\label{conditioning:jensen}
+Fix a breeding value \(\vect a\). Suppose the conditional output is positive
+and has finite positive mean \(m=W_A(\vect a)\). If the conditional expectation
+of \(\log W\) is finite, then
+\begin{equation}
+ \E[\log W\mid\vect A=\vect a]\leq\log W_A(\vect a).
+ \label{conditioning:jensen_inequality}
+\end{equation}
+Equality holds precisely when \(W=m\) with conditional probability one.
+\end{proposition}
+
+\begin{proof}
+For \(t>0\), put \(h(t)=t-1-\log t\). Its derivative is
+\(h'(t)=1-1/t\), so it decreases up to \(t=1\) and increases after \(t=1\).
+Its unique minimum is \(h(1)=0\). Therefore
+\[
+ \log t\leq t-1,
+\]
+with equality only at \(t=1\). Apply this inequality to \(t=W/m\):
+\[
+ \log W\leq\log m+\frac{W-m}{m}.
+\]
+Taking the conditional expectation gives
+\[
+ \E[\log W\mid\vect A=\vect a]
+ \leq\log m+\frac{\E[W\mid\vect A=\vect a]-m}{m}
+ =\log m.
+\]
+The nonnegative difference has expectation zero only if it is zero almost
+surely. By the equality condition above, this requires \(W/m=1\) almost surely.
+\end{proof}
+
+If zero output has positive conditional probability, \(\log W\) is not a
+finite-valued observation. It may be treated as \(-\infty\) in an extended
+expectation, but it cannot be used as an ordinary finite response. Meanwhile
+\(\log W_A(\vect a)\) remains finite whenever the conditional mean is positive.
+For outputs zero and two with equal probability,
+\[
+ \log\E[W\mid\vect A=\vect a]=\log 1=0,
+\]
+whereas one of the individual logarithms is not finite. If the conditional
+mean itself is zero, nonnegative output is zero almost surely at that breeding
+value. Its contribution to the selected-parent law is then zero, and
+\(\ell_A\) has no finite value there. These are different boundary cases.
+
+\paragraph{Biological interpretation.}
+Variation in counts among individuals with the same breeding value is averaged
+before fitness differences across breeding values are described. Excluding zero
+counts, adding a constant to every count before logging, or averaging logged
+positive counts changes that target. A count likelihood with a log link can
+retain zero counts because it models the positive mean while leaving the
+observations on their count scale.
+
+\section{When a log observation has the required conditional mean}
+
+The distinction above does allow a useful special case. A log observation can
+describe the same shape as \(\ell_A\) if the gap between its conditional mean
+and \(\ell_A\) is constant across breeding values.
+
+\begin{proposition}[A constant conditional log gap]
+\label{conditioning:log_gap_model}
+Assume \(0<W_A(\vect A)<\infty\) almost surely, and suppose
+\[
+ W=W_A(\vect A)U,
+ \qquad U>0,\qquad U\ \hbox{independent of }\vect A,
+ \qquad \E[U]=1,\qquad \E[(\log U)^2]<\infty.
+\]
+Then, with \(Y=\log W\),
+\begin{equation}
+ Y=\ell_A(\vect A)+\kappa+\varepsilon,
+ \qquad
+ \kappa=\E[\log U],\qquad
+ \E[\varepsilon\mid\vect A]=0,
+ \label{conditioning:constant_gap}
+\end{equation}
+where \(\varepsilon=\log U-\kappa\) has finite variance. Also \(\kappa\leq0\).
+\end{proposition}
+
+\begin{proof}
+First check that the multiplicative model has the stated conditional mean:
+\[
+ \E[W\mid\vect A]
+ =W_A(\vect A)\E[U\mid\vect A]
+ =W_A(\vect A).
+\]
+Taking a logarithm of this positive observation gives
+\[
+ Y=\ell_A(\vect A)+\log U.
+\]
+Independence makes \(\E[\log U\mid\vect A]=\E[\log U]=\kappa\). Subtracting
+\(\kappa\) therefore leaves a residual with zero conditional mean. The assumed
+second moment makes its variance finite. Finally, Jensen's inequality gives
+\(\kappa=\E[\log U]\leq\log\E[U]=0\).
+\end{proof}
+
+For an explicit example, take \(Z\sim N(0,1)\) independent of breeding value
+and let
+\[
+ U=\exp(\sigma Z-\sigma^2/2).
+\]
+Completing the square in the standard normal integral gives
+\[
+ \E[e^{\sigma Z}]
+ =\frac{1}{\sqrt{2\pi}}\int
+   e^{\sigma z-z^2/2}\,dz
+ =e^{\sigma^2/2}.
+\]
+Hence \(\E[U]=1\), \(\kappa=-\sigma^2/2\), and
+\(\varepsilon=\sigma Z\) has variance \(\sigma^2\).
+With \(\sigma^2=4\), the residual variance is four even though the conditional
+mean of the log observation differs from \(\ell_A\) by the constant \(-2\).
+Under the Gaussian quadratic assumptions, the nested-\(R^2\) result in
+Proposition~\ref{gaussian:nested_r2} then applies.
+
+Independence is a sufficient condition, not the only possibility. It is enough
+that \(\E[U\mid\vect A]=1\), that
+\(\E[\log U\mid\vect A]=\kappa\) is constant, and that the resulting residual
+has finite variance. By contrast, if a conditionally mean-one lognormal factor
+has variance parameter \(\sigma^2(\vect A)\), then
+\[
+ \E[\log U\mid\vect A]=-\frac12\sigma^2(\vect A).
+\]
+When that quantity varies across breeding values, it contributes its own slope
+and curvature to \(\E[Y\mid\vect A]\). The required constant-gap model no longer
+holds. None of these positive multiplicative models permits taking finite
+logarithms of zero offspring counts.
+
+\section{Deriving the environmental average}
+
+We now construct \(W_A\) from a phenotype model. This is an additional
+biological assumption, not a property implied by the definition of breeding
+value. In one trait, let
+\[
+ Z=A+E,\qquad E\sim N(0,V_E),\qquad E\ \hbox{independent of }A.
+\]
+Here \(E\) is an environmental deviation and \(V_E>0\) its variance. Suppose
+expected output conditional on the phenotype is
+\begin{equation}
+ f_Z(z)=W_{\max}
+ \exp\!\left\{-\frac{(z-\theta)^2}{2\omega^2}\right\},
+ \qquad W_{\max}>0,\quad\omega^2>0.
+ \label{conditioning:phenotype_fitness}
+\end{equation}
+Assume that \(\E[W\mid A,E]=f_Z(A+E)\). This makes phenotype sufficient for
+the conditional reproductive mean in this example. The tower property gives
+\[
+ W_A(a)=\E[f_Z(a+E)\mid A=a].
+\]
+This is the environmental averaging used in the quantitative-genetic treatment
+of selection \citep{Lande1979}.
+
+\begin{proposition}[Gaussian environmental averaging]
+\label{conditioning:environmental_average}
+Under these assumptions,
+\begin{equation}
+ W_A(a)=W_{\max}
+ \sqrt{\frac{\omega^2}{\omega^2+V_E}}\,
+ \exp\!\left\{-\frac{(a-\theta)^2}{2(\omega^2+V_E)}\right\}.
+ \label{conditioning:environment_formula}
+\end{equation}
+At a population mean \(a_0\), its log slope and curvature are
+\begin{equation}
+ b=\frac{\theta-a_0}{\omega^2+V_E},
+ \qquad H=-\frac{1}{\omega^2+V_E}.
+ \label{conditioning:environment_derivatives}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Put \(\delta=a-\theta\). Substituting the normal density gives
+\begin{align}
+ W_A(a)
+ &=\frac{W_{\max}}{\sqrt{2\pi V_E}}
+   \int_{-\infty}^{\infty}
+   \exp\!\left\{-\frac12
+   \left(\frac{e^2}{V_E}+\frac{(e+\delta)^2}{\omega^2}\right)\right\}\,de.
+ \label{conditioning:environment_integral}
+\end{align}
+To integrate, first expand the expression in parentheses:
+\[
+ \frac{e^2}{V_E}+\frac{(e+\delta)^2}{\omega^2}
+ =\frac{\omega^2+V_E}{V_E\omega^2}e^2
+   +\frac{2\delta}{\omega^2}e+\frac{\delta^2}{\omega^2}.
+\]
+Let
+\[
+ C=\frac{\omega^2+V_E}{V_E\omega^2},
+ \qquad d=\frac{V_E\delta}{\omega^2+V_E}.
+\]
+The first two terms are \(C(e+d)^2-Cd^2\). The remaining constant is
+\begin{align*}
+ \frac{\delta^2}{\omega^2}-Cd^2
+ &=\frac{\delta^2}{\omega^2}
+   -\frac{V_E\delta^2}{\omega^2(\omega^2+V_E)}\\
+ &=\frac{\delta^2}{\omega^2+V_E}.
+\end{align*}
+Therefore
+\[
+ \frac{e^2}{V_E}+\frac{(e+\delta)^2}{\omega^2}
+ =C(e+d)^2+\frac{\delta^2}{\omega^2+V_E}.
+\]
+The part independent of \(e\) can be taken outside the integral. In the
+remaining integral, change variable to \(u=\sqrt C(e+d)\), so
+\(de=du/\sqrt C\):
+\[
+ \int_{-\infty}^{\infty}e^{-C(e+d)^2/2}\,de
+ =\frac{1}{\sqrt C}\int_{-\infty}^{\infty}e^{-u^2/2}\,du
+ =\sqrt{\frac{2\pi}{C}}.
+\]
+Multiplying by the original normalising factor gives
+\[
+ \frac{1}{\sqrt{2\pi V_E}}\sqrt{\frac{2\pi}{C}}
+ =\frac{1}{\sqrt{V_EC}}
+ =\sqrt{\frac{\omega^2}{\omega^2+V_E}},
+\]
+which proves Equation~\eqref{conditioning:environment_formula}. Its logarithm
+is a constant minus \((a-\theta)^2/\{2(\omega^2+V_E)\}\). Its first derivative
+is \(- (a-\theta)/(\omega^2+V_E)\); its second derivative is
+\(-1/(\omega^2+V_E)\). Evaluating at \(a_0\) proves
+Equation~\eqref{conditioning:environment_derivatives}.
+\end{proof}
+
+The expression has a continuous zero-environmental-variance limit:
+as \(V_E\) tends to zero, \(W_A(a)\) tends to \(f_Z(a)\).
+For the recurring example \(V_E=\omega^2=1\), \(\theta=4\), and \(a_0=0\),
+\[
+ W_A(a)=\frac{W_{\max}}{\sqrt2}e^{-(a-4)^2/4},
+ \qquad b=2,\qquad H=-\frac12.
+\]
+The phenotype-space curvature is \(-1\); the breeding-value-space curvature
+is \(-1/2\). Their difference follows from averaging, before any population
+variance calculation is made.
+
+\subsection{The Jensen gap in this specific model}
+
+This example also allows the two orders of operation to be compared
+algebraically. Directly averaging the log phenotype-fitness function gives
+\[
+ \E[\log f_Z(a+E)]
+ =\log W_{\max}-\frac{(a-\theta)^2+V_E}{2\omega^2},
+\]
+because \(\E[E]=0\) and \(\E[E^2]=V_E\). In contrast,
+\[
+ \log\E[f_Z(a+E)]
+ =\log W_{\max}
+  -\frac12\log\!\left(1+\frac{V_E}{\omega^2}\right)
+  -\frac{(a-\theta)^2}{2(\omega^2+V_E)}.
+\]
+Subtracting the first expression from the second and writing
+\(t=V_E/\omega^2\) gives
+\begin{equation}
+ \frac12\{t-\log(1+t)\}
+ +\frac{(a-\theta)^2V_E}{2\omega^2(\omega^2+V_E)}.
+ \label{conditioning:environment_jensen_gap}
+\end{equation}
+Both terms are nonnegative. For the first, \(\log(1+t)\leq t\) follows from
+the same logarithm inequality used above. Unless \(V_E=0\), the gap generally
+depends on breeding value through \((a-\theta)^2\). Averaging logged
+phenotype-fitness values therefore does not even preserve the breeding-value
+curvature in this model.
+
+\paragraph{Biological interpretation.}
+Environmental variation exposes individuals with a given breeding value to a
+distribution of phenotypes. Their mean output is consequently a different
+function from the phenotype-fitness relationship. The variance \(V_E\) in that
+average and the breeding-value variance \(G\) used to weight the population
+have different roles. Changing \(G\) on a fixed \(W_A\) is the controlled
+population comparison analysed later; changing \(V_E\) generally changes
+\(W_A\) itself. The width parameters and variances have trait-squared units,
+the slope \(b\) has inverse-trait units, and \(H\) has inverse-trait-squared
+units.
+
+\section{Connection to the reproducible calculations}
+
+The main and guide figure generators evaluate this environmental model, while
+\codepath{code/reproduce_result_checks.py} checks its integral
+independently in the group \codepath{conditional_mean_and_log}. That group also
+checks the two-class reproductive fractions. Its
+\codepath{noisy_regression_ratio} group illustrates the constant-gap observation
+model. These are numerical checks of specified examples. The identities above
+follow from the stated probability model and algebra; the checks do not
+establish them for an unrestricted biological population.

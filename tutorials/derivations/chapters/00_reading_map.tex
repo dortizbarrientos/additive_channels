@@ -1,0 +1,58 @@
+\chapter*{How to use this companion}
+\addcontentsline{toc}{chapter}{How to use this companion}
+\label{reading:map}
+
+The linear share measures the fraction of variance supplied by the linear term of a stated quadratic approximation to log expected reproductive output. We call a population--fitness relationship with a large linear share an additive channel. To interpret that description, we need to know what has been averaged, which population supplies the frequency weights, and which assumptions permit a linear and a curved contribution to be separated. To predict selection, we must then change the weights to account for reproductive output. To predict a later generation, we must additionally specify inheritance.
+
+This companion follows that sequence. It develops the calculations behind \emph{Additive channels in curved fitness landscapes}, its mathematical appendices, mathematics guide, estimation example and visual tutorials. It expands the intermediate steps that a shorter scientific account can leave implicit: Gaussian moment contractions, population regression normal equations, matrix factorisations, normalising integrals, covariance order, fixed-point arguments and integration over uncertain breeding values. It also states the biological assumptions that make each calculation relevant.
+
+The accompanying repository contains numerical reproductions, data generated under the stated models, and teaching resources. The proofs here are analytical. A numerical check can confirm an implementation or expose an error in a stated case; agreement in finitely many examples cannot prove a general identity. Conversely, the reported fitted estimates, simulation discrepancies and bootstrap endpoints are outputs of specified algorithms and random seeds. Their mathematical definitions and procedures can be derived, but their particular values must be reproduced computationally. Chapter~\ref{worked:chapter} treats that distinction explicitly.
+
+\section*{Three routes through the document}
+Read Chapters~\ref{conditioning:chapter}--\ref{inheritance:chapter} in order to follow the theoretical argument from expected reproduction to an inheritance model. Continue with Chapters~\ref{estimation:chapter} and~\ref{conversion:chapter} to connect those quantities to observations and phenotype-space regressions. If you need one particular result, use the linked result map in Appendix~\ref{coverage:chapter}; it covers every entry in the repository's 53-record result catalogue. The equation map in Section~\ref{coverage:equations} also connects all 106 source-qualified equation labels to their detailed derivations or definitions.
+
+Each substantial derivation identifies the mathematical tools it uses and explains the biological interpretation afterwards. The prerequisites are developed where they first become necessary. Familiarity with derivatives, finite sums, vectors and matrices will help; familiarity with Gaussian quadratic forms or matrix order is not assumed. The distinction between a selected-parent distribution and an offspring distribution is maintained throughout.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.41\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}@{}}
+\toprule
+Mathematical concept & Why it is needed & Start here \\
+\midrule\endhead
+Conditional expectation & Average reproductive output without confusing it with individual observations; obtain parental weights. & Chapter~\ref{conditioning:chapter} \\
+Taylor expansion and moments & Specify the quadratic target and calculate its population variance. & Chapter~\ref{gaussian:chapter} \\
+Least-squares projection & Identify the fitted intercept, slopes and explained variance under population frequencies. & Chapter~\ref{gaussian:chapter} \\
+Eigenvalues and coordinate changes & Separate changes in trait units from changes in biological variation. & Chapter~\ref{geometry:chapter} \\
+Normalisation and quadratic forms & Calculate selected-parent moments and determine when the reproductive weights are integrable. & Chapter~\ref{selection:chapter} \\
+Matrix order and fixed points & Determine which covariances can persist under the specified inheritance closure. & Chapter~\ref{inheritance:chapter} \\
+Likelihood and latent integration & Estimate the fitness relationship while accounting for uncertainty in breeding values. & Chapter~\ref{estimation:chapter} \\
+Conditional Gaussian moments & Convert compatible phenotype-regression moments into breeding-value-space quantities. & Chapter~\ref{conversion:chapter} \\
+\bottomrule
+\end{longtable}
+
+\section*{Notation and units}
+Vectors are columns. Bold capital letters denote matrices unless they identify a random vector. The transpose is $\mathsf T$. A covariance matrix is symmetric and positive semidefinite. The notation $\mat G\succ0$ adds strict positive definiteness; inverses require it, or an explicit restriction to the subspace with positive variance.
+
+\begin{longtable}{@{}p{0.22\textwidth}p{0.70\textwidth}@{}}
+\toprule Symbol & Meaning \\
+\midrule\endhead
+$\vect A$, $\vect a$ & Random breeding-value vector and a possible value. Breeding values sum population-specific average allelic effects; the inheritance model later makes stronger fixed-effect assumptions. \\
+$\bar{\vect A}$, $\vect X$ & Population mean and centred deviation $\vect A-\bar{\vect A}$. \\
+$\mat G$ & Breeding-value covariance in the population used to define the fitness description. \\
+$W$, $W_A(\vect a)$ & Reproductive output and its conditional mean $\E[W\mid\vect A=\vect a]$. \\
+$\ell_A(\vect a)$ & $\log W_A(\vect a)$ where the conditional mean is positive. All logarithms are natural. \\
+$\ell_0$, $\vect b$, $\mat H$ & Value, gradient and Hessian of $\ell_A$ at the reference mean. Their units are respectively log output, reciprocal trait units, and reciprocal products of trait units. \\
+$\widetilde\ell_A$ & The stated second-order polynomial. It equals the full log conditional mean only under an exact log-quadratic model. \\
+$L$, $Q_c$ & Linear and centred quadratic terms of that polynomial. \\
+$\Vlin$, $\Vquad$, $\Ag$ & Variances of those terms and the linear fraction $\Vlin/(\Vlin+\Vquad)$ when the denominator is positive. These are quantities on the log expected-output scale. \\
+$\bGamma$ & $-\mat H$. Stabilising curvature means $\bGamma\succeq0$. Some selection calculations also allow indefinite curvature if the combined precision is positive definite. \\
+$\Gsel$, $\vect\Delta$ & Covariance and mean displacement under reproductive weighting of parents. \\
+$\mat B$, $\rho$ & Fixed genic covariance and the specified fraction of the selected covariance's departure from it retained after reproduction. \\
+$\mat P$, $\vect\beta$, $\bgamma$ & Phenotype covariance and linear/quadratic coefficients of a compatible raw relative-fitness regression. They are not automatically $\mat G$, $\vect b$ and $\mat H$. \\
+\bottomrule
+\end{longtable}
+
+The meaning of a subscript is stated where it is introduced. In the estimation chapter, the offspring count and prediction reliability have separate symbols. Environmental variance in a fitness assay and measurement variance in repeated trait observations also require separate biological assumptions, even when both have Gaussian distributions.
+
+\section*{Versions and scope}
+The mathematical results correspond to the public code archive at \href{https://github.com/dortizbarrientos/additive_channels/tree/05c75c6ee4335513b217f3026bf6e43ccbd0f62b}{commit \texttt{05c75c6}}. The result catalogue, expanded checks and resource organisation used for this companion are those at \href{https://github.com/dortizbarrientos/additive_channels/tree/c860f6a1373be310a59502e244effe75e0e622be}{commit \texttt{c860f6a}}. The present companion adds explanations and proof steps; it does not change the generating models or their reference numerical results. Its source, result map and build instructions accompany this PDF in the same repository.
+
+The assumptions strengthen at distinct points. Gaussian moments give an exact variance partition for a quadratic polynomial. Exact selected-parent formulas require an integrable exponential quadratic fitness function. The covariance recursion additionally assumes a fixed genic baseline and a specified inheritance closure. Estimation introduces its own observation model. None of these later assumptions follows merely from a large value of $\Ag$.
