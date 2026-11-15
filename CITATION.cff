@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "Please cite the paper for the scientific work. When reusing the code or data, also record the repository release or commit."
+title: "Additive channels in curved fitness landscapes: code, data and tutorials"
+type: software
+authors:
+  - family-names: "Ortiz-Barrientos"
+    given-names: "Daniel"
+  - family-names: "Cooper"
+    given-names: "Mark"
+repository-code: "https://github.com/dortizbarrientos/additive_channels"
+license: MIT
+preferred-citation:
+  type: article
+  status: preprint
+  title: "Additive Channels in Curved Fitness Landscapes"
+  authors:
+    - family-names: "Ortiz-Barrientos"
+      given-names: "Daniel"
+      orcid: "https://orcid.org/0000-0002-7493-416X"
+    - family-names: "Cooper"
+      given-names: "Mark"
+      orcid: "https://orcid.org/0000-0002-9418-3359"
+  journal: "bioRxiv"
+  year: 2026
+  doi: "10.64898/2026.03.21.713332"
+  url: "https://doi.org/10.64898/2026.03.21.713332"

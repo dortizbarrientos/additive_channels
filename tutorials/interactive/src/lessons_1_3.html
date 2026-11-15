@@ -1,0 +1,197 @@
+<article class="lesson" id="counts">
+  <header>
+    <p class="eyebrow">Lesson 1</p>
+    <h2>Expected reproduction and offspring counts</h2>
+    <p class="lead">Two plants can have the same breeding value for height and leave different numbers of offspring. We first need a fitness relationship that allows that difference.</p>
+  </header>
+
+  <h3>Keep the parents with zero offspring</h3>
+  <p>Consider these constructed observations. Each row contains four plants assigned the same breeding value, with groups at −1, 0 and 1 in arbitrary trait units. The numbers are counts of surviving offspring during one reproductive episode. They are constructed for this calculation. Later lessons use a separately specified quadratic curve; the saved estimation dataset is also separate.</p>
+  <figure>
+    <table>
+      <thead><tr><th scope="col">Breeding-value group</th><th scope="col">Offspring counts</th><th scope="col">Total</th><th scope="col">Mean per parent</th><th scope="col">Log of the mean</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Lower: z = −1</th><td>0, 1, 3, 4</td><td>8</td><td>8 ÷ 4 = 2</td><td>ln(2) ≈ 0.693</td></tr>
+        <tr><th scope="row">Middle: z = 0</th><td>1, 2, 4, 5</td><td>12</td><td>12 ÷ 4 = 3</td><td>ln(3) ≈ 1.099</td></tr>
+        <tr><th scope="row">Higher: z = 1</th><td>0, 0, 1, 3</td><td>4</td><td>4 ÷ 4 = 1</td><td>ln(1) = 0</td></tr>
+      </tbody>
+    </table>
+    <figcaption>Constructed offspring counts. The means include every parent, including those with no offspring. A doubling of mean output adds approximately 0.693 on the natural-log scale.</figcaption>
+  </figure>
+  <p>The lower group has eight offspring from four parents, so its mean is two. Removing its zero count would change the denominator to three. We would then estimate reproduction among parents that reproduced, rather than among all parents in that group.</p>
+
+  <div id="counts-lab"></div>
+
+  <section class="prediction">
+    <h3>Predict the effect of removing a zero</h3>
+    <p>If the lower group's zero count is removed, will the estimated mean increase, decrease or stay the same?</p>
+    <details class="answer"><summary>Why the estimated mean increases</summary><div>
+      <p>The total remains eight, but the denominator falls from four to three. The estimate increases from 2 to 8/3 ≈ 2.667, a rise of one third. Its logarithm increases from about 0.693 to 0.981. The underlying observations have not improved; the calculation now excludes a parent that contributed no offspring.</p>
+    </div></details>
+  </section>
+
+  <h3>Breeding value identifies the genetic predictor</h3>
+  <p>A breeding value adds the average effects of an individual's alleles on a specified trait in a specified population. For height, it has units of height. Those average effects depend on the population used to define them. A breeding value is therefore a population-specific statistical quantity, not a complete description of the individual's genotype.</p>
+  <p>Plants with the same breeding value can differ in observed height, environmental conditions and reproductive output. We treat breeding values as known in these teaching examples. Estimating them from measurements requires a model, which we examine later.</p>
+  <p>Write <var>Z</var> for breeding value and <var>W</var> for reproductive output. The conditional mean</p>
+  <p class="equation">W<sub>A</sub>(z) = E[W | Z = z]</p>
+  <p>is expected output for a parent with breeding value <var>z</var>. The expectation averages over the other sources of variation in output that remain at that breeding value. Its meaning depends on the population, conditions and reproductive episode being considered. The four-plant means above illustrate estimates of such a relationship; they do not establish its population values.</p>
+
+  <h3>Take the logarithm after averaging</h3>
+  <p>We define log expected fitness as</p>
+  <p class="equation">ℓ(z) = ln W<sub>A</sub>(z), provided W<sub>A</sub>(z) &gt; 0.</p>
+  <p>Subtracting two log values gives ℓ(z₂) − ℓ(z₁) = ln[W<sub>A</sub>(z₂)/W<sub>A</sub>(z₁)]. A difference of ln(2) therefore means that the second expected output is twice the first. Individual zero counts are compatible with a positive conditional mean. They remain in the average, and we never need their individual logarithms. If a conditional mean is genuinely zero, ℓ is not finite there. A finite sample containing only zeros also cannot supply a finite log of its sample mean.</p>
+  <details class="derivation"><summary>The log of a mean differs from the mean of logs</summary><div>
+    <p>The distinction persists when every count is positive. Take counts 2 and 8. Their mean is (2 + 8)/2 = 5, so the log of their mean is ln(5) ≈ 1.609.</p>
+    <p>Averaging their logs instead gives [ln(2) + ln(8)]/2 = ln(4) ≈ 1.386. Exponentiating recovers 4, their geometric mean, rather than 5, their arithmetic mean. The two operations describe different quantities.</p>
+    <p>The additive-channel calculation uses variation in ln E[W | Z]. It does not use E[ln W | Z], and it does not calculate a variance share for individual offspring counts.</p>
+  </div></details>
+  <details class="code"><summary>Calculate the group means without dropping zeros</summary><div>
+    <pre><code>from math import log
+
+groups = {"lower": [0, 1, 3, 4],
+          "middle": [1, 2, 4, 5],
+          "higher": [0, 0, 1, 3]}
+
+for name, counts in groups.items():
+    # Every parent enters the denominator, including zero counts.
+    mean_output = sum(counts) / len(counts)
+    # The logarithm is applied once, to the positive group mean.
+    log_mean = log(mean_output) if mean_output &gt; 0 else None
+    print(name, mean_output, log_mean)</code></pre>
+  </div></details>
+  <p>We can now ask how a line describes the relationship between breeding value and log expected output. The variation among individual counts remains a separate source of uncertainty.</p>
+  <p class="sources">Source: <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/introduction/notes.tex">the introductory definitions and treatment of offspring counts</a>.</p>
+</article>
+
+<article class="lesson" id="share">
+  <header>
+    <p class="eyebrow">Lesson 2</p>
+    <h2>The linear share</h2>
+    <p class="lead">A curved relationship can be described closely by a line over the breeding values common in a population. To measure that description, we must specify both the curve and the population.</p>
+  </header>
+
+  <h3>Separate slope from curvature</h3>
+  <p>Let <var>X</var> be breeding value minus its population mean. Its mean is zero and its variance is <var>G</var>. Near that mean, describe log expected output by a quadratic:</p>
+  <p class="equation">y(X) = c + bX + ½HX<sup>2</sup>.</p>
+  <p>The slope <var>b</var> describes the local change in log expected output per unit of breeding value. Curvature <var>H</var> describes how that slope changes. The constant <var>c</var> changes the level of the relationship, but not its variance.</p>
+  <p>For a normally distributed population, the linear term <var>L</var> = <var>bX</var> and the quadratic term <var>Q</var> = ½<var>HX</var><sup>2</sup> have zero covariance. Their variances therefore add:</p>
+  <p class="equation">V<sub>lin</sub> = b<sup>2</sup>G, &nbsp; V<sub>quad</sub> = ½H<sup>2</sup>G<sup>2</sup>, &nbsp; A<sub>g</sub> = V<sub>lin</sub> / (V<sub>lin</sub> + V<sub>quad</sub>).</p>
+  <p>The linear share A<sub>g</sub> is defined when the total variance is positive. A large share identifies an additive channel for this population and fitness relationship. “Additive” here describes the linear relationship across breeding values. It does not identify how individual genes interact.</p>
+
+  <div id="share-lab"></div>
+
+  <h3>Calculate the broad and narrow populations</h3>
+  <p>Use <var>b</var> = 1 and <var>H</var> = −1. With <var>G</var> = 1, the linear variance is 1<sup>2</sup> × 1 = 1. The quadratic variance is ½ × (−1)<sup>2</sup> × 1<sup>2</sup> = 0.5. Their total is 1.5, giving a share of 1/1.5 = 2/3, or 66.7%.</p>
+  <p>Now reduce <var>G</var> to 0.1 without changing the mean or the curve. The linear variance becomes 0.1. The quadratic variance becomes ½ × 0.1<sup>2</sup> = 0.005. The share is 0.1/0.105 = 20/21, or 95.2%.</p>
+  <figure>
+    <table>
+      <thead><tr><th scope="col">Breeding-value variance</th><th scope="col">Linear variance</th><th scope="col">Quadratic variance</th><th scope="col">Total variance</th><th scope="col">Linear share</th></tr></thead>
+      <tbody><tr><td>1</td><td>1</td><td>0.5</td><td>1.5</td><td>66.7%</td></tr><tr><td>0.1</td><td>0.1</td><td>0.005</td><td>0.105</td><td>95.2%</td></tr></tbody>
+    </table>
+    <figcaption>Exact calculations for Gaussian populations on the specified quadratic log-fitness curve. The larger share accompanies smaller absolute variance components.</figcaption>
+  </figure>
+  <section class="prediction">
+    <h3>Predict the absolute linear variance</h3>
+    <p>The linear share rose from 66.7% to 95.2%. Did the amount of variation explained by the line increase?</p>
+    <details class="answer"><summary>Why the larger share explains less absolute variation</summary><div>
+      <p>No. Linear variance fell from 1 to 0.1. It forms a larger fraction because quadratic variance fell faster, from 0.5 to 0.005. The ratio alone does not report the amount of variation available.</p>
+    </div></details>
+  </section>
+
+  <h3>The fitted line has its own intercept</h3>
+  <p>For this example, the curve is y = X − X<sup>2</sup>/2. Its tangent at zero is y = X. The best population regression line is y = X − G/2. It lies lower because the average quadratic contribution is negative.</p>
+  <p>The broad population therefore has fitted line y = X − 0.5, while the narrow population has y = X − 0.05. Both fitted slopes are 1. The line minimises squared prediction errors across the population, weighting each breeding value by how often it occurs. Under the Gaussian quadratic assumptions, A<sub>g</sub> is the R<sup>2</sup> of this regression with an intercept.</p>
+
+  <details class="derivation"><summary>Derive the Gaussian moments and the regression share</summary><div>
+    <p>Write X = √G U, where U is standard normal. Its density φ satisfies φ′(u) = −uφ(u). Replace uφ(u) by −φ′(u) in the moment integral:</p>
+    <p class="equation">E[U<sup>n</sup>] = ∫ u<sup>n</sup>φ(u) du = −∫ u<sup>n−1</sup>φ′(u) du.</p>
+    <p>Integrate by parts over the whole real line. The boundary term −u<sup>n−1</sup>φ(u) vanishes at both limits, because the normal density declines faster than a polynomial grows. The remaining integral is (n − 1)∫ u<sup>n−2</sup>φ(u) du. Hence E[U<sup>n</sup>] = (n − 1)E[U<sup>n−2</sup>] for even positive <var>n</var>. Starting from E[1] = 1 gives E[U<sup>2</sup>] = 1 and E[U<sup>4</sup>] = 3.</p>
+    <p>Consequently E[X<sup>2</sup>] = G and E[X<sup>4</sup>] = 3G<sup>2</sup>. Thus</p>
+    <p class="equation">Var(X<sup>2</sup>) = E[X<sup>4</sup>] − E[X<sup>2</sup>]<sup>2</sup> = 3G<sup>2</sup> − G<sup>2</sup> = 2G<sup>2</sup>.</p>
+    <p>Multiplication by a constant multiplies variance by its square. Therefore Var(bX) = b<sup>2</sup>G and Var(HX<sup>2</sup>/2) = H<sup>2</sup>(2G<sup>2</sup>)/4. Symmetry gives E[X<sup>3</sup>] = 0, so Cov(L,Q) = bH E[X<sup>3</sup>]/2 = 0.</p>
+    <p>The regression slope is Cov(X,y)/G = b because Cov(X,Q) = 0. Since E[X] = 0, its intercept is E[y] = c + HG/2. Subtracting the fitted line leaves Q − E[Q]. The residual variance is V<sub>quad</sub>, so</p>
+    <p class="equation">R<sup>2</sup> = 1 − V<sub>quad</sub>/(V<sub>lin</sub> + V<sub>quad</sub>) = A<sub>g</sub>.</p>
+    <p>When only the quadratic term varies, regression R<sup>2</sup> is zero. Correlation with the constant linear term is undefined. If neither term varies, there is no variance to partition and the share is undefined.</p>
+  </div></details>
+
+  <details class="derivation"><summary>Extend the variance calculation to several traits</summary><div>
+    <p>Let X now be a centred Gaussian vector of breeding values. G is its covariance matrix, b the gradient of log expected output, and H its symmetric curvature matrix. The terms are L = b<sup>T</sup>X and Q = ½X<sup>T</sup>HX. Expanding the variance of the linear combination gives</p>
+    <p class="equation">Var(L) = Σ<sub>i,j</sub> b<sub>i</sub>b<sub>j</sub> Cov(X<sub>i</sub>,X<sub>j</sub>) = b<sup>T</sup>Gb.</p>
+    <p>To calculate the quadratic variance, write X = G<sup>1/2</sup>U, where U has independent standard normal coordinates and G<sup>1/2</sup> is the symmetric square root of G. Define S = G<sup>1/2</sup>HG<sup>1/2</sup>. This symmetric matrix has orthonormal eigenvectors and real eigenvalues λ<sub>i</sub>. Rotating U into those eigenvectors gives another standard normal vector V, whose coordinates remain independent.</p>
+    <p class="equation">Q = ½Σ<sub>i</sub> λ<sub>i</sub>V<sub>i</sub><sup>2</sup>.</p>
+    <p>Each squared coordinate has variance 2. Independence removes the covariance terms, giving Var(Q) = ¼Σ λ<sub>i</sub><sup>2</sup> × 2 = ½Σ λ<sub>i</sub><sup>2</sup>. The sum of squared eigenvalues is tr(S<sup>2</sup>), where the trace is the sum of diagonal entries. Multiplication gives S<sup>2</sup> = G<sup>1/2</sup>HGHG<sup>1/2</sup>. Move the final G<sup>1/2</sup> to the front inside the trace; the adjacent square roots multiply to G. Then move that first G to the end. These cyclic rearrangements preserve the trace and give</p>
+    <p class="equation">V<sub>quad</sub> = ½ tr(S<sup>2</sup>) = ½ tr(HGHG).</p>
+    <p>Every term in Cov(L,Q) contains a centred third Gaussian moment, which is zero. The same variance-share formula follows. These calculations also allow singular G: directions with no variation contribute zero. If the original log-fitness relationship has higher-order terms, the share describes its quadratic approximation, not necessarily the regression fit to the complete relationship.</p>
+  </div></details>
+
+  <details class="derivation"><summary>A two-point population breaks the Gaussian formula</summary><div>
+    <p>For a separate constructed example, let X equal −1 with probability 2/3 and 2 with probability 1/3. Then E[X] = 0, G = E[X<sup>2</sup>] = 2, E[X<sup>3</sup>] = 2 and E[X<sup>4</sup>] = 6. Its third moment is not zero, and its fourth moment is not 3G<sup>2</sup> = 12.</p>
+    <p>Choose y = X + X<sup>2</sup>/2. Its two values are −0.5 and 4. The line y = 1 + 1.5X passes through both, so its population R<sup>2</sup> is 1. Substituting G = 2, b = 1 and H = 1 into the Gaussian formula would instead give 2/(2 + 2) = 0.5.</p>
+    <p>For this distribution, Var(L) = 2, Var(Q) = [6 − 2<sup>2</sup>]/4 = 0.5 and Cov(L,Q) = E[X<sup>3</sup>]/2 = 1. The total variance is therefore 2 + 0.5 + 2 × 1 = 4.5. Dropping the covariance term would be wrong. The derivative at the mean is 1, but the regression slope is 1.5. A curved function can be fitted exactly over two support points. The Gaussian variance-share identity cannot be transferred to this population by replacing G alone.</p>
+  </div></details>
+  <p class="sources">Sources: <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/introduction/notes.tex">the introductory derivation</a> and <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/mathematics/guide.tex">Gaussian moments and population projection</a>. The two-point calculation above is an additional constructed illustration.</p>
+</article>
+
+<article class="lesson" id="population">
+  <header>
+    <p class="eyebrow">Lesson 3</p>
+    <h2>Changes in population variation</h2>
+    <p class="lead">A narrower population can have a larger linear share. Its location matters as well. We can separate these effects by keeping one fitness curve fixed.</p>
+  </header>
+
+  <h3>Move the population on a fixed curve</h3>
+  <p>Use ℓ(z) = z − z<sup>2</sup>/2, with expected output W<sub>A</sub>(z) = exp[ℓ(z)]. Its maximum occurs at z = 1. For population mean μ, define X = Z − μ. Substituting z = μ + X gives the exact expression</p>
+  <p class="equation">ℓ(μ + X) = ℓ(μ) + (1 − μ)X − X<sup>2</sup>/2.</p>
+  <p>The local slope is therefore b = 1 − μ and curvature is H = −1. Moving the mean changes the slope experienced by the population even though the curve itself stays fixed.</p>
+
+  <div id="population-lab"></div>
+
+  <figure>
+    <table>
+      <thead><tr><th scope="col">Population</th><th scope="col">Mean μ</th><th scope="col">Variance G</th><th scope="col">Slope b</th><th scope="col">V<sub>lin</sub></th><th scope="col">V<sub>quad</sub></th><th scope="col">A<sub>g</sub></th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Broad, on the slope</th><td>0</td><td>1</td><td>1</td><td>1</td><td>0.5</td><td>66.7%</td></tr>
+        <tr><th scope="row">Narrow, same mean</th><td>0</td><td>0.1</td><td>1</td><td>0.1</td><td>0.005</td><td>95.2%</td></tr>
+        <tr><th scope="row">Narrow, at the peak</th><td>1</td><td>0.1</td><td>0</td><td>0</td><td>0.005</td><td>0%</td></tr>
+      </tbody>
+    </table>
+    <figcaption>Three specified Gaussian populations. The first comparison changes variance alone. The second changes the mean alone. All calculations use the complete distributions.</figcaption>
+  </figure>
+  <section class="prediction">
+    <h3>Predict further narrowing at the peak</h3>
+    <p>If the population at μ = 1 becomes even narrower, will its linear share rise above zero?</p>
+    <details class="answer"><summary>Why the share remains zero at the peak</summary><div>
+      <p>For any positive G, the slope remains zero, so V<sub>lin</sub> = 0. Curvature variance falls as G<sup>2</sup>, but it still accounts for all remaining variation. At exactly G = 0, both variances vanish and the ratio is undefined. Zero linear share does not mean that expected reproduction is equal among the parents in a population with positive variance.</p>
+    </div></details>
+  </section>
+
+  <h3>Proportional contraction changes the two components at different rates</h3>
+  <p>For several traits, replace G by sG while keeping the mean, gradient and curvature fixed. Every variance and covariance is multiplied by the same positive number s. The linear variance becomes sV<sub>lin</sub>, while quadratic variance becomes s<sup>2</sup>V<sub>quad</sub>. Hence</p>
+  <p class="equation">A<sub>g</sub>(s) = V<sub>lin</sub> / (V<sub>lin</sub> + sV<sub>quad</sub>).</p>
+  <p>When both components are positive, reducing s raises the share. This calculation describes a comparison at fixed mean and curve. It does not establish that populations must evolve by proportional contraction, or that a changing population keeps the same gradient.</p>
+
+  <h3>Rotate variation between two traits</h3>
+  <p>Variation also has a direction. Use the fixed two-trait surface ℓ(a) = −0.4‖a − θ‖<sup>2</sup>, with optimum θ = (0.9375, 0.375) and population mean zero. Its gradient is b = (0.75, 0.30), and H = −0.8I. The squared gradient length is 0.75<sup>2</sup> + 0.30<sup>2</sup> = 0.6525.</p>
+  <p>The population has variance 0.20 along its long axis and 0.005 along its short axis. Rotate those axes relative to the gradient while keeping both variances fixed. The population has the same total breeding-value variance at every angle, but different amounts lie in the direction where log expected reproduction increases.</p>
+
+  <div id="geometry-lab"></div>
+
+  <figure>
+    <table>
+      <thead><tr><th scope="col">Long-axis angle to gradient</th><th scope="col">Linear variance</th><th scope="col">Quadratic variance</th><th scope="col">Linear share</th></tr></thead>
+      <tbody><tr><td>0°</td><td>0.130500</td><td>0.012808</td><td>0.910626</td></tr><tr><td>45°</td><td>0.06688125</td><td>0.012808</td><td>0.839276</td></tr><tr><td>90°</td><td>0.0032625</td><td>0.012808</td><td>0.203012</td></tr></tbody>
+    </table>
+    <figcaption>Exact population calculations, rounded for display. Rotating the population changes its covariance relative to the fixed surface. Rotating only the view changes none of these values.</figcaption>
+  </figure>
+  <p>At 90°, the population still has short-axis variance towards the optimum, so the linear share stays positive. Curvature variance is constant here because the surface has the same curvature in every direction. Other surfaces need not preserve it under rotation.</p>
+  <details class="derivation"><summary>Calculate the variance components at a rotation angle</summary><div>
+    <p>Take coordinate u along the gradient and v perpendicular to it. If the long axis is at angle φ to u, its contribution to Var(u) is 0.20 cos<sup>2</sup>φ. The short axis contributes 0.005 sin<sup>2</sup>φ. Thus</p>
+    <p class="equation">V<sub>lin</sub> = 0.6525[0.20 cos<sup>2</sup>φ + 0.005 sin<sup>2</sup>φ].</p>
+    <p>At 45°, both squared trigonometric terms are 1/2. The variance along the gradient is 0.1025, so V<sub>lin</sub> = 0.6525 × 0.1025 = 0.06688125.</p>
+    <p>Since H = −0.8I, the quadratic variance is ½ × 0.8<sup>2</sup> tr(G<sup>2</sup>). Rotation preserves the two covariance eigenvalues, giving V<sub>quad</sub> = 0.32(0.20<sup>2</sup> + 0.005<sup>2</sup>) = 0.012808. Dividing 0.06688125 by 0.06688125 + 0.012808 gives 0.839276.</p>
+    <p>This operation changes G relative to a fixed gradient. It differs from rotating the gradient in whitened coordinates while holding its whitened length and the curvature eigenvalues fixed. That latter comparison preserves the variance share because it preserves both variance components.</p>
+  </div></details>
+  <p>These comparisons use breeding-value frequencies to describe variation in log expected output. To predict the mean among contributing parents, we must also account for how much each parent contributes. A large linear share has not yet answered that question.</p>
+  <p class="sources">Sources: <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/one_trait_visual/README.md">the fixed-curve population comparison</a>, <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/geometry/README.md">the two-trait geometry</a> and <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/geometry/values.json">its numerical record</a>.</p>
+</article>

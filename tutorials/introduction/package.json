@@ -1,0 +1,1 @@
+{"name":"additive-channels-tutorial","private":true,"version":"2.0.0","dependencies":{"pptxgenjs":"4.0.1"},"scripts":{"build":"node build_slides.js"}}

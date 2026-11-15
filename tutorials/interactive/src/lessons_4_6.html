@@ -1,0 +1,227 @@
+<article class="lesson" id="selection">
+  <header class="lesson-header">
+    <p class="eyebrow">Lesson 4</p>
+    <h2>Reproductive weighting and selection</h2>
+    <p class="lead">The linear share describes variation at the population's existing frequencies. To calculate which parents contribute to reproduction, we must also account for their expected output. The same fitness relationship enters both calculations, but the weights differ.</p>
+  </header>
+
+  <section>
+    <h3>Follow the same parents under three weights</h3>
+    <p>Suppose we know the breeding value <var>a</var><sub>i</sub> of each of <var>N</var> parents. Parent <var>i</var> has expected reproductive output <var>m</var><sub>i</sub> = <var>W</var><sub>A</sub>(<var>a</var><sub>i</sub>), and we record an offspring count <var>k</var><sub>i</sub>. Its breeding value stays the same when we change the weights. What changes is how much that parent contributes to the calculation.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Calculation</th><th>Weight of parent <var>i</var></th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Existing population</td><td>1/<var>N</var></td><td>Each parent counts once.</td></tr>
+        <tr><td>Expected reproductive contribution</td><td><var>m</var><sub>i</sub> / &Sigma;<sub>j</sub><var>m</var><sub>j</sub></td><td>A parent contributes in proportion to its expected output.</td></tr>
+        <tr><td>Recorded reproductive contribution</td><td><var>k</var><sub>i</sub> / &Sigma;<sub>j</sub><var>k</var><sub>j</sub></td><td>A parent contributes in proportion to its realised offspring count.</td></tr>
+      </tbody>
+    </table></div>
+    <p>For each row, multiply breeding values by the listed weights and add them. The first calculation gives the initial mean. The other two give parental means under expected or realised contributions. Parents with zero offspring remain in the initial population and receive zero realised reproductive weight. If every count is zero, there is no realised reproductive total with which to normalise.</p>
+    <p>The expected and recorded means can differ because reproduction is variable. For groups with unequal initial frequencies, expected reproductive weights also include those frequencies. A group that is rare but has high expected output may therefore contribute more than its frequency alone would suggest.</p>
+    <p>These are distributions of <em>parental</em> breeding values. To obtain breeding values in offspring, we must specify inheritance, including how parents are paired and what they transmit. That additional step appears in Lesson 6.</p>
+  </section>
+
+  <section>
+    <h3>Replace frequency weights with reproductive weights</h3>
+    <p>For a continuous population, let <var>p</var>(<var>a</var>) be the initial breeding-value density. Expected reproduction changes its weight to</p>
+    <div class="formula"><var>p</var><sub>sel</sub>(<var>a</var>) = <var>p</var>(<var>a</var>)<var>W</var><sub>A</sub>(<var>a</var>) / <span class="math">E[<var>W</var><sub>A</sub>(<var>A</var>)]</span>.</div>
+    <p>The denominator makes the weights sum to one. An intercept added to log expected output multiplies every parent's expected output by the same positive constant. That factor cancels from the numerator and denominator. It changes total expected reproduction, but not these normalised parental weights.</p>
+    <p>This explains why correcting the fitted line's intercept does not resolve the selection discrepancy below. Under Gaussian breeding values, the population-fitted line and the tangent have the same slope but different intercepts. Exponentiating either produces the same normalised linear-model weights.</p>
+  </section>
+
+  <section>
+    <h3>A 97% linear share and a 50% overestimate</h3>
+    <p>Use one trait, with the initial mean set to zero and variance <var>G</var> = 1. Let the log conditional mean be exactly quadratic:</p>
+    <div class="formula">&ell;<sub>A</sub>(<var>a</var>) = &ell;<sub>0</sub> + 2<var>a</var> − <var>a</var><sup>2</sup>/4.</div>
+    <p>Thus <var>b</var> = 2 and <var>H</var> = −0.5. The variance due to the linear term is <var>b</var><sup>2</sup><var>G</var> = 4. The centred quadratic term contributes <var>H</var><sup>2</sup><var>G</var><sup>2</sup>/2 = 0.125. Their linear share is 4/4.125 = 32/33, approximately 96.97%.</p>
+    <p>Now weight the original normal population by expected reproduction. With stabilising curvature &gamma; = −<var>H</var>, completing the square gives selected-parent variance <var>G</var>/(1 + &gamma;<var>G</var>) and mean shift <var>Gb</var>/(1 + &gamma;<var>G</var>). Ignoring curvature gives the shift <var>Gb</var>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Quantity</th><th>Substitution</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Selected-parent variance</td><td>1/(1 + 0.5 &times; 1)</td><td>2/3</td></tr>
+        <tr><td>Exact mean shift</td><td>1 &times; 2/(1 + 0.5 &times; 1)</td><td>4/3</td></tr>
+        <tr><td>Shift when curvature is omitted</td><td>1 &times; 2</td><td>2</td></tr>
+        <tr><td>Error relative to the exact shift</td><td>(2 − 4/3)/(4/3)</td><td>1/2 = 50%</td></tr>
+      </tbody>
+    </table></div>
+    <p>The calculation is internally consistent. The linear share is the fraction of log-scale variance captured by the linear term under initial population frequencies. The shift depends on exponentiated log expected output under reproductive weighting. A small relative residual variance in the first calculation does not force a small error in the second.</p>
+    <div id="selection-lab"></div>
+    <div class="prediction">
+      <h3>Increase the slope while keeping curvature and variance fixed</h3>
+      <p>Before changing the controls, predict what happens when <var>b</var> rises from 2 to 10. The linear share rises. Must the proportional error in the selected-parent shift fall?</p>
+      <details class="answer"><summary>Compare the two calculations</summary><div>
+        <p>The share becomes 100/100.125, about 99.88%. The linear-model shift is 10 and the exact shift is 10/1.5. Their relative discrepancy remains 50%, because it depends on &gamma;<var>G</var> = 0.5. Here a steeper slope increases both shifts without improving their proportional agreement.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <section>
+    <h3>Check the assumptions before using the exact shift</h3>
+    <p>The preceding formulas require Gaussian breeding values and an exactly quadratic log conditional mean over the occupied support. A Taylor expansion near the mean does not by itself justify treating that quadratic as the complete reproductive relationship. Reproductive weighting may make parts of the distribution influential where the local approximation is less accurate.</p>
+    <p>The normalising integral must also be finite. For one trait the condition is 1 + &gamma;<var>G</var> &gt; 0. Stabilising curvature satisfies it. Curvature of the opposite sign can still be integrable, but not when expected output increases too rapidly relative to the Gaussian decline in frequency. At the boundary, a zero gradient does not rescue the divergent integral.</p>
+  </section>
+
+  <details class="derivation"><summary>Derive the selected Gaussian distribution by completing the square</summary><div>
+    <p>Centre the breeding-value vector: <strong>x</strong> = <strong>a</strong> − <strong>&mu;</strong>. Its covariance <strong>G</strong> is positive definite. Write the exact log mean as &ell;<sub>0</sub> + <strong>b</strong><sup>T</sup><strong>x</strong> − <strong>x</strong><sup>T</sup><strong>&Gamma;</strong><strong>x</strong>/2, where <strong>&Gamma;</strong> = −<strong>H</strong> is symmetric.</p>
+    <p>The Gaussian density contributes −<strong>x</strong><sup>T</sup><strong>G</strong><sup>−1</sup><strong>x</strong>/2 to the exponent. Multiplying by expected output adds their exponents:</p>
+    <div class="formula">−&frac12;<strong>x</strong><sup>T</sup><strong>Jx</strong> + <strong>b</strong><sup>T</sup><strong>x</strong>, &nbsp; <strong>J</strong> = <strong>G</strong><sup>−1</sup> + <strong>&Gamma;</strong>.</div>
+    <p>Every eigenvalue of <strong>J</strong> must be positive. Along an eigenvector with eigenvalue &lambda;, the integral contains exp(−&lambda;<var>y</var><sup>2</sup>/2 + <var>dy</var>). A positive &lambda; gives a finite Gaussian integral. A negative &lambda; gives growth in the tails; at zero the remaining exponential or constant is also nonintegrable.</p>
+    <p>Set <strong>C</strong> = <strong>J</strong><sup>−1</sup> and <strong>m</strong> = <strong>Cb</strong>. Since <strong>Jm</strong> = <strong>b</strong>, expanding the centred quadratic gives</p>
+    <div class="formula">(<strong>x</strong> − <strong>m</strong>)<sup>T</sup><strong>J</strong>(<strong>x</strong> − <strong>m</strong>) = <strong>x</strong><sup>T</sup><strong>Jx</strong> − 2<strong>b</strong><sup>T</sup><strong>x</strong> + <strong>b</strong><sup>T</sup><strong>Cb</strong>.</div>
+    <p>Rearrange and integrate the centred Gaussian. Mean output is</p>
+    <div class="formula">exp(&ell;<sub>0</sub>) det(<strong>G</strong>)<sup>−1/2</sup> det(<strong>J</strong>)<sup>−1/2</sup> exp(&frac12;<strong>b</strong><sup>T</sup><strong>Cb</strong>).</div>
+    <p>Dividing by this value leaves a Gaussian with covariance <strong>C</strong> and centred mean <strong>Cb</strong>. Therefore <strong>G</strong><sub>sel</sub> = (<strong>G</strong><sup>−1</sup> + <strong>&Gamma;</strong>)<sup>−1</sup> and <strong>&Delta;</strong><sub>full</sub> = <strong>G</strong><sub>sel</sub><strong>b</strong>. Setting <strong>&Gamma;</strong> to zero gives <strong>&Delta;</strong><sub>lin</sub> = <strong>Gb</strong>. No simultaneous diagonalisation of covariance and curvature was assumed.</p>
+  </div></details>
+
+  <details class="derivation"><summary>Measure the multivariate shift error in covariance units</summary><div>
+    <p>Several traits can differ in units and covariance, and the two shift vectors need not point in the same direction. Define the displacement length as ‖<strong>v</strong>‖<sub>G<sup>−1</sup></sub> = √(<strong>v</strong><sup>T</sup><strong>G</strong><sup>−1</sup><strong>v</strong>). This length accounts for covariance and stays unchanged under an invertible change of trait coordinates applied consistently.</p>
+    <p>Let <strong>T</strong> = <strong>G</strong><sup>1/2</sup><strong>&Gamma;</strong><strong>G</strong><sup>1/2</sup> and <strong>c</strong> = <strong>G</strong><sup>1/2</sup><strong>b</strong>. In covariance-standardised coordinates, the exact shift is <strong>y</strong> = (<strong>I</strong> + <strong>T</strong>)<sup>−1</sup><strong>c</strong>. The linear shift is <strong>c</strong>. Since <strong>c</strong> = (<strong>I</strong> + <strong>T</strong>)<strong>y</strong>, their difference is <strong>Ty</strong>.</p>
+    <div class="formula">‖<strong>&Delta;</strong><sub>lin</sub> − <strong>&Delta;</strong><sub>full</sub>‖<sub>G<sup>−1</sup></sub> / ‖<strong>&Delta;</strong><sub>full</sub>‖<sub>G<sup>−1</sup></sub> = ‖<strong>Ty</strong>‖/‖<strong>y</strong>‖ ≤ ‖<strong>T</strong>‖<sub>2</sub> ≤ √(2<var>V</var><sub>quad</sub>).</div>
+    <p>The first bound is the largest absolute eigenvalue of <strong>T</strong>. It cannot exceed the square root of the sum of squared eigenvalues, equal here to √(2<var>V</var><sub>quad</sub>). This uses absolute curvature variance, whereas the linear share is a ratio. The bound requires a finite normaliser and a nonzero shift. When the gradient vanishes, both shifts are zero and their relative error is undefined. With singular covariance, restrict the calculation to directions containing variation. A percentage difference between ordinary vector lengths is a different measure.</p>
+  </div></details>
+
+  <details class="code"><summary>Check the one-trait shift by numerical integration in Python</summary><div>
+    <p>This quadrature weights the population directly, independently of the square-completion formula.</p>
+    <pre><code>import numpy as np
+from numpy.polynomial.hermite import hermgauss
+
+# Exact Gaussian population and quadratic log expected output.
+b, H, G = 2.0, -0.5, 1.0
+nodes, raw_weights = hermgauss(80)
+x = np.sqrt(2 * G) * nodes
+p = raw_weights / np.sqrt(np.pi)
+
+# The omitted intercept cancels from normalised weights.
+log_output = b * x + 0.5 * H * x**2
+weights = p * np.exp(log_output - log_output.max())
+weights /= weights.sum()
+selected_mean = weights @ x
+selected_variance = weights @ (x - selected_mean)**2
+
+linear_variance = b**2 * G
+curved_variance = 0.5 * H**2 * G**2
+share = linear_variance / (linear_variance + curved_variance)
+linear_shift = G * b
+relative_error = abs(linear_shift - selected_mean) / abs(selected_mean)
+print(share, selected_mean, selected_variance, relative_error)
+# Approximately: 0.969697, 1.333333, 0.666667, 0.5
+</code></pre>
+  </div></details>
+  <p class="sources">Source: <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/mathematics/guide.tex" target="_blank" rel="noopener">the selection calculation in the mathematics guide</a>. <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/code/reproduce_result_checks.py" target="_blank" rel="noopener">Independent numerical checks</a> include stabilising and integrable saddle curvature. The <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/interactive/src/reference_sources.json">source manifest</a> identifies the code and data used by this guide.</p>
+</article>
+
+<article class="lesson" id="inheritance">
+  <header class="lesson-header">
+    <p class="eyebrow">Lesson 6</p>
+    <h2>Inheritance and changing genetic variation</h2>
+    <p class="lead">Reproductive weighting tells us which parental values contribute. Variation in the next generation also depends on what reproduction does to associations among alleles. The model below specifies that step, allowing us to ask whether genetic variation persists under repeated stabilising selection.</p>
+  </header>
+
+  <section>
+    <h3>Separate genic covariance from allele associations</h3>
+    <p>Assume an additive genetic architecture with fixed allelic effect vectors <strong>&alpha;</strong><sub>j</sub>. If the designated allele has frequency <var>p</var><sub>j</sub>, random association of allele copies within and between loci gives the genic covariance</p>
+    <div class="formula"><strong>B</strong> = 2 &Sigma;<sub>j</sub> <var>p</var><sub>j</sub>(1 − <var>p</var><sub>j</sub>)<strong>&alpha;</strong><sub>j</sub><strong>&alpha;</strong><sub>j</sub><sup>T</sup>.</div>
+    <p>The factor 2<var>p</var>(1 − <var>p</var>) is the diploid allele-count variance under random association. An allele affecting several traits contributes covariance even when different loci are independent. Allele associations change covariance from this baseline: write <strong>G</strong> = <strong>B</strong> + <strong>D</strong>. Unlike a covariance matrix, <strong>D</strong> can reduce variance in a trait combination.</p>
+    <p>Fixed effects do not imply fixed genic variance. With one locus and effect 1, changing its frequency from 0.5 to 0.8 changes 2<var>p</var>(1 − <var>p</var>) from 0.50 to 0.32. The model holds <strong>B</strong> fixed as an additional assumption, excluding arbitrary allele-frequency change.</p>
+  </section>
+
+  <section>
+    <h3>Specify the inheritance step</h3>
+    <p>In each generation, assume Gaussian breeding values with positive-definite covariance and an exact quadratic log conditional mean with fixed stabilising curvature <strong>&Gamma;</strong> = −<strong>H</strong> ≽ 0. Selection gives <strong>G</strong><sub>t</sub><sup>sel</sup> = (<strong>G</strong><sub>t</sub><sup>−1</sup> + <strong>&Gamma;</strong>)<sup>−1</sup>. For the next covariance, retain a fraction &rho; of the selected departure from the genic baseline:</p>
+    <div class="formula"><strong>D</strong><sub>t+1</sub> = &rho;(<strong>G</strong><sub>t</sub><sup>sel</sup> − <strong>B</strong>),<br><strong>G</strong><sub>t+1</sub> = (1 − &rho;)<strong>B</strong> + &rho;(<strong>G</strong><sub>t</sub><sup>−1</sup> + <strong>&Gamma;</strong>)<sup>−1</sup>.</div>
+    <p>Here <strong>B</strong> is positive definite and 0 ≤ &rho; &lt; 1. The retained departure includes associations already present and their change during selection. If those associations reduce variation, reducing their magnitude restores some variation towards <strong>B</strong>. The baseline term does not introduce new alleles or represent mutation.</p>
+    <p>The scalar &rho; is not a universal recombination fraction, selfing rate or inbreeding coefficient. Different locus pairs and mating systems need not act through one multiplier. Gaussian distributions in successive generations are also assumed: a covariance rule alone does not establish their shape.</p>
+  </section>
+
+  <details class="derivation"><summary>Obtain half retention from a specified midparent and segregation model</summary><div>
+    <p>Let two parents be independent draws from the same reproductively weighted distribution. Write an offspring breeding value as <strong>A</strong><sub>o</sub> = (<strong>A</strong><sub>1</sub> + <strong>A</strong><sub>2</sub>)/2 + <strong>M</strong>, with E[<strong>M</strong> | parents] = 0. The zero conditional mean makes the segregation deviation uncorrelated with the midparent value.</p>
+    <p>If the mean conditional segregation covariance is <strong>B</strong>/2, the law of total covariance gives</p>
+    <div class="formula">Cov(<strong>A</strong><sub>o</sub>) = &frac14;(<strong>G</strong><sub>sel</sub> + <strong>G</strong><sub>sel</sub>) + &frac12;<strong>B</strong> = &frac12;<strong>G</strong><sub>sel</sub> + &frac12;<strong>B</strong>.</div>
+    <p>This supplies the benchmark &rho; = 1/2 under those assumptions. Independence of parents and the stipulated segregation covariance are required; the general retention rule is a separate model assumption.</p>
+  </div></details>
+
+  <section>
+    <h3>Calculate successive variances for one trait</h3>
+    <p>Use lowercase <var>g</var> for a single trait's variance, <var>B</var> for its fixed genic variance, and &gamma; for stabilising curvature. The update becomes</p>
+    <div class="formula"><var>g</var><sub>t+1</sub> = (1 − &rho;)<var>B</var> + &rho;<var>g</var><sub>t</sub>/(1 + &gamma;<var>g</var><sub>t</sub>).</div>
+    <p>In the mathematics guide, <var>B</var> = 1, &gamma; = 0.5, &rho; = 0.5 and <var>g</var><sub>0</sub> = 1. The first selected variance is 1/1.5 = 2/3. Reproduction gives <var>g</var><sub>1</sub> = 1/2 + (1/2)(2/3) = 5/6. The next two values are 27/34 and 149/190, approximately 0.7941 and 0.7842. They approach the fixed point (&radic;17 − 1)/4, approximately 0.7808.</p>
+    <p>The fixed point is a variance left unchanged by the update. It is unique for this scalar model, and every nonnegative starting variance converges to it. A start above equilibrium decreases; a start below it increases. Reduced variance among contributing parents therefore need not mean reduced variance between generations.</p>
+    <div id="inheritance-lab"></div>
+    <div class="prediction">
+      <h3>Start below the covariance equilibrium</h3>
+      <p>Set <var>B</var> = 1, &gamma; = 0.3 and &rho; = 0.9, as in the paper's trajectory, but start at <var>g</var> = 0.1. Will the next generation have less variance because stabilising selection reduces the selected-parent variance?</p>
+      <details class="answer"><summary>Calculate selection and reproduction separately</summary><div>
+        <p>Selection reduces variance to 0.1/1.03, approximately 0.09709. The next variance is 0.1 + 0.9(0.1/1.03) = 0.18738. Reproduction more than offsets this episode's reduction because the starting variance is below the equilibrium of 0.47235. The two steps answer different biological questions.</p>
+      </div></details>
+    </div>
+  </section>
+
+  <details class="derivation"><summary>Solve the scalar equilibrium and prove convergence</summary><div>
+    <p>Set <var>g</var>* = (1 − &rho;)<var>B</var> + &rho;<var>g</var>*/(1 + &gamma;<var>g</var>*). Multiplication by the positive denominator and collection of terms gives</p>
+    <div class="formula">&gamma;(<var>g</var>*)<sup>2</sup> + (1 − &rho;)(1 − &gamma;<var>B</var>)<var>g</var>* − (1 − &rho;)<var>B</var> = 0.</div>
+    <p>For &gamma; &gt; 0 the roots have opposite signs. Define <var>c</var> = (1 − &rho;)(1 − &gamma;<var>B</var>) and <var>d</var> = (1 − &rho;)<var>B</var>. The positive root is</p>
+    <div class="formula"><var>g</var>* = [−<var>c</var> + √(<var>c</var><sup>2</sup> + 4&gamma;<var>d</var>)]/(2&gamma;).</div>
+    <p>For <var>c</var> ≥ 0, the equivalent form 2<var>d</var>/[√(<var>c</var><sup>2</sup> + 4&gamma;<var>d</var>) + <var>c</var>] avoids subtracting similar numbers. With zero curvature, solve the original equation directly to obtain <var>g</var>* = <var>B</var>.</p>
+    <p>Existence of a root does not establish convergence. For two variances <var>g</var>, <var>h</var> ≥ 0, subtract their updates:</p>
+    <div class="formula"><var>F</var>(<var>g</var>) − <var>F</var>(<var>h</var>) = &rho;(<var>g</var> − <var>h</var>)/[(1 + &gamma;<var>g</var>)(1 + &gamma;<var>h</var>)].</div>
+    <p>The denominator is at least one. Each update therefore reduces distance by at most the factor &rho; &lt; 1. Comparing an iterate with the fixed point repeatedly gives |<var>g</var><sub>t</sub> − <var>g</var>*| ≤ &rho;<sup>t</sup>|<var>g</var><sub>0</sub> − <var>g</var>*|, which tends to zero. Two different fixed points would contradict the same inequality. The exact difference preserves the sign of the deviation, so a trajectory does not cross equilibrium.</p>
+  </div></details>
+
+  <details class="derivation"><summary>Establish matrix existence and bounds without claiming general convergence</summary><div>
+    <p>For matrices, <strong>C</strong> ≼ <strong>D</strong> means <strong>v</strong><sup>T</sup><strong>Cv</strong> ≤ <strong>v</strong><sup>T</sup><strong>Dv</strong> for every vector <strong>v</strong>. This compares variance in every trait combination, rather than individual covariance entries.</p>
+    <p>With <strong>T</strong> = <strong>G</strong><sup>1/2</sup><strong>&Gamma;</strong><strong>G</strong><sup>1/2</sup> ≽ 0, selected covariance is <strong>G</strong><sup>1/2</sup>(<strong>I</strong> + <strong>T</strong>)<sup>−1</sup><strong>G</strong><sup>1/2</sup>. Its middle factor has eigenvalues between zero and one, hence 0 ≺ <strong>G</strong><sub>sel</sub> ≼ <strong>G</strong>.</p>
+    <p>If (1 − &rho;)<strong>B</strong> ≼ <strong>G</strong> ≼ <strong>B</strong>, its update remains within those bounds. This matrix interval is nonempty, compact and convex; the update is continuous there. Brouwer's theorem therefore supplies at least one positive-definite fixed point. Any positive fixed point satisfies</p>
+    <div class="formula">(1 − &rho;)<strong>B</strong> ≼ <strong>G</strong>* ≼ <strong>B</strong>.</div>
+    <p>The lower bound follows from the nonnegative selected term. For the upper bound, use <strong>G</strong>* ≼ (1 − &rho;)<strong>B</strong> + &rho;<strong>G</strong>*, subtract the last term and divide by 1 − &rho;. This proves existence and bounds, without establishing matrix uniqueness, convergence or immediate entry into this interval from every starting matrix.</p>
+  </div></details>
+
+  <section>
+    <h3>A covariance trajectory does not specify the gradient</h3>
+    <p>The paper's four-trait example uses <strong>G</strong><sub>t</sub> = <var>g</var><sub>t</sub><strong>I</strong>, <var>g</var><sub>0</sub> = 4, <var>B</var> = 1, &gamma; = 0.3 and &rho; = 0.9. Its fixed point is 0.4723532349. It separately holds the gradient length at 1 through generation 40, then sets it to exp[−0.06(<var>t</var> − 40)]. The share rises from 0.581395 to 0.921639 while the gradient is maintained, then falls as the supplied gradient declines.</p>
+    <p>The covariance recursion did not predict that gradient history. In <var>n</var> isotropic trait directions, the share is ‖<strong>b</strong><sub>t</sub>‖<sup>2</sup>/[‖<strong>b</strong><sub>t</sub>‖<sup>2</sup> + <var>n</var>&gamma;<sup>2</sup><var>g</var><sub>t</sub>/2]. Its interpretation therefore requires both covariance and gradient. On a fixed quadratic surface, movement of the mean changes the gradient through <strong>b</strong><sub>t</sub> = <strong>d</strong> − <strong>&Gamma;&mu;</strong><sub>t</sub>. Predicting that movement needs a mean-transmission model.</p>
+  </section>
+
+  <details class="derivation"><summary>Examine complete retention at &rho; = 1</summary><div>
+    <p>The baseline term now vanishes. For a positive starting variance <var>g</var><sub>0</sub> &gt; 0, 1/<var>g</var><sub>t+1</sub> = 1/<var>g</var><sub>t</sub> + &gamma;, giving <var>g</var><sub>t</sub> = 1/(1/<var>g</var><sub>0</sub> + <var>t</var>&gamma;). Positive curvature drives variance towards zero; zero curvature leaves it unchanged. A starting variance of zero remains zero under the original scalar update.</p>
+    <p>For positive-definite initial covariance, <strong>G</strong><sub>t</sub> = (<strong>G</strong><sub>0</sub><sup>−1</sup> + <var>t</var><strong>&Gamma;</strong>)<sup>−1</sup>. Positive-definite curvature removes all covariance in the limit. With uncurved directions, retained variation depends on their initial associations with curved directions. For initial covariance [[1, 0.4], [0.4, 2]] and curvature diag(0.5, 0), the second trait retains 2 − 0.4<sup>2</sup>/1 = 1.84, its conditional residual variance, rather than its original marginal variance of 2.</p>
+  </div></details>
+
+  <details class="code"><summary>Reproduce the guide's scalar trajectory in Python</summary><div>
+    <pre><code>import math
+
+# These are the guide's parameters, not the four-trait figure's.
+B, gamma, rho, g = 1.0, 0.5, 0.5, 1.0
+c = (1 - rho) * (1 - gamma * B)
+d = (1 - rho) * B
+root = math.sqrt(c*c + 4*gamma*d)
+fixed_point = 2*d / (root + c) if c &gt;= 0 else (root - c)/(2*gamma)
+
+for generation in range(11):
+    print(generation, g, abs(g - fixed_point))
+    selected_variance = g / (1 + gamma*g)
+    # Reproduction acts on the departure from the fixed baseline.
+    g = B + rho*(selected_variance - B)
+print("Fixed point:", fixed_point)
+</code></pre>
+  </div></details>
+
+  <section>
+    <h3>Separate derived results from biological tests</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Evidence</th><th>What is available</th><th>Scope</th></tr></thead>
+      <tbody>
+        <tr><td>Mathematical results</td><td>Gaussian variance decomposition, proportional scaling, selected-parent moments and error bound; matrix existence and scalar convergence.</td><td>Conditional on the stated distributional and inheritance assumptions.</td></tr>
+        <tr><td>Numerical checks and simulated estimation</td><td>Quadrature and matrix checks, 20 SLiM replicates, and simulated estimation with 500 bootstrap refits.</td><td>Checks of specified calculations. The SLiM diagnostic does not validate the fixed genic baseline inheritance rule.</td></tr>
+        <tr><td>Proposed empirical questions</td><td>Can we estimate curvature, predict independent parental contributions and support the proposed inheritance update?</td><td>These require biological data; they are not findings of the simulations.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Collect data for each prediction separately</h3>
+    <ol>
+      <li>Define the population, traits and reproductive stage. Obtain breeding-value information with a justified genetic design; clonal replication alone does not separate additive from nonadditive genetic variation.</li>
+      <li>Estimate the conditional reproduction relationship while retaining zero counts and uncertainty in breeding values. Check curvature and sensitivity to the quadratic approximation across the sampled range.</li>
+      <li>Record predictions for a separate reproductive assay before using its outcomes to revise the model. Compare parental contributions and their weighted mean with predictions, carrying estimation uncertainty forward.</li>
+      <li>For an inheritance test, measure offspring and parental covariance in the same pedigree and track allele frequencies. Assess whether a fixed genic baseline and common retention fraction are adequate before using the equilibrium result.</li>
+    </ol>
+  </section>
+  <p class="sources">Sources: <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/tutorials/mathematics/guide.tex" target="_blank" rel="noopener">the inheritance derivation and its assumptions</a>, <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/code/figures.py" target="_blank" rel="noopener">the four-trait trajectory</a>, and <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/examples/estimating_variance_share/README.md" target="_blank" rel="noopener">the simulated estimation example</a>. The final study sequence is a proposal for collecting new evidence.</p>
+</article>

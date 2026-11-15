@@ -1,0 +1,5 @@
+# Local QA output; the scientific reference and source manifest are maintained.
+scientific_reference_validation.json
+models_validation.json
+guide_validation.json
+__pycache__/

@@ -1,0 +1,410 @@
+% Additional exposition by Daniel Ortiz-Barrientos.
+% Body only: requires amsmath, amssymb, natbib and hyperref in the wrapper.
+% SF1 locators refer to Supplementary_File_1_Mathematics_Guide.tex,
+% as prepared for the neutral preprint bundle on 15 November 2026.
+
+A curved relationship between breeding value and expected reproduction can
+have a close linear fit across a population. Understanding why requires us
+to specify the quantity being fitted, the population weighting the fit, and
+the prediction we want to make. This companion explains five choices behind
+\emph{Additive Channels in Curved Fitness Landscapes}
+\citep{OrtizBarrientosCooper2026}. Supplementary File~1 (SF1) supplies the
+calculations; here we concentrate on why those calculations answer the
+biological questions, and where a different question would require a
+different approach.
+
+\section{Which fitness quantity answers the question?}
+\label{companion:target}
+
+We want to describe how expected reproductive contributions differ among
+individuals with different breeding values. Individuals sharing a breeding
+value can differ in environment, phenotype and realised output. Averaging
+over that variation defines the relationship of interest. With reproductive
+output $W\geq0$ and breeding value $\mathbf A$, write
+\begin{equation}
+ W_A(\mathbf a)=\mathbb E[W\mid\mathbf A=\mathbf a],
+ \qquad
+ \ell_A(\mathbf a)=\log W_A(\mathbf a).
+ \label{companion:eq:target}
+\end{equation}
+The logarithm requires a finite, positive conditional mean. The averaging includes
+individuals that leave no offspring. This use of expected fitness at a
+breeding value follows the quantitative-genetic treatment of environmental
+variation \citep{Lande1979}.
+
+The conditional mean preserves the expected reproductive contribution of
+each breeding value. Weighting that value by its mean output gives the
+same expected contribution as averaging the individual weighted outputs.
+This follows from the law of conditional expectation. We can therefore
+calculate parental moments without modelling every source of individual
+variation in output. That variation still matters when estimating the
+conditional mean from data.
+
+Choosing breeding value identifies the genetic predictor whose relationship
+with reproduction we wish to describe. It does not assume that all gene
+action is additive. Breeding values and average effects refer to a
+particular population \citep{Fisher1941}; treating their allelic coefficients
+as fixed across generations will require an additional assumption in
+Section~\ref{companion:inheritance}.
+
+Why take a logarithm at all? The question concerns proportional differences
+in expected output: a difference in $\ell_A$ is the logarithm of the ratio of
+two conditional means. Multiplying every expected output by the same
+positive constant therefore changes only the intercept. A quadratic log
+mean also gives a positive expected output after exponentiation, consistent
+with a log-link fitness model \citep{MorrisseyGoudie2022}. Modelling fitness
+on its original scale is possible, but its slopes and explained variance
+answer a different, absolute-scale question.
+
+Taking logarithms of individual outputs first would change the target.
+Generally, $\mathbb E[\log W\mid\mathbf A]$ differs from
+$\log\mathbb E[W\mid\mathbf A]$. For two individuals leaving zero and two
+offspring, the mean output is one and its logarithm is zero; the mean of
+their individual logarithms is undefined. The required data model should
+therefore describe conditional mean output, retaining zero counts, rather
+than manufacture a logarithm for each count. SF1, Sections~2--3, develops
+this distinction and the environmental averaging.
+
+\clearpage
+\section{Retain curvature, then assess the fit across the population}
+\label{companion:projection}
+
+A linear approximation cannot tell us when curvature matters, because it
+has already omitted curvature. The next Taylor term is the smallest
+extension that allows the slope to change. Centre breeding values at their
+current mean $\mathbf a_0$, writing $\mathbf X=\mathbf A-\mathbf a_0$, and
+form
+\begin{equation}
+ \widetilde\ell_A(\mathbf X)
+ =\ell_0+\mathbf b^{\mathsf T}\mathbf X
+       +\tfrac12\mathbf X^{\mathsf T}\mathbf H\mathbf X.
+ \label{companion:eq:quadratic}
+\end{equation}
+Here $\mathbf b$ is the gradient and $\mathbf H$ the symmetric Hessian of
+$\ell_A$ at the mean. With one trait these become the slope $b$ and
+curvature $H$; bold symbols allow several traits. They describe the fitness
+relationship, not allelic interactions. Twice differentiability justifies
+this local expansion; it does not ensure that omitted terms are small
+across the population. A more flexible fitted curve can assess that
+approximation, at the cost of losing the following simple partition.
+
+Why assess the fit with population least squares rather than the tangent
+at the mean? A tangent describes change at one point. Our question concerns
+variation among the breeding values actually present. Population least
+squares minimises squared discrepancy under their frequencies, connecting
+the calculation to regression descriptions of selection
+\citep{LandeArnold1983,MooradWade2013}. This choice determines which
+contributions count as explained and which remain after fitting the line.
+
+The distribution of breeding values supplies those frequency weights. We
+assume $\mathbf X\sim\mathcal N(\mathbf0,\mathbf G)$, so its covariance
+$\mathbf G$ determines those weights. The Gaussian choice provides known
+third and fourth moments; it is an assumption to assess, not a consequence
+of defining breeding values. For a non-Gaussian population, additional
+moments can change both the partition and the fitted slope.
+
+We could instead calculate the best linear fit under an observed,
+non-Gaussian distribution. That is a sensible choice when the immediate
+question is how well a line describes that population. Here we also want to
+ask what follows from changing covariance while keeping the fitness curve
+fixed. A Gaussian family makes that comparison determinate: mean and
+covariance specify the distribution. Outside that family, populations with
+the same covariance can have different higher moments and different fits.
+
+To separate variation from the mean, centre the quadratic contribution:
+\begin{equation}
+ L=\mathbf b^{\mathsf T}\mathbf X,
+ \qquad
+ Q_c=\tfrac12\left\{\mathbf X^{\mathsf T}\mathbf H\mathbf X
+                         -\operatorname{tr}(\mathbf H\mathbf G)\right\}.
+ \label{companion:eq:centred}
+\end{equation}
+The trace, $\operatorname{tr}$, adds a matrix's diagonal entries. With one
+trait, the centred quadratic term is simply $Q_c=H(X^2-G)/2$, where $G$ is
+the breeding-value variance. Subtracting its expectation changes the
+intercept, not its variance.
+Gaussian symmetry makes the third moments zero, so $L$ and $Q_c$ are
+uncorrelated. The Gaussian fourth-moment identity \citep{Isserlis1918}
+then gives
+\begin{align}
+ V_{\mathrm{lin}}&=\mathbf b^{\mathsf T}\mathbf G\mathbf b,
+ & V_{\mathrm{quad}}&=\tfrac12\operatorname{tr}[(\mathbf H\mathbf G)^2],
+ \label{companion:eq:components}\\
+ \mathcal A_g&=\frac{V_{\mathrm{lin}}}
+                    {V_{\mathrm{lin}}+V_{\mathrm{quad}}}.
+ \label{companion:eq:share}
+\end{align}
+The denominator is the variance of the quadratic description. If both
+components vanish, the share is undefined. Neither component is a variance
+of realised offspring counts or a partition into additive and epistatic
+genetic variance.
+
+Because the centred quadratic term is uncorrelated with every linear
+predictor, the best affine fit is
+\begin{equation}
+ \widehat{\widetilde\ell}_1(\mathbf X)
+ =\ell_0+\tfrac12\operatorname{tr}(\mathbf H\mathbf G)
+           +\mathbf b^{\mathsf T}\mathbf X.
+ \label{companion:eq:affine}
+\end{equation}
+Its slope equals the local gradient, but its intercept includes the average
+curvature contribution. Its explained variance is $V_{\mathrm{lin}}$, so
+its population $R^2$ for the quadratic target is $\mathcal A_g$. This is
+exact for that target under Gaussian weights; it is not automatically the
+$R^2$ of the complete fitness curve or of a count-data model. SF1,
+Section~4 and the multivariate treatment in Section~9, gives the intervening
+moment calculations.
+
+\section{Change population spread without changing the fitness curve}
+\label{companion:scaling}
+
+We can now isolate the population's contribution to the fit. Comparing
+arbitrary populations would mix changes in their means, covariance
+directions and fitness relationships. Instead, hold the mean, $\mathbf b$
+and $\mathbf H$ fixed and multiply every variance and covariance by the
+same positive number: $\mathbf G=s\mathbf G_0$. This controlled comparison
+preserves the distribution's shape and orientation. Substitution gives
+\begin{equation}
+ V_{\mathrm{lin}}(s)=sV_{\mathrm{lin}}(1),
+ \qquad
+ V_{\mathrm{quad}}(s)=s^2V_{\mathrm{quad}}(1),
+ \qquad
+ \mathcal A_g(s)=\frac{V_{\mathrm{lin}}(1)}
+ {V_{\mathrm{lin}}(1)+sV_{\mathrm{quad}}(1)}.
+ \label{companion:eq:scaling}
+\end{equation}
+The linear contribution contains one factor of covariance and the
+quadratic contribution two. When both are positive, reducing $s$ increases
+the linear share even while the absolute linear variance falls.
+
+For one trait, let $b=2$, $H=-0.5$ and initially $G=1$. Then
+$V_{\mathrm{lin}}=4$, $V_{\mathrm{quad}}=0.125$ and
+$\mathcal A_g=32/33$. Halving $G$ gives components $2$ and $0.03125$,
+raising the share to $64/65$. The curve has not become less curved; the
+population weights a narrower range of it.
+
+This choice makes the cause of the change identifiable, but limits the
+conclusion. Moving the mean can change the local derivatives, and rotating
+the covariance can change the two components differently. Even a smaller
+covariance in every direction need not reproduce proportional scaling.
+At a peak where $\mathbf b=\mathbf0$, contraction alone does not create
+linear variation. Nor must a biological change in spread leave the
+conditional fitness relationship fixed. Reporting both variance components
+alongside the share distinguishes these possibilities (SF1, Section~4).
+
+Proportional scaling therefore answers a conditional question before any
+evolutionary mechanism is proposed. It establishes what a change in spread
+would do under specified conditions. Whether selection, demography or a
+change in mating actually produces those conditions requires a separate
+account. The comparison itself contains no inheritance model.
+
+\section{Change the weights before predicting selected parents}
+\label{companion:selection}
+
+The fitted line was chosen to describe log expected fitness under population
+frequencies. Selection asks how those frequencies change when individuals
+contribute different amounts to reproduction. Expected output supplies the
+additional weight:
+\begin{equation}
+ p_{\mathrm{sel}}(\mathbf x)
+ =\frac{p(\mathbf x)W_A(\mathbf a_0+\mathbf x)}{\overline W},
+ \qquad
+ \overline W=\mathbb E[W].
+ \label{companion:eq:weights}
+\end{equation}
+This is the reproductive weighting behind the covariance description of
+selection \citep{Price1970}. It concerns parental breeding values represented
+in reproductive contributions; transmission to offspring has yet to be
+specified.
+
+\emph{For the next calculation, assume that log expected fitness is exactly
+quadratic over the Gaussian distribution.} A Taylor approximation near the
+mean is insufficient: exponentiation can give substantial reproductive
+weight to values poorly described by that approximation. For a more general
+fitness curve, Equation~\eqref{companion:eq:weights} remains the starting
+point, but its moments may require numerical integration.
+
+Starting with a linear-only selection prediction would omit the effect we
+want to assess. The exact quadratic model keeps curvature in the
+reproductive calculation while leaving the selected distribution
+analytically tractable. It therefore permits a direct comparison between
+the two predictions without an additional weak-curvature approximation.
+The cost is the stronger assumption about the whole fitness relationship.
+
+\Needspace{11\baselineskip}
+Work first with positive-definite $\mathbf G$, and write
+$\boldsymbol\Gamma=-\mathbf H$. Multiplication of the Gaussian
+density by the fitness weight adds their quadratic exponents. Their
+combined coefficient is the precision
+$\mathbf J=\mathbf G^{-1}+\boldsymbol\Gamma$, an inverse covariance.
+It must be positive definite for the total weight to be finite. Completing
+the square then identifies the selected moments:
+\begin{equation}
+ \mathbf G_{\mathrm{sel}}
+    =(\mathbf G^{-1}+\boldsymbol\Gamma)^{-1},
+ \qquad
+ \boldsymbol\Delta_{\mathrm{full}}
+    =(\mathbf G^{-1}+\boldsymbol\Gamma)^{-1}\mathbf b.
+ \label{companion:eq:selected}
+\end{equation}
+These use established Gaussian, log-quadratic calculations
+\citep{MorrisseyGoudie2022}. Under stabilising curvature
+$\boldsymbol\Gamma\succeq0$, the positivity condition is automatic for
+$\mathbf G\succ0$, and covariance decreases in every direction or stays
+unchanged. The formulas also allow other curvature when $\mathbf J\succ0$,
+but covariance need not decrease.
+
+Return to $b=2$, $H=-0.5$, $G=1$. Omitting curvature predicts
+$\Delta_{\mathrm{lin}}=Gb=2$, whereas
+$\Delta_{\mathrm{full}}=4/3$. Thus
+\begin{equation}
+ \mathcal A_g=\frac{32}{33}\simeq0.97,
+ \qquad
+ \frac{|\Delta_{\mathrm{lin}}-\Delta_{\mathrm{full}}|}
+      {|\Delta_{\mathrm{full}}|}=\frac12.
+ \label{companion:eq:example}
+\end{equation}
+A large linear share has not controlled displacement error. Increasing
+$|b|$ increases the share but leaves this relative error unchanged. The
+variance comparison and the reproductive comparison use different weights
+and different scales of fitness.
+
+To assess displacement error in several traits, we must first choose its
+scale. Ordinary Euclidean length would change if one trait were converted
+from metres to centimetres. The population covariance supplies a biological
+reference: measure a displacement relative to the variation available in
+each combination of traits. The resulting norm is
+$\|\mathbf v\|_{\mathbf G^{-1}}
+=(\mathbf v^{\mathsf T}\mathbf G^{-1}\mathbf v)^{1/2}$.
+Multiplying displacements by $\mathbf G^{-1/2}$ implements that choice and
+makes the population covariance the identity. This is whitening; it changes
+coordinates, not the population.
+
+Define $\mathbf T=\mathbf G^{1/2}\boldsymbol\Gamma\mathbf G^{1/2}$ and
+$\mathbf u_{\mathrm{full}}=\mathbf G^{-1/2}
+\boldsymbol\Delta_{\mathrm{full}}$, with $\mathbf u_{\mathrm{lin}}$ defined
+similarly. Equation~\eqref{companion:eq:selected} gives the useful relation
+\begin{equation}
+ \mathbf u_{\mathrm{lin}}-\mathbf u_{\mathrm{full}}
+     =\mathbf T\mathbf u_{\mathrm{full}}.
+ \label{companion:eq:error-relation}
+\end{equation}
+The spectral norm bounds the effect of $\mathbf T$ in any direction; its
+Frobenius norm is the square root of the sum of squared entries
+\citep{BoydVandenberghe2004}.
+Since $\|\mathbf T\|_{\mathrm F}^2=2V_{\mathrm{quad}}$, a nonzero full
+displacement satisfies
+\begin{equation}
+ \frac{\|\boldsymbol\Delta_{\mathrm{lin}}
+             -\boldsymbol\Delta_{\mathrm{full}}\|_{\mathbf G^{-1}}}
+      {\|\boldsymbol\Delta_{\mathrm{full}}\|_{\mathbf G^{-1}}}
+ \leq\|\mathbf T\|_2
+ \leq\sqrt{2V_{\mathrm{quad}}}.
+ \label{companion:eq:bound}
+\end{equation}
+This bound uses absolute curvature variance. A small value guarantees a
+small relative error; a large value need not be attained in the gradient's
+direction. For singular $\mathbf G$, inverse operations are restricted to
+directions with nonzero variance. If the full displacement is zero, relative
+error is undefined. SF1, Sections~5 and~9, develops these selection results.
+
+\clearpage
+\section{Specify what reproduction transmits}
+\label{companion:inheritance}
+
+Selected-parent covariance cannot determine offspring covariance without
+an inheritance model. Selection changes associations among alleles;
+segregation and recombination can reduce those associations. The distinction
+between genic variance and association variance is established in
+quantitative genetics \citep{Bulmer1971,Bulmer1974,BartonTurelli1991}.
+It suggests separating the genic baseline $\mathbf B$ from the departure
+$\mathbf D=\mathbf G-\mathbf B$.
+
+This separation determines what reproduction acts on in the model.
+Multiplying the whole covariance by a retention fraction would also remove
+part of the genic contribution. Retaining a fraction of its departure from
+the baseline instead represents the reduction of associations. Reproduction
+can then restore variance lost through those associations without
+introducing new alleles or changing their effects.
+
+We now assume fixed allelic effects, fixed $\mathbf B\succ0$ and fixed
+stabilising curvature $\boldsymbol\Gamma\succeq0$. We also model
+preselection breeding values as Gaussian in each generation, with exactly
+quadratic log expected fitness. A rule for covariance alone does not
+guarantee that offspring are Gaussian. Fixing effects does not fix genic
+variance: under the random-mating diploid convention, a biallelic locus
+contributes $2p(1-p)\alpha^2$, which changes with allele frequency $p$ even
+if its effect $\alpha$ stays constant.
+Holding $\mathbf B$ fixed isolates changes in associations. Following
+allele frequencies explicitly would address additional biology, but would
+require more state variables and a different recursion.
+
+Assume that reproduction retains one fraction $0\leq\rho<1$ of the selected
+departure from the baseline. Then
+\begin{equation}
+ \mathbf D_{t+1}=\rho(\mathbf G_{\mathrm{sel},t}-\mathbf B),
+ \qquad
+ \mathbf G_{t+1}
+   =(1-\rho)\mathbf B
+      +\rho(\mathbf G_t^{-1}+\boldsymbol\Gamma)^{-1}.
+ \label{companion:eq:inheritance}
+\end{equation}
+This closure is an additional model assumption. One retention fraction
+summarises the effects of locus-specific associations and reproduction;
+it is not a universal conversion from recombination rate or mating system.
+The familiar one-half benchmark belongs to the freely recombining,
+random-mating infinitesimal setting.
+
+We can iterate the update numerically, but a finite trajectory cannot
+establish whether a positive equilibrium exists or all trajectories
+converge. For matrices, compare variance in every direction using
+$\mathbf C\preceq\mathbf D$ to mean that
+$\mathbf D-\mathbf C$ is positive semidefinite. The continuous update maps
+the closed, bounded, convex interval from $(1-\rho)\mathbf B$ to
+$\mathbf B$ into itself. Reproduction supplies the lower bound; selection
+cannot push a covariance already below $\mathbf B$ above it. This gives a
+region in which to apply Brouwer's fixed-point theorem, establishing an
+equilibrium \citep{GranasDugundji2003}; the covariance inequalities give
+\begin{equation}
+ (1-\rho)\mathbf B\preceq\mathbf G^*\preceq\mathbf B.
+ \label{companion:eq:bounds}
+\end{equation}
+Existence and these bounds do not establish matrix uniqueness or
+convergence.
+
+For one trait, more can be shown without another long derivation. Writing
+$g$ for variance and $\gamma\geq0$ for stabilising curvature, the update and
+its derivative are
+\begin{equation}
+ f(g)=(1-\rho)B+\rho\frac{g}{1+\gamma g},
+ \qquad
+ 0\leq f'(g)=\frac{\rho}{(1+\gamma g)^2}\leq\rho<1.
+ \label{companion:eq:scalar}
+\end{equation}
+The separation of two trajectories after one update is at most $\rho$
+times its previous value. The contraction theorem gives a unique
+equilibrium and convergence
+from every nonnegative starting variance \citep{GranasDugundji2003}.
+In the recurring example, take $B=1$, $\gamma=0.5$ and $\rho=0.5$.
+Selection changes variance from $1$ to $2/3$, then reproduction gives
+$g_1=5/6$. Iteration approaches $g^*=(\sqrt{17}-1)/4\simeq0.781$.
+
+\Needspace{6\baselineskip}
+The boundary $\rho=1$ removes the positive baseline contribution and needs
+separate treatment. Throughout, a covariance equilibrium is conditional on
+the fixed parameters; it is not a joint equilibrium of mean, allele
+frequencies and covariance. Calculating $\mathcal A_g$ through time also
+requires the gradient history, which the covariance update does not supply.
+SF1, Sections~6 and~9, gives the fixed-point arguments and boundary cases.
+
+For estimation from observations, Supplementary File~3 works through
+repeated measurements and offspring counts under a specified measurement
+model, accounting for uncertainty in breeding values rather than treating
+their estimates as error-free.
+
+\paragraph{AI assistance.}
+This additional exposition was developed through iterative discussion with
+ChatGPT, guided by biological and mathematical questions set by Daniel
+Ortiz-Barrientos. AI assistance supported drafting and explanation;
+responsibility for the assumptions, arguments and interpretation remains
+with the author.

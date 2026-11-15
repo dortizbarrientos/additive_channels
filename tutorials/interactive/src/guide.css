@@ -1,0 +1,41 @@
+/* Additive-channels reading and teaching details. */
+body{font-family:'Lato','Segoe UI',Arial,sans-serif;background:#f7fafb}
+.main-inner{max-width:1050px}.main{padding-top:27px}.brand-mark{font-size:23px}.sidebar{background:#eaf2f5}
+.lesson{padding-bottom:20px}.lesson>header{padding-bottom:25px;margin-bottom:30px;border-bottom:1px solid var(--line)}
+.lesson>header h2{font-size:clamp(1.9rem,3vw,2.8rem);max-width:850px;margin-bottom:18px}
+.lesson>header .lead{max-width:810px}.lesson>p,.lesson>section>p,.lesson details p{max-width:84ch}
+.lesson>h3,.lesson>section{margin-top:32px}.lesson>section>h3:first-child{margin-top:0}
+.js .lesson{display:none}.js .lesson.active{display:block}.js .no-js{display:none}
+.lesson footer{margin-top:42px}.lab{border:1px solid #c8dce3;border-radius:13px;padding:23px;background:#fff;margin:29px 0 34px;box-shadow:0 3px 16px #284e5b06}
+.lab>h3:first-child{margin-top:0}.lab .chart{margin:18px 0 4px}.lab .controls{padding-bottom:14px;border-bottom:1px solid #e5edf0}
+.lab .control{min-width:190px}.lab .control output{white-space:nowrap}.lab .metric-row{margin:19px 0 7px}.lab .metric-value{font-size:1.65rem;overflow-wrap:anywhere}
+.lab .calculation p{margin:.65em 0}.lab .calculation p:first-child{margin-top:0}.lab .calculation p:last-child{margin-bottom:0}
+.equation{font:1.16rem/1.85 Georgia,'Times New Roman',serif;padding:16px 20px;background:#eef4f7;border-radius:7px;overflow-x:auto;margin:18px 0;color:#274a5c}
+var{font-family:Georgia,'Times New Roman',serif;font-size:1.05em}.sources{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:18px;margin-top:30px!important}
+.lesson table{width:100%;border-collapse:collapse;background:#fff;font-size:.87rem;line-height:1.5;font-variant-numeric:tabular-nums}
+.lesson th,.lesson td{padding:11px 13px;text-align:left;vertical-align:top;border-bottom:1px solid #e1e9ed}
+.lesson thead th{background:#edf4f7;color:#294f60}.lesson tbody tr:last-child>*{border-bottom:none}.lesson caption{text-align:left;padding:12px 13px;font-weight:600;color:var(--muted);font-size:.85rem}
+.lesson .data-table th,.lesson .data-table td{text-align:right}.lesson .data-table th:first-child,.lesson .data-table td:first-child{text-align:left}
+figure{margin:21px 0}figcaption{font-size:.84rem;line-height:1.6;margin-top:10px;color:var(--muted)}
+.prediction{padding:18px 22px;background:#edf5f1;border-left:3px solid var(--teal);border-radius:0 9px 9px 0;margin:28px 0}
+.prediction h3{margin-top:0}.prediction details{margin-bottom:0}.prediction details>div{padding-bottom:0}
+details.derivation{background:#f2f6f9;border:1px solid #d6e3e9;border-radius:9px;padding:0 15px;margin:23px 0}
+details.derivation>div,details.code>div{padding:3px 8px 18px}details.code{border-bottom:1px solid var(--line)}
+details.answer>summary{color:#206457}details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:10px}
+.home-hero{grid-template-columns:1.05fr 1fr;gap:36px;align-items:start}.home-hero h1{font-size:clamp(2.5rem,4vw,4rem);letter-spacing:-.035em;margin:10px 0 22px}
+.home-figure{padding:13px 11px;background:#eff6f8;border:1px solid #dae7ec}.home-figure .chart{margin:0}.home-figure figcaption{padding:0 11px 8px;margin-top:0}
+.course-entry .entry-top{font-size:.75rem;font-weight:600;letter-spacing:.05em}.course-entry h2{font-weight:650;margin:.45em 0 .6em;line-height:1.3}.course-entry p{margin:0}
+.course-list{margin-top:25px}.home-claim{margin:28px 0;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.home-claim h2{font-size:1.35rem}
+.home-values{display:flex;gap:8px;flex-wrap:wrap;font-size:.77rem;padding:7px 10px}.home-values span{border-top:2px solid currentColor;padding:5px 0;margin-right:10px}
+.page-tools{align-items:center;gap:7px}.page-tools .btn{font-weight:500}.page-tools .status-label{margin-right:auto;font-size:.75rem;color:var(--muted)}
+.course-nav a{padding:10px 8px}.nav-desc{font-size:.74rem}.sidebar-note{margin-top:22px}.read-button{font-size:.8rem;margin-left:auto}
+.course-entry:focus-visible{outline-offset:5px}.course-entry:hover{background:linear-gradient(90deg,transparent,#e8f2f580)}
+.next-label{font-size:.75rem;color:var(--muted);display:block;margin-bottom:3px}.lesson-footer a{text-decoration:none}.lesson-footer .btn{font-size:.81rem}
+.print-note{display:none}.symbol-list{display:grid;grid-template-columns:90px 1fr;gap:12px 18px;margin:20px 0}.symbol-list dt{font:1.2rem Georgia;color:var(--blue)}.symbol-list dd{margin:0;font-size:.9rem}
+dialog{border:1px solid var(--line);border-radius:14px;padding:28px;max-width:700px;width:calc(100% - 36px);max-height:85vh;overflow:auto;background:#fff;color:var(--ink)}dialog::backdrop{background:#153d5070}
+.dialog-head{display:flex;justify-content:space-between;gap:20px;align-items:start}.dialog-head h2{font-size:1.5rem}.close-dialog{font-size:1.35rem;padding:1px 12px;min-height:35px}.app-error{margin:20px 0}
+.code-download{margin-top:6px}.source-status{font-size:.79rem;line-height:1.6;color:var(--muted)}
+@media(max-width:1050px){.home-hero{grid-template-columns:1fr}.home-figure{max-width:650px}.lab .grid-2{grid-template-columns:1fr}.lab .chart{max-width:760px}.lab .metric-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){.page-tools .status-label{display:none}.lesson>header h2{font-size:2rem}.home-hero h1{font-size:3rem}.lesson>header{margin-bottom:24px}.lab{padding:18px}.sidebar{z-index:30}}
+@media(max-width:520px){.lab{padding:15px 11px;margin-left:-2px;margin-right:-2px}.lab .metric-row{grid-template-columns:1fr}.lab .control{min-width:100%;flex-basis:100%}.lab .metric-value{font-size:1.6rem}.lesson th,.lesson td{padding:9px;font-size:.79rem}.page-tools .btn{font-size:.72rem}.symbol-list{grid-template-columns:65px 1fr;gap:10px}.lesson-footer{display:grid;gap:10px}.lesson-footer>*{width:100%}.home-hero h1{font-size:2.75rem}}
+@media print{.lesson,.js .lesson{display:block!important;break-before:page}.lesson:first-child{break-before:avoid}.lesson>header{margin:0 0 20px;padding-bottom:12px}.lesson>header h2{font-size:24pt}.main{margin:0;padding:0}.controls,.presets,.page-tools,.lesson-footer,.site-footer,.sidebar,.mobile-bar,.read-button,button{display:none!important}.lab{box-shadow:none;break-inside:auto;border:1px solid #bbb;padding:13px}.chart{break-inside:avoid}.lab .grid-2{grid-template-columns:1fr 1fr}.lab .metric-row{grid-template-columns:repeat(3,1fr)}.print-note{display:block;font-size:9pt;color:#555}.course-list{display:none}.home-hero{grid-template-columns:1fr 1fr}.home-hero h1{font-size:30pt}.home-figure{break-inside:avoid}.prediction{break-inside:avoid}.equation,.formula{font-size:11pt}.lesson details p{max-width:none}.lesson .sources{font-size:8pt}.lesson table{font-size:9pt}.metric-value{font-size:15pt!important}body{font-size:10.5pt}.lab .small{font-size:8pt}.home-claim{margin:15px 0;padding:15px 0}.lesson pre{white-space:pre-wrap;word-break:break-word}.symbol-list{font-size:9pt}}

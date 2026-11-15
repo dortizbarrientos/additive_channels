@@ -1,0 +1,43 @@
+{
+  "model": "ell(a) = a - a^2/2; A is Gaussian",
+  "fitness_scale": "natural logarithm of conditional expected reproductive output",
+  "units": "the same arbitrary breeding-value units in all panels",
+  "cases": {
+    "A": {
+      "mean": 0.0,
+      "variance": 1.0,
+      "slope": 1.0,
+      "fitted_value_at_mean": -0.5,
+      "V_linear": 1.0,
+      "V_quadratic": 0.5,
+      "total_variance": 1.5,
+      "linear_share": 0.6666666666666666,
+      "quadrature_V_linear": 1.000000000000001,
+      "quadrature_V_quadratic": 0.5000000000000013
+    },
+    "B": {
+      "mean": 0.0,
+      "variance": 0.1,
+      "slope": 1.0,
+      "fitted_value_at_mean": -0.05,
+      "V_linear": 0.1,
+      "V_quadratic": 0.005000000000000001,
+      "total_variance": 0.10500000000000001,
+      "linear_share": 0.9523809523809523,
+      "quadrature_V_linear": 0.10000000000000003,
+      "quadrature_V_quadratic": 0.005
+    },
+    "C": {
+      "mean": 1.0,
+      "variance": 0.1,
+      "slope": 0.0,
+      "fitted_value_at_mean": 0.45,
+      "V_linear": 0.0,
+      "V_quadratic": 0.005000000000000001,
+      "total_variance": 0.005000000000000001,
+      "linear_share": 0.0,
+      "quadrature_V_linear": 0.0,
+      "quadrature_V_quadratic": 0.005
+    }
+  }
+}

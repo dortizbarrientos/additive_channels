@@ -1,0 +1,2 @@
+# Needed only to assemble the offline HTML from its editable lesson sources.
+lxml>=4.9

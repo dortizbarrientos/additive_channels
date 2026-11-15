@@ -1,0 +1,59 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[a4paper,left=24mm,right=24mm,top=23mm,bottom=24mm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,tabularx,array,enumitem,xcolor,needspace}
+\usepackage[round,authoryear]{natbib}
+\usepackage{titlesec,fancyhdr,xurl}
+\usepackage{hyperref}
+\definecolor{inkblue}{HTML}{244D61}
+\definecolor{inkgrey}{HTML}{50585D}
+\hypersetup{colorlinks=true,linkcolor=inkblue,citecolor=inkblue,urlcolor=inkblue,
+  pdftitle={From fitness variation to selection: a companion to Supplementary File 1},
+  pdfauthor={Daniel Ortiz-Barrientos},
+  pdfsubject={The mathematical and biological choices behind the additive channels calculations}}
+\urlstyle{same}
+\titleformat{\section}{\large\bfseries\color{inkblue}\raggedright}{\thesection}{0.65em}{}
+\titleformat{\subsection}{\normalsize\bfseries\raggedright}{\thesubsection}{0.65em}{}
+\titlespacing*{\section}{0pt}{15pt plus 2pt minus 1pt}{7pt}
+\titlespacing*{\subsection}{0pt}{10pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 0.5pt minus 0.5pt}
+\setlength{\emergencystretch}{2em}
+\setlist{topsep=4pt,itemsep=2pt,parsep=1pt,leftmargin=*}
+\setlength{\bibsep}{3pt}
+\allowdisplaybreaks[1]
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{inkgrey}Additive channels: the choices behind the calculations}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{firstpage}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Ag}{\mathcal A_g}
+\newcommand{\Vlin}{V_{\mathrm{lin}}}
+\newcommand{\Vquad}{V_{\mathrm{quad}}}
+\newcommand{\bGamma}{\boldsymbol{\Gamma}}
+\newcommand{\Gsel}{\mat G_{\mathrm{sel}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\begin{document}
+\thispagestyle{firstpage}
+{\small\color{inkblue}A COMPANION TO SUPPLEMENTARY FILE 1\par}
+\vspace{5pt}
+{\LARGE\bfseries From fitness variation to selection\par}
+\vspace{5pt}
+{\large The choices behind the calculations\par}
+\vspace{7pt}
+Additional exposition by Daniel Ortiz-Barrientos\par
+\vspace{5pt}
+\input{companion_body}
+\bibliographystyle{plainnat}
+{\small\bibliography{references}}
+\end{document}

@@ -1,0 +1,164 @@
+
+
+initialize()
+{
+
+    if (!exists("SEED"))           defineConstant("SEED", 42);
+    setSeed(SEED);
+
+    if (!exists("OUTPUT_PATH"))
+        defineConstant("OUTPUT_PATH",  "output/rep_default_bv.csv");
+    if (!exists("OPTIMUM_PATH"))
+        defineConstant("OPTIMUM_PATH", "output/rep_default_opt.csv");
+
+    if (!exists("N"))              defineConstant("N", 2000);
+    if (!exists("GENS"))           defineConstant("GENS", 200);
+    if (!exists("L_PER_TRAIT"))    defineConstant("L_PER_TRAIT", 50);
+    if (!exists("N_TRAITS"))       defineConstant("N_TRAITS", 4);
+
+    if (!exists("SIGMAS"))
+        defineConstant("SIGMAS", c(0.346, 0.283, 0.200, 0.141));
+
+    if (!exists("GAMMAS"))
+        defineConstant("GAMMAS", c(0.10, 0.05, 0.04, 0.03));
+
+    if (!exists("Z_OPT_INITIAL"))
+        defineConstant("Z_OPT_INITIAL", c(0.0, 0.0, 0.0, 0.0));
+
+    if (!exists("DRIFT_VELOCITY"))
+        defineConstant("DRIFT_VELOCITY", c(0.3, 0.0, 0.0, 0.0));
+
+    if (!exists("DRIFT_END_GEN"))  defineConstant("DRIFT_END_GEN", 40);
+
+    defineConstant("N_LOCI", N_TRAITS * L_PER_TRAIT);
+
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    m1.convertToSubstitution = F;
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, N_LOCI - 1);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(0.5);
+}
+
+function (numeric)currentOptimum(integer$ cycle)
+{
+    if (DRIFT_END_GEN <= 0)
+        return Z_OPT_INITIAL;
+
+    steps = min(cycle - 1, DRIFT_END_GEN);
+    return Z_OPT_INITIAL + DRIFT_VELOCITY * steps;
+}
+
+1 early()
+{
+    sim.addSubpop("p1", N);
+}
+
+1 late()
+{
+    haps = p1.haplosomes;
+    n_haps = length(haps);
+
+    for (k in seqLen(N_TRAITS))
+    {
+        sigma_k = SIGMAS[k];
+        eff_k = rnorm(L_PER_TRAIT, 0, sigma_k);
+        eff_k = eff_k - mean(eff_k);  
+
+        for (j in seqLen(L_PER_TRAIT))
+        {
+            i = k * L_PER_TRAIT + j;  
+            target = sample(haps, asInteger(n_haps * 0.5));
+            new_mut = target.addNewDrawnMutation(m1, asInteger(i));
+            new_mut.setValue("trait_idx", k);
+            new_mut.setValue("eff", eff_k[j]);
+        }
+    }
+
+    bv_header = "generation,individual";
+    for (k in seqLen(N_TRAITS))
+        bv_header = bv_header + ",a" + asString(k + 1);
+    writeFile(OUTPUT_PATH, bv_header);
+
+    opt_header = "generation";
+    for (k in seqLen(N_TRAITS))
+        opt_header = opt_header + ",z_opt_" + asString(k + 1);
+    writeFile(OPTIMUM_PATH, opt_header);
+
+    catn("Initial population: " + N + " diploids");
+    catn("Number of traits: " + N_TRAITS);
+    catn("Loci per trait: " + L_PER_TRAIT + ", total QTLs: " + N_LOCI);
+    catn("Per-trait effect SDs: " + paste(SIGMAS, sep=", "));
+    catn("Stabilising selection (gammas): " + paste(GAMMAS, sep=", "));
+    catn("Initial optimum: " + paste(Z_OPT_INITIAL, sep=", "));
+    catn("Drift velocity: " + paste(DRIFT_VELOCITY, sep=", "));
+    catn("Drift end cycle: " + DRIFT_END_GEN);
+    catn("BV output:      " + OUTPUT_PATH);
+    catn("Optimum output: " + OPTIMUM_PATH);
+}
+
+fitnessEffect()
+{
+    muts = individual.haplosomes.mutations;
+
+    if (length(muts) == 0)
+        return 1.0;
+
+    idx_vec = muts.getValue("trait_idx");
+    eff_vec = muts.getValue("eff");
+
+    bv = float(N_TRAITS);
+    for (k in seqLen(N_TRAITS))
+        bv[k] = sum(eff_vec[idx_vec == k]);
+
+    z_opt = currentOptimum(sim.cycle);
+    dx = bv - z_opt;
+    log_W = -0.5 * sum(GAMMAS * dx * dx);
+    return exp(log_W);
+}
+
+1: late()
+{
+    inds = p1.individuals;
+    n = length(inds);
+    gen = sim.cycle;
+
+    lines = string(n);
+    for (i in seqLen(n))
+    {
+        muts = inds[i].haplosomes.mutations;
+        line = gen + "," + i;
+
+        if (length(muts) == 0)
+        {
+            for (k in seqLen(N_TRAITS))
+                line = line + ",0";
+        }
+        else
+        {
+            idx_vec = muts.getValue("trait_idx");
+            eff_vec = muts.getValue("eff");
+            for (k in seqLen(N_TRAITS))
+            {
+                bv_k = sum(eff_vec[idx_vec == k]);
+                line = line + "," + bv_k;
+            }
+        }
+        lines[i] = line;
+    }
+    writeFile(OUTPUT_PATH, lines, append=T);
+
+    z_opt = currentOptimum(gen);
+    opt_line = "" + gen;
+    for (k in seqLen(N_TRAITS))
+        opt_line = opt_line + "," + z_opt[k];
+    writeFile(OPTIMUM_PATH, opt_line, append=T);
+}
+
+GENS late()
+{
+    catn("Done: " + GENS + " generations completed.");
+    sim.simulationFinished();
+}

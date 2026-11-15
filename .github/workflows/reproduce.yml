@@ -1,0 +1,42 @@
+name: Reproduce the paper and teaching examples
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install numerical and app dependencies
+        run: python -m pip install -r requirements-app.txt -r tutorials/interactive/requirements.txt -c requirements-tested.txt
+      - name: Build and check the additional interactive guide
+        run: |
+          python tutorials/interactive/build_guide.py
+          git diff --exit-code -- tutorials/interactive/Additive_channels_interactive_guide.html
+          python tutorials/interactive/src/validate_models.py
+          python tutorials/interactive/src/validate_guide.py
+      - name: Reproduce the figures, simulation summary and bootstrap estimates
+        run: bash run_all.sh
+      - name: Rebuild the visual explanations and offline explorers
+        run: |
+          bash run_all.sh --visuals
+          git diff --exit-code -- tutorials/one_trait_visual/values.json tutorials/geometry/values.json
+      - name: Check the estimator independently
+        run: python -m unittest discover -s examples/estimating_variance_share -p 'test_*.py' -v
+      - name: Check that the Shiny app serves the example
+        working-directory: examples/estimating_variance_share
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m shiny run --host 127.0.0.1 --port 8050 app.py &
+          app_pid=$!
+          trap 'kill "$app_pid" 2>/dev/null || true' EXIT
+          curl --retry 12 --retry-connrefused --retry-delay 1 --fail --silent http://127.0.0.1:8050/ -o "$RUNNER_TEMP/app.html"
+          grep -q 'Generate and estimate' "$RUNNER_TEMP/app.html"

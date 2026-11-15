@@ -1,0 +1,3 @@
+# Versions used for the 12 November 2026 numerical audit.
+numpy==2.3.5
+matplotlib==3.10.8

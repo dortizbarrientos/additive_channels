@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "repository": "dortizbarrientos/additive_channels",
+  "source_base_url": "https://github.com/dortizbarrientos/additive_channels/blob/main/",
+  "version_guide": "docs/VERSION_GUIDE.md",
+  "identity_note": "GitHub links open current source paths. File-content SHA-256 hashes identify the exact code, input records and explanatory sources used by this guide; no historical Git object is required.",
+  "baseline_scope": "The scientific values, formulas and assumptions are retained from the preceding six-lesson offline guide. This manifest records the same saved simulated observations, fitted estimates and bootstrap refits. Extraction checks them without refitting or creating new observations.",
+  "previous_reference_sha256": "1bcc32ad34243dd98a454e42cf457e8e6fa04bef21dc943bc0d0f460fc818531",
+  "scientific_values_sha256": "9a849420dfb7178103ec942fbb826d87a090755c44cf594a27617aae35ec5a09",
+  "model_sha256": "e3be99e647f3f6a8e303e83adde30e2529333c6d8936561557dc417ec5a8e3b7",
+  "sources": [
+    {
+      "path": "reference/figures.json",
+      "sha256": "d1a019bc4b0617b3eb0bfcddf4816593382af88aa7eccb54239c3e11e86a1eb2"
+    },
+    {
+      "path": "tutorials/geometry/values.json",
+      "sha256": "c652dc016e935bb96d2882cbf03281be23b0e50270eec9a63401b1aaaba056db"
+    },
+    {
+      "path": "tutorials/one_trait_visual/values.json",
+      "sha256": "6fa4ea1ff3f84889d15385c5c76b320243900780672ca1c3266105dfcc066492"
+    },
+    {
+      "path": "examples/estimating_variance_share/results/summary.json",
+      "sha256": "6cb9b0ba82d0d9b6b9e79cbb97a25d6425a114ca4e6350c22072c3041ad6fb6b"
+    },
+    {
+      "path": "examples/estimating_variance_share/results/bootstrap_draws.csv",
+      "sha256": "44bd0f88123e93d37270348ff226390489e7c2aa9949a70ea01739a9823d64ba"
+    },
+    {
+      "path": "examples/estimating_variance_share/results/observed_data.csv",
+      "sha256": "667088ed3c3644ddc94125051c998a09ff20ba4b6218539bb712cd65f6f9f529"
+    },
+    {
+      "path": "examples/estimating_variance_share/results/simulation_truth.csv",
+      "sha256": "a7a93474a92b0ee4771f6231c487b132eb1e5c8bf3b74f00ef28a1e9e419a5fa"
+    },
+    {
+      "path": "code/figures.py",
+      "sha256": "f353842c1903940afd57a3e1302f30d7e089fdd77d812cf4ef50dc35dac6b053"
+    },
+    {
+      "path": "tutorials/mathematics/guide.tex",
+      "sha256": "3e94587edcce96683f1b0be3c526e0a5fd719670397b43fd6c2010fda58dae68"
+    },
+    {
+      "path": "tutorials/introduction/notes.tex",
+      "sha256": "8b039622c5e9a3d57096dee1fa0a1b67941f7fc8314574f61400812bca5304bc"
+    },
+    {
+      "path": "examples/estimating_variance_share/model.py",
+      "sha256": "c441bc7d31d5990c933f8361208339958f0a2f6f61dead3dadb5bdad32311c19"
+    },
+    {
+      "path": "examples/estimating_variance_share/run_case.py",
+      "sha256": "e6a3e72d153270403009e22354f1eef74d08f93c3fdd4c384c16f3ad33eeeb6c"
+    },
+    {
+      "path": "examples/estimating_variance_share/worked_example.tex",
+      "sha256": "ad405d48bb175cffab29ca513349d398e2021bd9e35584079ce55d73dd0f07b9"
+    },
+    {
+      "path": "tutorials/geometry/code/geometry.py",
+      "sha256": "1e66a3ab463bf313af1e39a1deedc9b74bc6457fe98fbecdb335cc9ad5b7450f"
+    }
+  ]
+}

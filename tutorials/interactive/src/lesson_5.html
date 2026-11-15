@@ -1,0 +1,77 @@
+<article class="lesson" id="estimation">
+  <header><p class="eyebrow">Lesson 5</p><h2>Estimating the share from measurements</h2>
+  <p class="lead">The previous lessons specify breeding values and a fitness relationship. In an experiment, both have to be estimated. Repeated trait measurements help describe uncertainty in breeding values; reproductive counts help estimate the fitness relationship.</p></header>
+
+  <h3>The simulated plant population</h3>
+  <p>The repository's worked example contains 800 unrelated plant genotypes. Each has three height measurements and one count of surviving offspring. The measurements are simulated under a wholly additive trait model, with independent environmental deviations and a separate reproductive assay. The true breeding values are retained in a separate file for checking the analysis. The estimator never receives them.</p>
+  <p>This is a deliberately restricted teaching model. Repeated measurements of a clone do not, on their own, distinguish additive genetic effects from dominance, epistasis or permanent environmental effects. Applying the approach to breeding data would require a design and genetic model that identify the breeding-value component. A pedigree or genomic relationship model would be an extension of this example.</p>
+  <div class="table-wrap"><table><caption>Generating settings for the saved example</caption><thead><tr><th>Quantity</th><th>Value</th><th>Meaning</th></tr></thead><tbody>
+  <tr><td>Genetic variance G</td><td>1 cm²</td><td>Variation in the simulated breeding values.</td></tr>
+  <tr><td>Environmental variance E</td><td>1 cm²</td><td>Independent variation in each height measurement.</td></tr>
+  <tr><td>Slope b</td><td>0.7 cm⁻¹</td><td>Local slope of log expected output.</td></tr>
+  <tr><td>Curvature H</td><td>−0.7 cm⁻²</td><td>Change in that slope with breeding value.</td></tr>
+  <tr><td>Expected output at breeding value zero</td><td>4 offspring</td><td>This is the curve's value at zero, not its average over the population.</td></tr>
+  <tr><td>Observed zero counts</td><td>88 of 800</td><td>All remain in the fitted count likelihood.</td></tr>
+  </tbody></table></div>
+  <p>The generating linear variance is 0.7² × 1 = 0.49. The curvature variance is 0.7² × 1²/2 = 0.245. Dividing the linear contribution by their sum gives the generating share 0.49/(0.49 + 0.245) = 2/3. These parameters differ from the introductory curve. They belong to this recorded estimation example.</p>
+
+  <h3>Retain uncertainty in each breeding value</h3>
+  <p>A genotype's three heights give a noisy estimate of its breeding value. The analysis first estimates variation within genotypes, then subtracts the environmental contribution from the variance of genotype means. Under the stated normal model, each set of measurements gives a normal conditional distribution for the centred breeding value.</p>
+  <p>The conditional mean is pulled towards the population mean by an amount determined by measurement reliability. Its conditional variance records uncertainty that remains after the repeated measurements. The fitness fit averages the probability of the observed offspring count over that distribution. Treating the conditional mean as an exact observation would discard this uncertainty.</p>
+  <div id="estimation-lab"></div>
+
+  <details class="derivation"><summary>Calculate genetic variance and the conditional breeding-value distribution</summary><div>
+  <p>Let Y<sub>ij</sub> = μ + X<sub>i</sub> + e<sub>ij</sub>, where X<sub>i</sub> has mean zero and variance G, and the independent measurement errors have variance E. With m measurements per genotype, the mean error has variance E/m. Therefore</p>
+  <p class="equation">Var(Ȳ<sub>i</sub>) = G + E/m.</p>
+  <p>The balanced analysis estimates E from within-genotype differences:</p>
+  <p class="equation">Ê = Σ<sub>i,j</sub>(Y<sub>ij</sub> − Ȳ<sub>i</sub>)² / [n(m − 1)].</p>
+  <p>It then estimates G as the sample variance of genotype means minus Ê/m. The sample variance uses n − 1 in its denominator. The estimated overall mean μ̂ is the average of the genotype means. In the saved dataset, Ĝ = 1.002148809, Ê = 0.979881353 and μ̂ = −0.019910277 cm.</p>
+  <p>Under normality, conditional expectation gives the reliability</p>
+  <p class="equation">r = Ĝ / (Ĝ + Ê/m) = 0.754189468.</p>
+  <p>The centred conditional mean and variance for genotype i are</p>
+  <p class="equation">M<sub>i</sub> = r(Ȳ<sub>i</sub> − μ̂), &nbsp; v = Ĝ(1 − r).</p>
+  <p>The same result follows by multiplying the normal prior density for X by the normal likelihood for the mean height and completing the square. Their precisions add: 1/v = 1/Ĝ + m/Ê. Multiplying v by m(Ȳ<sub>i</sub> − μ̂)/Ê gives M<sub>i</sub>.</p>
+  <p>If the measurements do not resolve a positive Ĝ, the repository stops the calibration. It does not silently substitute a small positive variance and continue.</p>
+  </div></details>
+
+  <details class="derivation"><summary>Integrate the offspring-count likelihood over breeding-value uncertainty</summary><div>
+  <p>For a centred breeding value x, the primary model uses a Poisson count with mean λ(x) = exp(α + bx + Hx²/2). For an observed integer count k, the conditional probability is exp[−λ(x)]λ(x)<sup>k</sup>/k!. A zero count contributes exp[−λ(x)], so it supplies information about the fitness relationship.</p>
+  <p>The likelihood contribution of genotype i averages this count probability over its height-conditioned normal distribution:</p>
+  <p class="equation">L<sub>i</sub>(α,b,H) = ∫ Poisson[W<sub>i</sub>; λ(x)] Normal(x; M<sub>i</sub>,v) dx.</p>
+  <p>The fit maximises the sum of ln L<sub>i</sub> across all genotypes. This is a two-stage procedure: the measurement model is calibrated first, then its distributions are used in the fitness likelihood. It is not a joint animal-model or genomic analysis.</p>
+  <p>The repository evaluates the integral by normal quadrature and increases the number of points to check stability. The saved primary fit used 41 points and was checked at 81. The per-record probability displayed above uses 81 points from the same standard-normal quadrature rule. Changing the selected record only changes which likelihood contribution is inspected.</p>
+  <p>After fitting, the same population formula gives V̂<sub>lin</sub> = b̂²Ĝ and V̂<sub>quad</sub> = Ĥ²Ĝ²/2. Estimating the coefficients does not change what the resulting share describes.</p>
+  </div></details>
+
+  <h3>The saved estimate and its uncertainty</h3>
+  <p>The fitted slope is approximately 0.6826 and curvature is −0.7698. Together with Ĝ = 1.0021, they give a linear variance of 0.4669 and a curvature variance of 0.2976. The estimated share is <strong>0.610744</strong>.</p>
+  <p>To assess sampling uncertainty under the fitted model, the analysis generated 500 new simulated datasets. Each repeat regenerated both height measurements and offspring counts, recalibrated the measurement model, and refitted the fitness relationship. The 2.5th and 97.5th percentiles of those refits give a <strong>model-conditional 95% interval of 0.533024–0.685713</strong>. The display below shows those saved refits.</p>
+  <div id="bootstrap-lab"></div>
+  <p>The interval reflects sampling variation under the chosen measurement and quadratic Poisson models. It does not account for an incorrect genetic model, unmodelled relatedness, an unsuitable count distribution or a fitness curve that the quadratic fails to represent.</p>
+
+  <h3>A closer estimate in one dataset can still come from an unsuitable method</h3>
+  <p>The saved comparison that treats predicted breeding values as exact gives a share of 0.673984. That happens to lie closer to the generating value 2/3 than 0.610744 does. It would be misleading to describe this single example as showing that accounting for uncertainty always moves an estimate closer to the truth.</p>
+  <p>Both slope and curvature are refitted in the comparison, and the variance of the shrunken predictions replaces G. The direction of the resulting discrepancy is not fixed. Comparing methods requires repeated datasets or appropriate validation, with attention to component estimates and interval behaviour as well as the ratio.</p>
+  <section class="prediction"><h3>Interpret a narrow interval</h3><p>Suppose a much larger dataset produced a narrow interval around the fitted quadratic share. Would that establish that the quadratic describes the full fitness relationship accurately?</p><details class="answer"><summary>Check the fitted relationship as well as the interval</summary><div><p>No. The interval can be narrow because the parameters of the chosen model are estimated precisely. The chosen model may still omit features of the underlying relationship. The comparison below keeps the local slope and curvature unchanged while adding a fourth-order term.</p></div></details></section>
+
+  <h3>Local curvature can miss a broader change in the curve</h3>
+  <p>Consider a separate, fully specified mathematical comparison: ℓ(x) = ln(4) + 0.7x − 0.35x² − κx⁴, with X normally distributed and G = 1. The fourth-order term has zero first and second derivatives at the mean. The local quadratic share therefore remains 2/3 as κ changes.</p>
+  <p>The best linear description of the complete log mean can nevertheless become much poorer. At κ = 0.08 its population R² is approximately 0.242406. This calculation concerns the specified generating curve. It is not a new fit to the saved 800-genotype dataset.</p>
+  <div id="quartic-lab"></div>
+  <details class="derivation"><summary>Calculate the full-curve R² with a fourth-order term</summary><div>
+  <p>Write L = bX and Q = HX²/2 − κX⁴. A centred Gaussian distribution is symmetric, so Cov(L,Q) = 0: all the cross-products have odd total powers. The best linear slope remains b.</p>
+  <p>The required Gaussian moments are E[X²] = G, E[X⁴] = 3G², E[X⁶] = 15G³ and E[X⁸] = 105G⁴. Hence Var(X²) = 2G², Var(X⁴) = 96G⁴ and Cov(X²,X⁴) = 12G³. Expanding the variance of Q gives</p>
+  <p class="equation">Var(Q) = H²G²/2 − 12HκG³ + 96κ²G⁴.</p>
+  <p>Therefore the full-curve R² is b²G/[b²G + H²G²/2 − 12HκG³ + 96κ²G⁴]. Substituting b = 0.7, H = −0.7, G = 1 and κ = 0.08 gives linear variance 0.49 and even-term variance 1.5314. The linear fraction of their sum is 0.49/2.0214 ≈ 0.242406.</p>
+  <p>The calculation shows why the scope of the approximation has to accompany the share. An exact decomposition of the quadratic description does not establish that the quadratic describes the full relationship accurately.</p>
+  </div></details>
+
+  <h3>Reproduce or change the estimation example</h3>
+  <p>The saved data, estimates and bootstrap draws are linked below. The repository's Python Shiny app can generate a different dataset and run a new fit using the same estimation code as the batch analysis. This personal document displays the archived fit and its arithmetic; it does not provide a second implementation of the optimiser.</p>
+  <details class="code"><summary>Run the recorded analysis or open the estimation app</summary><div><p>From a local copy of the repository, use these commands:</p><pre><code># Regenerate the default example and run all 500 bootstrap refits.
+bash run_estimation.sh
+
+# Open the Python Shiny interface to generate and fit other datasets.
+bash run_shiny.sh</code></pre><p>The first run installs missing dependencies if needed. The batch command writes to outputs/estimation/ and preserves the reference files used in this document.</p></div></details>
+  <p class="sources">Sources: <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/examples/estimating_variance_share/model.py">simulation and estimation model</a>; <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/examples/estimating_variance_share/results/summary.json">saved numerical record</a>; <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/examples/estimating_variance_share/results/observed_data.csv">all observed inputs</a>; <a href="https://github.com/dortizbarrientos/additive_channels/blob/main/examples/estimating_variance_share/results/bootstrap_draws.csv">all bootstrap refits</a>.</p>
+</article>
